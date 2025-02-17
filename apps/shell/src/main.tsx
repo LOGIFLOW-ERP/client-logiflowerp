@@ -5,14 +5,14 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
-import { theme } from '@app/ui'
+import { App, theme } from '@app/ui'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {/* <App /> */}
+      <App />
     </ThemeProvider>
   </StrictMode>,
 )
