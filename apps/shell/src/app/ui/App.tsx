@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { AppRouterProvider } from './providers'
-import { StoreProvider } from '@processes/auth/ui/providers'
+import { StoreProvider } from '@shared/ui/providers'
 
 export function App() {
     return (

@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { sharedReducer } from './sharedSlice'
-import { authReducer } from '@processes/auth/infrastructure/redux/authSlice'
+import { authReducer } from './auth'
 
 export const store = configureStore({
     reducer: {

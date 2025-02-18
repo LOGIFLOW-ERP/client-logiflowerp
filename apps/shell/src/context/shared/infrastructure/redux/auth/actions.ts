@@ -1,4 +1,4 @@
-import { AppDispatch } from '@shared/infrastructure/redux';
+import { AppDispatch } from '../store';
 import { actions, initialState } from './authSlice';
 import { AuthUserDTO } from 'logiflowerp-sdk';
 

@@ -1,6 +1,6 @@
-import { authActions } from '@processes/auth/infrastructure/redux/actions'
 import { AppDispatch, RootState } from '@shared/infrastructure/redux'
 import { sharedActions } from '@shared/infrastructure/redux/actions'
+import { authActions } from '@shared/infrastructure/redux/auth'
 import { useDispatch, useSelector } from 'react-redux'
 
 const actionCreators = {

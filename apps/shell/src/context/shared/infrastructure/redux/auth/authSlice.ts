@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { setStateShared } from '@shared/infrastructure/redux'
+import { setStateShared } from '../actions'
 
 export const initialState = {
     user: null,
