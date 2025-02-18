@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import axios from 'axios'
 import { setStateShared } from './actions'
 
 export const initialState = {
-    axiosInstance: axios.create(),
     prueba: ''
 }
 
