@@ -13,6 +13,12 @@
     "paths": {
       "@app/*": [
         "./src/app/*"
+      ],
+      "@processes/*": [
+        "./src/context/processes/*"
+      ],
+      "@shared/*": [
+        "./src/context/shared/*"
       ]
     },
     /* Bundler mode */
