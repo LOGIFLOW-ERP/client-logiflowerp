@@ -13,5 +13,5 @@ const slice = createSlice({
     }
 })
 
-export const sharedActionsActios = slice.actions
+export const actions = slice.actions
 export const sharedReducer = slice.reducer

@@ -1,8 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { setStateShared } from '@shared/infrastructure/redux'
+
+export const initialState = {
+    user: null,
+    isAuthenticated: false
+}
 
 const authSlice = createSlice({
     name: 'auth',
-    initialState: { user: null, isAuthenticated: false },
+    initialState,
     reducers: {
         setUser: (state, action) => {
             state.user = action.payload
@@ -11,9 +17,10 @@ const authSlice = createSlice({
         logout: (state) => {
             state.user = null
             state.isAuthenticated = false
-        }
+        },
+        setState: setStateShared<typeof initialState>
     }
 })
 
-export const { setUser, logout } = authSlice.actions
+export const actions = authSlice.actions
 export default authSlice.reducer

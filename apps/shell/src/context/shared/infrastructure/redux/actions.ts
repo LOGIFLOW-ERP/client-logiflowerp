@@ -1,9 +1,9 @@
 import { PayloadAction } from '@reduxjs/toolkit'
 import { AppDispatch } from './store'
-import { initialState, sharedActionsActios } from './sharedSlice'
+import { initialState, actions } from './sharedSlice'
 
 export const sharedActions = (dispatch: AppDispatch) => ({
-    setState: (payload: Partial<typeof initialState>) => dispatch(sharedActionsActios.setState(payload))
+    setState: (payload: Partial<typeof initialState>) => dispatch(actions.setState(payload))
 })
 
 export function setStateShared<T extends Record<string, any>>(state: T, action: PayloadAction<Partial<T>>) {
