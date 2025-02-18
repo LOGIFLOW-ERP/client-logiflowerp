@@ -1,4 +1,3 @@
-import React from 'react'
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 
 interface CustomSelectProps<T> {
@@ -12,7 +11,7 @@ interface CustomSelectProps<T> {
 
 export function CustomSelect<T>({ label, value, onChange, options, valueKey, labelKey }: CustomSelectProps<T>) {
     return (
-        <FormControl fullWidth size='small'>
+        <FormControl fullWidth size='small' margin='dense'>
             <InputLabel>{label}</InputLabel>
             <Select value={value} onChange={onChange} label={label}>
                 {options.map((option, index) => {
