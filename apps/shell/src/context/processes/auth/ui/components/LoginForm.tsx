@@ -1,5 +1,8 @@
+import { useStore } from '@shared/ui/hooks'
+
 export function LoginForm() {
+    const { actions: { setState } } = useStore('shared')
     return (
-        <div>LoginForm</div>
+        <button onClick={() => setState({ prueba: 'Hola' })}>LoginForm</button>
     )
 }

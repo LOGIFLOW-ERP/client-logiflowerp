@@ -1,7 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { sharedReducer } from './sharedSlice'
 
 export const store = configureStore({
-    reducer: {}
+    reducer: {
+        [sharedReducer.name]: sharedReducer
+    }
 })
 
 export type RootState = ReturnType<typeof store.getState>
