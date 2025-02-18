@@ -1,11 +1,16 @@
-// import { useStore } from '@shared/ui/hooks'
-
 import { Box, Button, Divider, Link, TextField } from '@mui/material';
+import { useStore } from '@shared/ui/hooks';
 import { useNavigate } from 'react-router-dom';
 
 export function LoginForm() {
-    // const { actions: { setState } } = useStore('shared')
+
+    const { actions: { setState }, state } = useStore('auth')
     const navigate = useNavigate()
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setState({ [e.target.name]: e.target.value })
+    }
+
     return (
         <form>
             <TextField
@@ -15,6 +20,9 @@ export function LoginForm() {
                 margin='normal'
                 autoFocus
                 size='small'
+                name='email'
+                value={state.email}
+                onChange={handleChange}
             />
             <TextField
                 label='Contraseña'
@@ -23,6 +31,9 @@ export function LoginForm() {
                 fullWidth
                 margin='normal'
                 size='small'
+                name='password'
+                value={state.password}
+                onChange={handleChange}
             />
             <Button
                 variant='contained'
@@ -51,7 +62,6 @@ export function LoginForm() {
                     ¿Olvidaste tu contraseña?
                 </Link>
             </Box>
-
         </form>
     )
 }

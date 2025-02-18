@@ -1,14 +1,15 @@
-import { Button, TextField } from '@mui/material'
+import { Box, Button, Divider, Link, TextField } from '@mui/material'
 import { CustomSelect } from '@shared/ui-library'
 import { useStore } from '@shared/ui/hooks'
+import { useNavigate } from 'react-router-dom'
 // import { dataCountry, State } from 'logiflowerp-sdk'
 
 export function SignUpForm() {
 
     const { actions: { setState }, state } = useStore('auth')
+    const navigate = useNavigate()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // setFormData({ ...formData, [e.target.name]: e.target.value });
         setState({ [e.target.name]: e.target.value })
     }
 
@@ -16,7 +17,7 @@ export function SignUpForm() {
         <form>
             <CustomSelect
                 label='País'
-                onChange={() => { }}
+                onChange={(e) => { console.log(e.target) }}
                 options={[]}
                 value={state.country}
                 labelKey='nombre'
@@ -70,6 +71,25 @@ export function SignUpForm() {
             >
                 Registrarse
             </Button>
+            <Divider sx={{ marginTop: 2, marginBottom: 2 }} />
+            <Box sx={{ textAlign: 'center' }}>
+                <Link
+                    variant='body2'
+                    color='primary'
+                    sx={{ display: 'block', marginBottom: 1, cursor: 'pointer' }}
+                    onClick={() => navigate('/sign-in')}
+                >
+                    ¿Ya tienes cuenta? Inicia sesión
+                </Link>
+                <Link
+                    variant='body2'
+                    color='primary'
+                    sx={{ cursor: 'pointer' }}
+                    onClick={() => navigate('/recover-password')}
+                >
+                    ¿Olvidaste tu contraseña?
+                </Link>
+            </Box>
         </form>
     )
 }
