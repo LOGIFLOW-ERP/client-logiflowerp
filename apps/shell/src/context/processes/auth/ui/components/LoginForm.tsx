@@ -57,7 +57,7 @@ export function LoginForm() {
                     variant='body2'
                     color='primary'
                     sx={{ cursor: 'pointer' }}
-                    onClick={() => navigate('/recover-password')}
+                    onClick={() => navigate('/request-password-reset')}
                 >
                     ¿Olvidaste tu contraseña?
                 </Link>
