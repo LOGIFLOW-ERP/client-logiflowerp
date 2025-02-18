@@ -1,5 +1,6 @@
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent } from '@mui/material';
 import { Outlet } from 'react-router-dom';
+import Logo from '../../../../../assets/LogoSinMargen.webp'
 
 export function LayoutAuth() {
     return (
@@ -14,20 +15,20 @@ export function LayoutAuth() {
         >
             <Card sx={{ width: 400 }}>
                 <CardContent>
-                    {/* <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
                         <img
-                            src="/path-to-your-logo.png"  // Asegúrate de colocar la ruta correcta de tu logo
+                            src={Logo}
                             alt="Logo"
-                            style={{ width: 100, height: 'auto' }}  // Ajusta el tamaño según lo necesites
+                            style={{ width: 125, height: 'auto' }}
                         />
-                    </Box> */}
-                    <Typography
+                    </Box>
+                    {/* <Typography
                         variant='h5'
                         align='center'
                         gutterBottom
                     >
                         Iniciar sesión
-                    </Typography>
+                    </Typography> */}
                     <Outlet />
                 </CardContent>
             </Card>
