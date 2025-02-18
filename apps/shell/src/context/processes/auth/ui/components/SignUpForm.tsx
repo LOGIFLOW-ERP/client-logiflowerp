@@ -81,14 +81,6 @@ export function SignUpForm() {
                 >
                     ¿Ya tienes cuenta? Inicia sesión
                 </Link>
-                <Link
-                    variant='body2'
-                    color='primary'
-                    sx={{ cursor: 'pointer' }}
-                    onClick={() => navigate('/recover-password')}
-                >
-                    ¿Olvidaste tu contraseña?
-                </Link>
             </Box>
         </form>
     )
