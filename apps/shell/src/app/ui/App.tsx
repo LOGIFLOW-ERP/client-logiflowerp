@@ -4,7 +4,7 @@ import { StoreProvider } from '@processes/auth/ui/providers'
 
 export function App() {
     return (
-        <Suspense fallback={<>Error</>}>
+        <Suspense fallback={<>Cargando ...</>}>
             <StoreProvider>
                 <AppRouterProvider />
             </StoreProvider>
