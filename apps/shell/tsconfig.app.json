@@ -19,6 +19,9 @@
       ],
       "@shared/*": [
         "./src/context/shared/*"
+      ],
+      "@shared/ui-library": [
+        "../../packages/ui-library"
       ]
     },
     /* Bundler mode */
