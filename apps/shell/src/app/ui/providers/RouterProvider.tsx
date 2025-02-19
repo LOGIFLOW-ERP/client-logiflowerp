@@ -4,6 +4,7 @@ import { lazy } from 'react'
 import { protectedLoader } from '@app/application/loaders'
 
 const LayoutAuth = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.LayoutAuth })))
+const VerifyEmail = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.VerifyEmail })))
 const LoginForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.LoginForm })))
 const SignUpForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.SignUpForm })))
 const RequestPasswordReset = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.RequestPasswordReset })))
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
                         Component: RequestPasswordReset
                     },
                 ]
+            },
+            {
+                path: 'verify-email',
+                Component: VerifyEmail
             },
             {
                 element: <>Dashboard</>,
