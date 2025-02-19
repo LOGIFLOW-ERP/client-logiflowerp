@@ -9,6 +9,7 @@ export const initialState = {
     documentType: '',
     email: '',
     password: '',
+    confirmPassword: '',
 }
 
 const authSlice = createSlice({
