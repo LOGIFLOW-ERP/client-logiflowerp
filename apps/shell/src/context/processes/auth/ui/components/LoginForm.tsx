@@ -23,6 +23,7 @@ export function LoginForm() {
                 name='email'
                 value={state.email}
                 onChange={handleChange}
+                autoComplete='email'
             />
             <TextField
                 label='Contraseña'
@@ -34,6 +35,7 @@ export function LoginForm() {
                 name='password'
                 value={state.password}
                 onChange={handleChange}
+                autoComplete='current-password'
             />
             <Button
                 variant='contained'

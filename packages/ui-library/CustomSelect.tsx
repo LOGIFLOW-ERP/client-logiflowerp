@@ -3,17 +3,19 @@ import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@m
 interface CustomSelectProps<T> {
     label: string
     value: string | undefined
+    name: string
     onChange: (event: SelectChangeEvent) => void
     options: T[]
     valueKey: keyof T
     labelKey: keyof T
+    margin?: 'dense' | 'normal' | 'none' | undefined
 }
 
-export function CustomSelect<T>({ label, value, onChange, options, valueKey, labelKey }: CustomSelectProps<T>) {
+export function CustomSelect<T>({ label, value, onChange, options, valueKey, labelKey, name, margin }: CustomSelectProps<T>) {
     return (
-        <FormControl fullWidth size='small' margin='dense'>
+        <FormControl fullWidth size='small' margin={margin}>
             <InputLabel>{label}</InputLabel>
-            <Select value={value} onChange={onChange} label={label}>
+            <Select value={value} onChange={onChange} label={label} name={name}>
                 {options.map((option, index) => {
                     const valueOption = option[valueKey]
                     const labelOption = option[labelKey]

@@ -1,8 +1,8 @@
-import { Box, Button, Divider, Link, TextField } from '@mui/material'
+import { Box, Button, Divider, Link, SelectChangeEvent, TextField } from '@mui/material'
 import { CustomSelect } from '@shared/ui-library'
 import { useStore } from '@shared/ui/hooks'
 import { useNavigate } from 'react-router-dom'
-// import { dataCountry, State } from 'logiflowerp-sdk'
+import { dataCountry, State, getDataDocumentTypes } from 'logiflowerp-sdk'
 
 export function SignUpForm() {
 
@@ -13,29 +13,37 @@ export function SignUpForm() {
         setState({ [e.target.name]: e.target.value })
     }
 
+    const handleSelectChange = (e: SelectChangeEvent) => {
+        setState({ [e.target.name]: e.target.value })
+    }
+
     return (
         <form>
             <CustomSelect
                 label='País'
-                onChange={(e) => { console.log(e.target) }}
-                options={[]}
+                onChange={handleSelectChange}
+                options={dataCountry.filter(e => e.estado === State.ACTIVO)}
                 value={state.country}
                 labelKey='nombre'
                 valueKey='alfa3'
+                name='country'
+                margin='normal'
             />
             <CustomSelect
                 label='Tipo de Documento'
-                onChange={() => { }}
-                options={[]}
+                onChange={handleSelectChange}
+                options={getDataDocumentTypes()}
                 value={state.documentType}
-                labelKey='nombre'
-                valueKey='alfa3'
+                labelKey='label'
+                valueKey='value'
+                name='documentType'
+                margin='normal'
             />
             <TextField
                 label='ID'
                 variant='outlined'
                 fullWidth
-                margin='dense'
+                margin='normal'
                 size='small'
                 onChange={handleChange}
                 name='identity'
@@ -46,11 +54,12 @@ export function SignUpForm() {
                 label='Correo electrónico'
                 variant='outlined'
                 fullWidth
-                margin='dense'
+                margin='normal'
                 size='small'
                 onChange={handleChange}
                 name='email'
                 value={state.email}
+                autoComplete='email'
             />
             <TextField
                 label='Contraseña'
@@ -62,6 +71,7 @@ export function SignUpForm() {
                 onChange={handleChange}
                 name='password'
                 value={state.password}
+                autoComplete='current-password'
             />
             <Button
                 variant='contained'
