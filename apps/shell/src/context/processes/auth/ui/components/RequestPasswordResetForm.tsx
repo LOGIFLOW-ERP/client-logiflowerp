@@ -2,7 +2,7 @@ import { Box, Button, Divider, Link, TextField } from '@mui/material';
 import { useStore } from '@shared/ui/hooks';
 import { useNavigate } from 'react-router-dom';
 
-export function RequestPasswordReset() {
+export function RequestPasswordResetForm() {
 
 	const { actions: { setState }, state } = useStore('auth')
 	const navigate = useNavigate()

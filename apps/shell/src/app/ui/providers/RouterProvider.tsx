@@ -8,7 +8,7 @@ const VerifyEmail = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ 
 const ResetPassword = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.ResetPassword })))
 const LoginForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.LoginForm })))
 const SignUpForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.SignUpForm })))
-const RequestPasswordReset = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.RequestPasswordReset })))
+const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.RequestPasswordResetForm })))
 
 const router = createBrowserRouter([
     {
@@ -29,7 +29,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'request-password-reset',
-                        Component: RequestPasswordReset
+                        Component: RequestPasswordResetForm
                     },
                 ]
             },

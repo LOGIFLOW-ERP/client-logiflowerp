@@ -1,3 +1,3 @@
 export * from './LoginForm';
-export * from './RequestPasswordReset';
+export * from './RequestPasswordResetForm';
 export * from './SignUpForm';
