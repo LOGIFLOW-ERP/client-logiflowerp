@@ -1,18 +1,40 @@
-import { Box, Button, Divider, Link, TextField } from '@mui/material';
-import { useStore } from '@shared/ui/hooks';
-import { useNavigate } from 'react-router-dom';
+import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useState } from 'react'
+
+const schema = yup.object().shape({
+    email: yup.string().email('Correo electrónico no válido').required('El correo es obligatorio'),
+    password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es obligatoria'),
+})
 
 export function LoginForm() {
 
-    const { actions: { setState }, state } = useStore('auth')
     const navigate = useNavigate()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver: yupResolver(schema) })
+    const [loading, setLoading] = useState(false)
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setState({ [e.target.name]: e.target.value })
+    const onSubmit = async (data: any) => {
+        setLoading(true)
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            console.log('Datos enviados:', data)
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
                 label='Correo electrónico'
                 variant='outlined'
@@ -20,10 +42,10 @@ export function LoginForm() {
                 margin='normal'
                 autoFocus
                 size='small'
-                name='email'
-                value={state.email}
-                onChange={handleChange}
+                {...register('email')}
                 autoComplete='email'
+                error={!!errors.email}
+                helperText={errors.email?.message}
             />
             <TextField
                 label='Contraseña'
@@ -32,18 +54,24 @@ export function LoginForm() {
                 fullWidth
                 margin='normal'
                 size='small'
-                name='password'
-                value={state.password}
-                onChange={handleChange}
+                {...register('password')}
                 autoComplete='current-password'
+                error={!!errors.password}
+                helperText={errors.password?.message}
             />
             <Button
+                type='submit'
                 variant='contained'
                 color='primary'
                 fullWidth
                 sx={{ marginTop: 2 }}
+                disabled={loading}
             >
-                Iniciar sesión
+                {
+                    loading
+                        ? <CircularProgress size={24} color='inherit' />
+                        : 'Iniciar sesión'
+                }
             </Button>
             <Divider sx={{ marginTop: 2, marginBottom: 2 }} />
             <Box sx={{ textAlign: 'center' }}>

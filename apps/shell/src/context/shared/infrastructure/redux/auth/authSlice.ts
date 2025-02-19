@@ -4,12 +4,6 @@ import { setStateShared } from '../actions'
 export const initialState = {
     user: null,
     isAuthenticated: false,
-    country: '',
-    identity: '',
-    documentType: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
 }
 
 const authSlice = createSlice({
