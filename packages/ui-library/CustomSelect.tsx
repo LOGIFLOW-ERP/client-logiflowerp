@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 
 interface CustomSelectProps<T> {
     label: string
@@ -9,11 +9,24 @@ interface CustomSelectProps<T> {
     valueKey: keyof T
     labelKey: keyof T
     margin?: 'dense' | 'normal' | 'none' | undefined
+    error?: boolean
+    helperText?: string
 }
 
-export function CustomSelect<T>({ label, value, onChange, options, valueKey, labelKey, name, margin }: CustomSelectProps<T>) {
+export function CustomSelect<T>({
+    label,
+    value,
+    onChange,
+    options,
+    valueKey,
+    labelKey,
+    name,
+    margin,
+    error,
+    helperText,
+}: CustomSelectProps<T>) {
     return (
-        <FormControl fullWidth size='small' margin={margin}>
+        <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
             <Select value={value} onChange={onChange} label={label} name={name}>
                 {options.map((option, index) => {
@@ -37,6 +50,7 @@ export function CustomSelect<T>({ label, value, onChange, options, valueKey, lab
                     )
                 })}
             </Select>
+            {error && <FormHelperText>{helperText}</FormHelperText>}
         </FormControl>
     )
 }
