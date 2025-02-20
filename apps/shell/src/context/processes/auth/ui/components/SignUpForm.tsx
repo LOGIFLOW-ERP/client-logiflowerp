@@ -1,23 +1,12 @@
 import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/material'
 import { CustomSelect } from '@shared/ui-library'
 import { useNavigate } from 'react-router-dom'
-import { dataCountry, State, getDataDocumentTypes } from 'logiflowerp-sdk'
-import * as yup from 'yup'
+import { dataCountry, State, getDataDocumentTypes, CreateUserDTO, DocumentType } from 'logiflowerp-sdk'
 import { Controller, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useState } from 'react'
 
-const schema = yup.object().shape({
-    country: yup.string().required('País es obligatorio'),
-    documentType: yup.string().required('Tipo de Documento es obligatorio'),
-    identity: yup
-        .string()
-        .min(8, 'ID debe tener al menos 8 caracteres')
-        .max(9, 'ID debe tener máximo 9 caracteres')
-        .required('ID es obligatorio'),
-    email: yup.string().email('Correo electrónico no válido').required('El correo es obligatorio'),
-    password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es obligatoria'),
-})
+const resolver = classValidatorResolver(CreateUserDTO)
 
 export function SignUpForm() {
 
@@ -27,7 +16,7 @@ export function SignUpForm() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver: yupResolver(schema), defaultValues: { country: '', documentType: '' } })
+    } = useForm({ resolver, defaultValues: { country: 'PER', documentType: DocumentType.DNI } })
     const [loading, setLoading] = useState(false)
 
     const onSubmit = async (data: any) => {

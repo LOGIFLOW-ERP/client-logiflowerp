@@ -1,14 +1,11 @@
 import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
+import { classValidatorResolver } from '@hookform/resolvers/class-validator'
+import { CreateUserDTO } from 'logiflowerp-sdk'
 
-const schema = yup.object().shape({
-    email: yup.string().email('Correo electrónico no válido').required('El correo es obligatorio'),
-    password: yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es obligatoria'),
-})
+const resolver = classValidatorResolver(CreateUserDTO)
 
 export function LoginForm() {
 
@@ -17,7 +14,7 @@ export function LoginForm() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver: yupResolver(schema) })
+    } = useForm({ resolver })
     const [loading, setLoading] = useState(false)
 
     const onSubmit = async (data: any) => {
