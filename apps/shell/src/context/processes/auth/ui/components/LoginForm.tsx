@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CreateUserDTO } from 'logiflowerp-sdk'
+import { LoginDTO } from 'logiflowerp-sdk'
 
-const resolver = classValidatorResolver(CreateUserDTO)
+const resolver = classValidatorResolver(LoginDTO)
 
 export function LoginForm() {
 

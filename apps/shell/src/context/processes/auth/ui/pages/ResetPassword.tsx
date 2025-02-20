@@ -1,41 +1,50 @@
-import { Alert, Box, Button, TextField } from '@mui/material'
-import { useStore } from '@shared/ui/hooks'
+import { Alert, Box, Button, CircularProgress, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../../../../../assets/LogoSinMargen.webp'
+import { ResetPasswordDTO } from 'logiflowerp-sdk'
+import { classValidatorResolver } from '@hookform/resolvers/class-validator'
+import { useForm } from 'react-hook-form'
+
+const resolver = classValidatorResolver(ResetPasswordDTO)
 
 export function ResetPassword() {
 
-    const { actions: { setState }, state } = useStore('auth')
     const [searchParams] = useSearchParams()
     const token = searchParams.get('token')
     const navigate = useNavigate()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ resolver })
 
     const [error, setError] = useState('')
     const [success, setSuccess] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!state.password || !state.confirmPassword) {
+    const onSubmit = async (data: ResetPasswordDTO) => {
+        if (!data.password || !data.confirmPassword) {
             setError('Ambos campos son obligatorios.')
             return
         }
 
-        if (state.password.length < 6) {
+        if (data.password.length < 6) {
             setError('La contraseña debe tener al menos 6 caracteres.')
             return
         }
 
-        if (state.password !== state.confirmPassword) {
+        if (data.password !== data.confirmPassword) {
             setError('Las contraseñas no coinciden.')
             return
         }
 
         try {
+            setLoading(true)
             const response = await fetch('http://localhost:4000/api/auth/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, password: state.password }),
+                body: JSON.stringify({ token, password: data.password }),
             })
 
             if (!response.ok) throw new Error('Error al restablecer la contraseña.')
@@ -49,13 +58,11 @@ export function ResetPassword() {
         } catch (err) {
             console.log(err)
             setError('Hubo un problema. Inténtalo de nuevo.')
+        } finally {
+            setLoading(false)
         }
     }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setState({ [e.target.name]: e.target.value })
-    }
-
+    
     return (
         <Box
             sx={{
@@ -80,7 +87,7 @@ export function ResetPassword() {
             {error && <Alert severity='error'>{error}</Alert>}
             {success && <Alert severity='success'>Contraseña restablecida correctamente.</Alert>}
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Campo oculto para username (recomendado para compatibilidad con navegadores y gestores de contraseñas) */}
                 <input type='text' name='username' autoComplete='username' hidden />
                 <TextField
@@ -89,11 +96,11 @@ export function ResetPassword() {
                     fullWidth
                     margin='normal'
                     size='small'
-                    value={state.password}
-                    name='password'
-                    onChange={handleChange}
+                    {...register('password')}
                     autoComplete='new-password'
                     autoFocus
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
                 />
                 <TextField
                     label='Confirmar Contraseña'
@@ -101,13 +108,24 @@ export function ResetPassword() {
                     fullWidth
                     margin='normal'
                     size='small'
-                    value={state.confirmPassword}
-                    onChange={handleChange}
                     autoComplete='new-password'
-                    name='confirmPassword'
+                    {...register('confirmPassword')}
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
                 />
-                <Button type='submit' variant='contained' color='primary' fullWidth sx={{ mt: 2 }}>
-                    Restablecer
+                <Button
+                    type='submit'
+                    variant='contained'
+                    color='primary'
+                    fullWidth
+                    sx={{ mt: 2 }}
+                    disabled={loading}
+                >
+                    {
+                        loading
+                            ? <CircularProgress size={24} color='inherit' />
+                            : 'Restablecer'
+                    }
                 </Button>
             </form>
         </Box>
