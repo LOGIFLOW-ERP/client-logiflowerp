@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { setStateShared } from '../actions'
+import { AuthUserDTO } from 'logiflowerp-sdk'
 
 export const initialState = {
-    user: null,
+    user: new AuthUserDTO(),
     isAuthenticated: false,
 }
 
@@ -10,14 +11,6 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setUser: (state, action) => {
-            state.user = action.payload
-            state.isAuthenticated = !!action.payload
-        },
-        logout: (state) => {
-            state.user = null
-            state.isAuthenticated = false
-        },
         setState: setStateShared<typeof initialState>
     }
 })

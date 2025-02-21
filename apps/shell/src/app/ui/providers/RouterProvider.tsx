@@ -9,6 +9,7 @@ const ResetPassword = lazy(() => import('@processes/auth/ui/pages').then(mo => (
 const LoginForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.LoginForm })))
 const SignUpForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.SignUpForm })))
 const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.RequestPasswordResetForm })))
+const Dashboard = lazy(() => import('@shared/ui/pages').then(mo => ({ default: mo.Dashboard })))
 
 const router = createBrowserRouter([
     {
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
                 Component: ResetPassword
             },
             {
-                element: <>Dashboard</>,
+                Component: Dashboard,
                 loader: protectedLoader,
                 index: true
             }

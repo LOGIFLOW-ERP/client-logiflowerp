@@ -4,12 +4,14 @@ import { useForm } from 'react-hook-form'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { LoginDTO } from 'logiflowerp-sdk'
 import { useSignInMutation } from '@shared/api'
+import { useStore } from '@shared/ui/hooks'
 
 const resolver = classValidatorResolver(LoginDTO)
 
 export function LoginForm() {
 
     const navigate = useNavigate()
+    const { actions: { setState } } = useStore('auth')
     const {
         register,
         handleSubmit,
@@ -23,7 +25,8 @@ export function LoginForm() {
             console.error('Error al iniciar sesión:', result.error)
             return
         }
-        // navigate('/dashboard') // Redirigir tras login exitoso
+        setState({ isAuthenticated: true, user: result.data })
+        navigate('/')
     }
 
     return (
