@@ -13,5 +13,19 @@ export const theme = createTheme({
         error: {
             main: red.A100
         }
+    },
+    components: {
+        MuiTextField: {
+            styleOverrides: {
+                root: {
+                    '& input:-webkit-autofill': {
+                        WebkitBoxShadow: '0 0 0px 1000px transparent inset',
+                        transition: 'background-color 5000s ease-in-out 0s',
+                        WebkitTextFillColor: 'inherit',
+                        caretColor: 'inherit'
+                    }
+                }
+            }
+        }
     }
 })
