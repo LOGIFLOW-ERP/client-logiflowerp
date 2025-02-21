@@ -24,7 +24,6 @@ export function LoginForm() {
     const onSubmit = async (data: LoginDTO) => {
         try {
             const result = await signIn(data).unwrap()
-            console.log(result)
             if ('error' in result) {
                 console.error('Error al iniciar sesión:', result.error)
                 return
