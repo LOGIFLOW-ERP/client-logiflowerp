@@ -6,6 +6,7 @@ import {
     RequestPasswordResetDTO,
     ResetPasswordDTO
 } from 'logiflowerp-sdk'
+import { instanceToPlain } from 'class-transformer'
 
 const schema = 'processes'
 const resource = 'auth'
@@ -16,8 +17,8 @@ export const authApi = baseApi.injectEndpoints({
             query: (body) => ({
                 url: `/${schema}/${resource}/sign-up`,
                 method: 'POST',
-                body,
-            }),
+                body: instanceToPlain(body)
+            })
         }),
         verifyEmail: builder.mutation<void, { token: string }>({
             query: (body) => ({
@@ -30,7 +31,7 @@ export const authApi = baseApi.injectEndpoints({
             query: (body) => ({
                 url: `/${schema}/${resource}/request-password-reset`,
                 method: 'POST',
-                body,
+                body: instanceToPlain(body),
             }),
         }),
         resetPassword: builder.mutation<void, ResetPasswordDTO>({
@@ -44,7 +45,7 @@ export const authApi = baseApi.injectEndpoints({
             query: (body) => ({
                 url: `/${schema}/${resource}/sign-in`,
                 method: 'POST',
-                body,
+                body: instanceToPlain(body),
             }),
         }),
         signOut: builder.mutation<void, void>({

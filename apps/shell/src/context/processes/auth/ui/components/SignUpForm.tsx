@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { dataCountry, State, getDataDocumentTypes, CreateUserDTO, DocumentType } from 'logiflowerp-sdk'
 import { Controller, useForm } from 'react-hook-form'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { useState } from 'react'
+import { useSignUpMutation } from '@shared/api'
+import { useSnackbar } from 'notistack'
 
 const resolver = classValidatorResolver(CreateUserDTO)
 
@@ -17,18 +18,17 @@ export function SignUpForm() {
         handleSubmit,
         formState: { errors },
     } = useForm({ resolver, defaultValues: { country: 'PER', documentType: DocumentType.DNI } })
-    const [loading, setLoading] = useState(false)
+    const [signUp, { isLoading }] = useSignUpMutation()
+    const { enqueueSnackbar } = useSnackbar()
 
-    const onSubmit = async (data: any) => {
-        setLoading(true)
-
+    const onSubmit = async (data: CreateUserDTO) => {
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            console.log('Datos enviados:', data)
-        } catch (error) {
-            console.error('Error al iniciar sesión:', error)
-        } finally {
-            setLoading(false)
+            await signUp(data).unwrap()
+            enqueueSnackbar({ message: '¡Registrado correctamente!', variant: 'success' })
+            navigate('/sign-in')
+        } catch (error: any) {
+            console.log(error)
+            enqueueSnackbar({ message: error.error || '¡Ocurrió un error!', variant: 'error' })
         }
     }
 
@@ -106,10 +106,10 @@ export function SignUpForm() {
                 color='primary'
                 fullWidth
                 sx={{ marginTop: 2 }}
-                disabled={loading}
+                disabled={isLoading}
             >
                 {
-                    loading
+                    isLoading
                         ? <CircularProgress size={24} color='inherit' />
                         : 'Registrarse'
                 }

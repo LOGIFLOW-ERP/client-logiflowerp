@@ -1,9 +1,9 @@
 import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { LoginDTO } from 'logiflowerp-sdk'
+import { useSignInMutation } from '@shared/api'
 
 const resolver = classValidatorResolver(LoginDTO)
 
@@ -15,19 +15,15 @@ export function LoginForm() {
         handleSubmit,
         formState: { errors },
     } = useForm({ resolver })
-    const [loading, setLoading] = useState(false)
+    const [signIn, { isLoading }] = useSignInMutation()
 
-    const onSubmit = async (data: any) => {
-        setLoading(true)
-
-        try {
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            console.log('Datos enviados:', data)
-        } catch (error) {
-            console.error('Error al iniciar sesión:', error)
-        } finally {
-            setLoading(false)
+    const onSubmit = async (data: LoginDTO) => {
+        const result = await signIn(data)
+        if ('error' in result) {
+            console.error('Error al iniciar sesión:', result.error)
+            return
         }
+        // navigate('/dashboard') // Redirigir tras login exitoso
     }
 
     return (
@@ -62,10 +58,10 @@ export function LoginForm() {
                 color='primary'
                 fullWidth
                 sx={{ marginTop: 2 }}
-                disabled={loading}
+                disabled={isLoading}
             >
                 {
-                    loading
+                    isLoading
                         ? <CircularProgress size={24} color='inherit' />
                         : 'Iniciar sesión'
                 }

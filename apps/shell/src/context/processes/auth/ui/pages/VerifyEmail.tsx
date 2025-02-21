@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import ErrorIcon from "@mui/icons-material/Error"
+import { useVerifyEmailMutation } from '@shared/api'
 
 export function VerifyEmail() {
 
@@ -10,22 +11,25 @@ export function VerifyEmail() {
     const navigate = useNavigate()
     const token = searchParams.get('token')
 
-    const [loading, setLoading] = useState(false)
-    const [status, setStatus] = useState<'success' | 'error' | null>('error')
+    const [status, setStatus] = useState<'success' | 'error' | null>(null)
+    const [verifyEmail, { isLoading }] = useVerifyEmailMutation()
 
     useEffect(() => {
-        console.log(token)
         if (!token) {
             setStatus('error')
-            setLoading(false)
             return
         }
-        // axios
-        //     .post("/api/auth/verify-email", { token })
-        //     .then(() => setStatus("success"))
-        //     .catch(() => setStatus("error"))
-        //     .finally(() => setLoading(false));
-    }, [token])
+        const verify = async () => {
+            try {
+                await verifyEmail({ token }).unwrap()
+                setStatus('success')
+            } catch (error) {
+                console.error(error)
+                setStatus('error')
+            }
+        }
+        verify()
+    }, [token, verifyEmail])
 
     return (
         <Box
@@ -38,8 +42,8 @@ export function VerifyEmail() {
                 textAlign: 'center'
             }}
         >
-            {loading && <CircularProgress />}
-            {!loading && status === 'success' && (
+            {(isLoading || !status) && <CircularProgress />}
+            {!isLoading && status === 'success' && (
                 <>
                     <CheckCircleIcon color='success' sx={{ fontSize: 60 }} />
                     <Typography variant='h5' sx={{ mt: 2 }}>
@@ -58,7 +62,7 @@ export function VerifyEmail() {
                     </Button>
                 </>
             )}
-            {!loading && status === 'error' && (
+            {!isLoading && status === 'error' && (
                 <>
                     <ErrorIcon color='error' sx={{ fontSize: 60 }} />
                     <Typography variant='h5' sx={{ mt: 2 }}>
