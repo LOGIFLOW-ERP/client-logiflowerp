@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useSignUpMutation } from '@shared/api'
 import { useSnackbar } from 'notistack'
+import { useEffect } from 'react'
 
 const resolver = classValidatorResolver(CreateUserDTO)
 
@@ -14,10 +15,18 @@ export function SignUpForm() {
     const navigate = useNavigate()
     const {
         control,
+        watch,
+        setValue,
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver, defaultValues: { country: 'PER', documentType: DocumentType.DNI } })
+    } = useForm({
+        resolver,
+        defaultValues: {
+            country: 'PER',
+            documentType: DocumentType.DNI
+        }
+    })
     const [signUp, { isLoading }] = useSignUpMutation()
     const { enqueueSnackbar } = useSnackbar()
 
@@ -31,6 +40,13 @@ export function SignUpForm() {
             enqueueSnackbar({ message: error.error || '¡Ocurrió un error!', variant: 'error' })
         }
     }
+
+    const selectedDocumentType = watch('documentType')
+    useEffect(() => {
+        const isDNI = selectedDocumentType === DocumentType.DNI
+        setValue('names', isDNI ? 'DEFAULT' : '')
+        setValue('surnames', isDNI ? 'DEFAULT' : '')
+    }, [selectedDocumentType, setValue])
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -77,6 +93,31 @@ export function SignUpForm() {
                 error={!!errors.identity}
                 helperText={errors.identity?.message}
             />
+            {
+                selectedDocumentType !== DocumentType.DNI &&
+                <>
+                    <TextField
+                        label='Nombres'
+                        variant='outlined'
+                        fullWidth
+                        margin='normal'
+                        size='small'
+                        {...register('names')}
+                        error={!!errors.names}
+                        helperText={errors.names?.message}
+                    />
+                    <TextField
+                        label='Apellidos'
+                        variant='outlined'
+                        fullWidth
+                        margin='normal'
+                        size='small'
+                        {...register('surnames')}
+                        error={!!errors.surnames}
+                        helperText={errors.surnames?.message}
+                    />
+                </>
+            }
             <TextField
                 label='Correo electrónico'
                 variant='outlined'

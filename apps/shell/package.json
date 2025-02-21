@@ -17,7 +17,7 @@
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
     "@reduxjs/toolkit": "^2.5.1",
-    "logiflowerp-sdk": "^1.0.34",
+    "logiflowerp-sdk": "^1.0.41",
     "notistack": "^3.0.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
