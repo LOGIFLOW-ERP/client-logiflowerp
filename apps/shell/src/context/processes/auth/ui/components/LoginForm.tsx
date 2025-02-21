@@ -5,6 +5,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { LoginDTO } from 'logiflowerp-sdk'
 import { useSignInMutation } from '@shared/api'
 import { useStore } from '@shared/ui/hooks'
+import { useSnackbar } from 'notistack'
 
 const resolver = classValidatorResolver(LoginDTO)
 
@@ -18,15 +19,22 @@ export function LoginForm() {
         formState: { errors },
     } = useForm({ resolver })
     const [signIn, { isLoading }] = useSignInMutation()
+    const { enqueueSnackbar } = useSnackbar()
 
     const onSubmit = async (data: LoginDTO) => {
-        const result = await signIn(data)
-        if ('error' in result) {
-            console.error('Error al iniciar sesión:', result.error)
-            return
+        try {
+            const result = await signIn(data).unwrap()
+            console.log(result)
+            if ('error' in result) {
+                console.error('Error al iniciar sesión:', result.error)
+                return
+            }
+            setState({ isAuthenticated: true, user: result })
+            navigate('/')
+        } catch (error: any) {
+            console.log(error)
+            enqueueSnackbar({ message: error.error || '¡Ocurrió un error!', variant: 'error' })
         }
-        setState({ isAuthenticated: true, user: result.data })
-        navigate('/')
     }
 
     return (
