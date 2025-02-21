@@ -47,14 +47,23 @@ export const authApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: instanceToPlain(body),
             }),
+            transformResponse: (res: AuthUserDTO) => {
+                localStorage.setItem('authUser', JSON.stringify(res))
+                return res
+            }
         }),
         signOut: builder.mutation<void, void>({
             query: () => ({
                 url: `/${schema}/${resource}/sign-out`,
                 method: 'POST',
             }),
-        }),
-    }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                await queryFulfilled
+                localStorage.removeItem('authUser')
+                dispatch(authApi.util.resetApiState())
+            }
+        })
+    })
 })
 
 export const {
