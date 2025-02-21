@@ -1,11 +1,18 @@
 import { baseApi } from './baseApi'
+import {
+    AuthUserDTO,
+    CreateUserDTO,
+    LoginDTO,
+    RequestPasswordResetDTO,
+    ResetPasswordDTO
+} from 'logiflowerp-sdk'
 
 const schema = 'processes'
 const resource = 'auth'
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        signUp: builder.mutation<void, { email: string; password: string }>({
+        signUp: builder.mutation<void, CreateUserDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/sign-up`,
                 method: 'POST',
@@ -19,21 +26,21 @@ export const authApi = baseApi.injectEndpoints({
                 body,
             }),
         }),
-        requestPasswordReset: builder.mutation<void, { email: string }>({
+        requestPasswordReset: builder.mutation<void, RequestPasswordResetDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/request-password-reset`,
                 method: 'POST',
                 body,
             }),
         }),
-        resetPassword: builder.mutation<void, { token: string; newPassword: string }>({
+        resetPassword: builder.mutation<void, ResetPasswordDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/reset-password`,
                 method: 'POST',
                 body,
             }),
         }),
-        signIn: builder.mutation<{ token: string }, { email: string; password: string }>({
+        signIn: builder.mutation<AuthUserDTO, LoginDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/sign-in`,
                 method: 'POST',
