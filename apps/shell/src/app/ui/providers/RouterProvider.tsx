@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ErrorPage } from '../pages'
 import { lazy } from 'react'
-import { protectedLoader } from '@app/application/loaders'
+import { protectedLoader, publicLoader } from '@app/application'
 
 const LayoutAuth = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.LayoutAuth })))
 const VerifyEmail = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.VerifyEmail })))
@@ -18,34 +18,44 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                Component: LayoutAuth,
+                loader: publicLoader,
                 children: [
                     {
-                        path: 'sign-in',
-                        Component: LoginForm
+                        Component: LayoutAuth,
+                        loader: publicLoader,
+                        children: [
+                            {
+                                path: 'sign-in',
+                                Component: LoginForm
+                            },
+                            {
+                                path: 'sign-up',
+                                Component: SignUpForm
+                            },
+                            {
+                                path: 'request-password-reset',
+                                Component: RequestPasswordResetForm
+                            },
+                        ]
                     },
                     {
-                        path: 'sign-up',
-                        Component: SignUpForm
+                        path: 'verify-email',
+                        Component: VerifyEmail
                     },
                     {
-                        path: 'request-password-reset',
-                        Component: RequestPasswordResetForm
+                        path: 'reset-password',
+                        Component: ResetPassword
                     },
                 ]
             },
             {
-                path: 'verify-email',
-                Component: VerifyEmail
-            },
-            {
-                path: 'reset-password',
-                Component: ResetPassword
-            },
-            {
-                Component: Dashboard,
                 loader: protectedLoader,
-                index: true
+                children: [
+                    {
+                        Component: Dashboard,
+                        index: true,
+                    }
+                ]
             }
         ]
     }
