@@ -23,16 +23,12 @@ export function LoginForm() {
 
     const onSubmit = async (data: SignInDTO) => {
         try {
-            const result = await signIn(data).unwrap()
-            if ('error' in result) {
-                console.error('Error al iniciar sesión:', result.error)
-                return
-            }
-            setState({ isAuthenticated: true, user: result })
+            const { user, dataSystemOptions } = await signIn(data).unwrap()
+            setState({ isAuthenticated: true, user, dataSystemOptions })
             navigate('/')
         } catch (error: any) {
             console.log(error)
-            enqueueSnackbar({ message: error.error || '¡Ocurrió un error!', variant: 'error' })
+            enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
 

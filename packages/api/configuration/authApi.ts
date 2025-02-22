@@ -1,10 +1,11 @@
 import { baseApi } from './baseApi'
+import { transformErrorResponse } from '../transformErrorResponse'
 import {
-    AuthUserDTO,
     CreateUserDTO,
     RequestPasswordResetDTO,
     ResetPasswordDTO,
-    SignInDTO
+    ResponseSignIn,
+    SignInDTO,
 } from 'logiflowerp-sdk'
 import { instanceToPlain } from 'class-transformer'
 
@@ -18,7 +19,8 @@ export const authApi = baseApi.injectEndpoints({
                 url: `/${schema}/${resource}/sign-up`,
                 method: 'POST',
                 body: instanceToPlain(body)
-            })
+            }),
+            transformErrorResponse
         }),
         verifyEmail: builder.mutation<void, { token: string }>({
             query: (body) => ({
@@ -26,6 +28,7 @@ export const authApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformErrorResponse
         }),
         requestPasswordReset: builder.mutation<void, RequestPasswordResetDTO>({
             query: (body) => ({
@@ -33,6 +36,7 @@ export const authApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: instanceToPlain(body),
             }),
+            transformErrorResponse
         }),
         resetPassword: builder.mutation<void, ResetPasswordDTO>({
             query: (body) => ({
@@ -40,17 +44,19 @@ export const authApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body,
             }),
+            transformErrorResponse
         }),
-        signIn: builder.mutation<AuthUserDTO, SignInDTO>({
+        signIn: builder.mutation<ResponseSignIn, SignInDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/sign-in`,
                 method: 'POST',
                 body: instanceToPlain(body),
             }),
-            transformResponse: (res: AuthUserDTO) => {
+            transformResponse: (res: ResponseSignIn) => {
                 localStorage.setItem('authUser', JSON.stringify(res))
                 return res
-            }
+            },
+            transformErrorResponse
         }),
         signOut: builder.mutation<void, void>({
             query: () => ({
@@ -59,7 +65,8 @@ export const authApi = baseApi.injectEndpoints({
             }),
             transformResponse: () => {
                 localStorage.removeItem('authUser')
-            }
+            },
+            transformErrorResponse
         })
     })
 })

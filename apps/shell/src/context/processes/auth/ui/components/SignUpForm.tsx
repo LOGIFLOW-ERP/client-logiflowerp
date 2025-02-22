@@ -37,7 +37,7 @@ export function SignUpForm() {
             navigate('/sign-in')
         } catch (error: any) {
             console.log(error)
-            enqueueSnackbar({ message: error.error || '¡Ocurrió un error!', variant: 'error' })
+            enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
 

@@ -1,12 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { setStateShared } from '../actions'
-import { AuthUserDTO } from 'logiflowerp-sdk'
+import { AuthUserDTO, ResponseSignIn, SystemOptionENTITY } from 'logiflowerp-sdk'
 
 const authUser = localStorage.getItem('authUser')
+const user = new AuthUserDTO()
+let dataSystemOptions: SystemOptionENTITY[] = []
+if (authUser) {
+    const { user: _user, dataSystemOptions: _dataSystemOptions } = JSON.parse(authUser) as ResponseSignIn
+    user.set(_user)
+    dataSystemOptions = _dataSystemOptions
+}
 
 export const initialState = {
-    user: authUser ? JSON.parse(authUser) as AuthUserDTO : new AuthUserDTO(),
+    user,
     isAuthenticated: !!authUser,
+    dataSystemOptions
 }
 
 const authSlice = createSlice({

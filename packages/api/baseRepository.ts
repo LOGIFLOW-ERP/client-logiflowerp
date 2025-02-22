@@ -7,6 +7,7 @@ import {
     FetchBaseQueryMeta,
     reactHooksModuleName
 } from '@reduxjs/toolkit/query/react'
+import { transformErrorResponse } from './transformErrorResponse';
 
 export const createRepository = <T, ID>(
     resource: string,
@@ -30,9 +31,11 @@ export const createRepository = <T, ID>(
                 query: () => `${resource}`,
                 providesTags: (result) =>
                     result ? [{ type: resource, id: 'LIST' }] : [],
+                transformErrorResponse
             }),
             getById: builder.query<T, ID>({
                 query: (id) => `${resource}/${id}`,
+                transformErrorResponse
             }),
             create: builder.mutation<T, Partial<T>>({
                 query: (newItem) => ({
@@ -41,6 +44,7 @@ export const createRepository = <T, ID>(
                     body: newItem,
                 }),
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
+                transformErrorResponse
             }),
             update: builder.mutation<T, { id: ID; data: Partial<T> }>({
                 query: ({ id, data }) => ({
@@ -49,6 +53,7 @@ export const createRepository = <T, ID>(
                     body: data,
                 }),
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
+                transformErrorResponse
             }),
             delete: builder.mutation<void, ID>({
                 query: (id) => ({
@@ -56,6 +61,7 @@ export const createRepository = <T, ID>(
                     method: 'DELETE',
                 }),
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
+                transformErrorResponse
             }),
         }),
     })
