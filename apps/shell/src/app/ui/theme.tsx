@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material'
-import { red } from '@mui/material/colors'
+import { red, grey } from '@mui/material/colors'
 
 export const theme = createTheme({
     cssVariables: true,
@@ -12,6 +12,9 @@ export const theme = createTheme({
         },
         error: {
             main: red.A100
+        },
+        background: {
+            default: grey[200]
         }
     },
     components: {
