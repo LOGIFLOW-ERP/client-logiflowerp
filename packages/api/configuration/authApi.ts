@@ -57,10 +57,8 @@ export const authApi = baseApi.injectEndpoints({
                 url: `/${schema}/${resource}/sign-out`,
                 method: 'POST',
             }),
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                await queryFulfilled
+            transformResponse: () => {
                 localStorage.removeItem('authUser')
-                dispatch(authApi.util.resetApiState())
             }
         })
     })

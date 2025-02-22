@@ -1,8 +1,25 @@
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react'
 import { MenuButton } from './MenuButton'
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
-import { styled, MenuItem, Menu, listClasses, paperClasses, dividerClasses, Divider, ListItemText, ListItemIcon, listItemIconClasses } from '@mui/material'
+import {
+    styled,
+    MenuItem,
+    Menu,
+    listClasses,
+    paperClasses,
+    dividerClasses,
+    Divider,
+    ListItemText,
+    ListItemIcon,
+    listItemIconClasses,
+    CircularProgress
+} from '@mui/material'
+import { useSignOutMutation } from '@shared/api'
+import { useSnackbar } from 'notistack'
+import { useNavigate } from 'react-router-dom'
+import { useStore } from '@shared/ui/hooks'
+import { AuthUserDTO } from 'logiflowerp-sdk'
 
 const CustomMenuItem = styled(MenuItem)({
     margin: '2px 0',
@@ -10,13 +27,30 @@ const CustomMenuItem = styled(MenuItem)({
 
 export function OptionsMenu() {
 
+    const [signOut, { isLoading }] = useSignOutMutation()
+    const { enqueueSnackbar } = useSnackbar()
+    const navigate = useNavigate()
+    const { actions: { setState } } = useStore('auth')
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const open = Boolean(anchorEl)
+
     const handleClick = (event: MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget)
-    };
+    }
     const handleClose = () => {
         setAnchorEl(null)
+    }
+
+    const handleClickLogout = async () => {
+        try {
+            await signOut().unwrap()
+            setAnchorEl(null)
+            setState({ isAuthenticated: false, user: new AuthUserDTO() })
+            navigate('/sign-in')
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
+        }
     }
 
     return (
@@ -55,7 +89,7 @@ export function OptionsMenu() {
                 <CustomMenuItem onClick={handleClose}>Settings</CustomMenuItem>
                 <Divider />
                 <CustomMenuItem
-                    onClick={handleClose}
+                    onClick={handleClickLogout}
                     sx={{
                         [`& .${listItemIconClasses.root}`]: {
                             ml: 'auto',
@@ -63,10 +97,16 @@ export function OptionsMenu() {
                         },
                     }}
                 >
-                    <ListItemText>Logout</ListItemText>
-                    <ListItemIcon>
-                        <LogoutRoundedIcon fontSize="small" />
-                    </ListItemIcon>
+                    {
+                        isLoading
+                            ? <CircularProgress size={24} color='inherit' />
+                            : <>
+                                <ListItemText>Salir</ListItemText>
+                                <ListItemIcon>
+                                    <LogoutRoundedIcon fontSize='small' />
+                                </ListItemIcon>
+                            </>
+                    }
                 </CustomMenuItem>
             </Menu>
         </>
