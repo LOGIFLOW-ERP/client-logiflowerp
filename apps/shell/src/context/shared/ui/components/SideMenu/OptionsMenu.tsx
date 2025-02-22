@@ -44,7 +44,7 @@ export function OptionsMenu() {
     const handleClickLogout = async () => {
         try {
             await signOut().unwrap()
-            setAnchorEl(null)
+            // setAnchorEl(null)
             setState({ isAuthenticated: false, user: new AuthUserDTO() })
             navigate('/sign-in')
         } catch (error: any) {

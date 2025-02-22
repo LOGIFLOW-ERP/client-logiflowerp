@@ -2,9 +2,9 @@ import { baseApi } from './baseApi'
 import {
     AuthUserDTO,
     CreateUserDTO,
-    LoginDTO,
     RequestPasswordResetDTO,
-    ResetPasswordDTO
+    ResetPasswordDTO,
+    SignInDTO
 } from 'logiflowerp-sdk'
 import { instanceToPlain } from 'class-transformer'
 
@@ -41,7 +41,7 @@ export const authApi = baseApi.injectEndpoints({
                 body,
             }),
         }),
-        signIn: builder.mutation<AuthUserDTO, LoginDTO>({
+        signIn: builder.mutation<AuthUserDTO, SignInDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/sign-in`,
                 method: 'POST',

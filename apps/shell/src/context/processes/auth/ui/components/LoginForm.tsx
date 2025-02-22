@@ -2,12 +2,12 @@ import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/ma
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { LoginDTO } from 'logiflowerp-sdk'
+import { SignInDTO } from 'logiflowerp-sdk'
 import { useSignInMutation } from '@shared/api'
 import { useStore } from '@shared/ui/hooks'
 import { useSnackbar } from 'notistack'
 
-const resolver = classValidatorResolver(LoginDTO)
+const resolver = classValidatorResolver(SignInDTO)
 
 export function LoginForm() {
 
@@ -21,7 +21,7 @@ export function LoginForm() {
     const [signIn, { isLoading }] = useSignInMutation()
     const { enqueueSnackbar } = useSnackbar()
 
-    const onSubmit = async (data: LoginDTO) => {
+    const onSubmit = async (data: SignInDTO) => {
         try {
             const result = await signIn(data).unwrap()
             if ('error' in result) {
