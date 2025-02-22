@@ -95,11 +95,12 @@ export function OptionsMenu() {
                             ml: 'auto',
                             minWidth: 0,
                         },
+                        justifyContent: 'center'
                     }}
                 >
                     {
                         isLoading
-                            ? <CircularProgress size={24} color='inherit' />
+                            ? <CircularProgress size={24} color='inherit' style={{ alignSelf: 'center' }} />
                             : <>
                                 <ListItemText>Salir</ListItemText>
                                 <ListItemIcon>
