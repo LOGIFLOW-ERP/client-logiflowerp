@@ -13,13 +13,16 @@ import { useEffect, useState } from 'react'
 import { useStore } from '@shared/ui/hooks'
 import { SystemOptionENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import * as Icons from '@mui/icons-material'
+import DatasetRounded from '@mui/icons-material/DatasetRounded'
+import EngineeringRounded from '@mui/icons-material/EngineeringRounded'
+import AssessmentRounded from '@mui/icons-material/AssessmentRounded'
+import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain'
 
 const iconMap: Record<string, React.ElementType> = {
-    Masters: Icons.DatasetRounded,
-    Processes: Icons.EngineeringRounded,
-    Reports: Icons.AssessmentRounded,
+    Masters: DatasetRounded,
+    Processes: EngineeringRounded,
+    Reports: AssessmentRounded,
 }
 
 const CustomAvatar = styled(Avatar)(({ theme }) => ({
@@ -35,7 +38,7 @@ const CustomListItemAvatar = styled(ListItemAvatar)({
     marginRight: 12,
 })
 
-const getIcon = (iconName: string) => iconMap[iconName] || Icons.HelpOutline;
+const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
 
 const buildMenu = (dataSystemOptions: SystemOptionENTITY[]): IMenu[] => {
     const map = new Map<string, IMenu>()

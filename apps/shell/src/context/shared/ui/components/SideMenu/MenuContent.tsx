@@ -2,7 +2,8 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } fro
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
-import * as Icons from '@mui/icons-material'
+import PersonRounded from '@mui/icons-material/PersonRounded'
+import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
 
 const secondaryListItems = [
@@ -11,15 +12,15 @@ const secondaryListItems = [
     { text: 'Feedback', icon: <HelpRoundedIcon /> },
 ]
 const iconMap: Record<string, React.ElementType> = {
-    User: Icons.PersonRounded,
-    Home: Icons.Home,
-    Settings: Icons.Settings,
-    Dashboard: Icons.Dashboard,
+    User: PersonRounded,
+    // Home: Icons.Home,
+    // Settings: Icons.Settings,
+    // Dashboard: Icons.Dashboard,
 }
 interface IProps {
     selectedNode: IMenu | null
 }
-const getIcon = (iconName: string) => iconMap[iconName] || Icons.HelpOutline;
+const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
 export function MenuContent({ selectedNode }: IProps) {
 
     return (
