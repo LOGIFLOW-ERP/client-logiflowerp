@@ -5,6 +5,7 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import PersonRounded from '@mui/icons-material/PersonRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
+import { useNavigate } from 'react-router-dom';
 
 const secondaryListItems = [
     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -23,6 +24,8 @@ interface IProps {
 const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
 export function MenuContent({ selectedNode }: IProps) {
 
+    const navigate = useNavigate()
+
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
             <List dense>
@@ -31,7 +34,12 @@ export function MenuContent({ selectedNode }: IProps) {
                         ? selectedNode.children.map((item, index) => {
                             const IconComponent = getIcon(item.systemOption.name);
                             return (
-                                <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+                                <ListItem
+                                    key={index}
+                                    disablePadding
+                                    sx={{ display: 'block' }}
+                                    onClick={() => navigate(`/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}`)}
+                                >
                                     <ListItemButton selected={index === 0}>
                                         {
                                             IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>

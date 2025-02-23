@@ -64,8 +64,13 @@ const router = createBrowserRouter([
                                 path: 'configuration',
                                 children: [
                                     {
-                                        path: 'profile',
-                                        Component: LayoutProfile
+                                        path: 'masters',
+                                        children: [
+                                            {
+                                                path: 'profile',
+                                                Component: LayoutProfile,
+                                            }
+                                        ]
                                     }
                                 ]
                             }
