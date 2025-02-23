@@ -1,10 +1,11 @@
 import { Alert, Box, Button, CircularProgress, TextField } from '@mui/material'
-import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Logo from '../../../../../assets/LogoSinMargen.webp'
 import { ResetPasswordDTO } from 'logiflowerp-sdk'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useForm } from 'react-hook-form'
+import { useResetPasswordMutation } from '@shared/api'
+import { useState } from 'react'
 
 const resolver = classValidatorResolver(ResetPasswordDTO)
 
@@ -17,52 +18,27 @@ export function ResetPassword() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver })
-
+    } = useForm({ resolver, defaultValues: { token: token ?? '' } })
+    const [resetPassword, { isLoading, isError, isSuccess }] = useResetPasswordMutation()
     const [error, setError] = useState('')
-    const [success, setSuccess] = useState(false)
-    const [loading, setLoading] = useState(false)
 
     const onSubmit = async (data: ResetPasswordDTO) => {
-        if (!data.password || !data.confirmPassword) {
-            setError('Ambos campos son obligatorios.')
-            return
-        }
-
-        if (data.password.length < 6) {
-            setError('La contraseña debe tener al menos 6 caracteres.')
-            return
-        }
-
-        if (data.password !== data.confirmPassword) {
-            setError('Las contraseñas no coinciden.')
-            return
-        }
-
         try {
-            setLoading(true)
-            const response = await fetch('http://localhost:4000/api/auth/reset-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token, password: data.password }),
-            })
-
-            if (!response.ok) throw new Error('Error al restablecer la contraseña.')
-
-            setSuccess(true)
+            if (data.password !== data.confirmPassword) {
+                setError('Las contraseñas no coinciden.')
+                return
+            }
             setError('')
-
+            await resetPassword(data).unwrap()
             setTimeout(() => {
                 navigate('/sign-in')
-            }, 3000)
-        } catch (err) {
-            console.log(err)
-            setError('Hubo un problema. Inténtalo de nuevo.')
-        } finally {
-            setLoading(false)
+            }, 2500)
+        } catch (error: any) {
+            setError(error.message)
+            console.error(error)
         }
     }
-    
+
     return (
         <Box
             sx={{
@@ -74,18 +50,23 @@ export function ResetPassword() {
                 borderRadius: 2
             }}
         >
-            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: 2,
+                    cursor: 'pointer'
+                }}
+                onClick={() => { navigate('/sign-in') }}
+            >
                 <img
                     src={Logo}
                     alt="Logo"
                     style={{ width: 125, height: 'auto' }}
                 />
             </Box>
-            {/* <Typography variant='h6' gutterBottom>
-                Restablecer Contraseña
-            </Typography> */}
-            {error && <Alert severity='error'>{error}</Alert>}
-            {success && <Alert severity='success'>Contraseña restablecida correctamente.</Alert>}
+            {(isError || error) && <Alert severity='error'>{error ?? 'Hubo un problema. Inténtalo de nuevo.'}</Alert>}
+            {isSuccess && <Alert severity='success'>Contraseña restablecida. Redirigiendo ...</Alert>}
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 {/* Campo oculto para username (recomendado para compatibilidad con navegadores y gestores de contraseñas) */}
@@ -119,10 +100,10 @@ export function ResetPassword() {
                     color='primary'
                     fullWidth
                     sx={{ mt: 2 }}
-                    disabled={loading}
+                    disabled={isLoading}
                 >
                     {
-                        loading
+                        isLoading
                             ? <CircularProgress size={24} color='inherit' />
                             : 'Restablecer'
                     }
