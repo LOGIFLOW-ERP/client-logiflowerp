@@ -81,26 +81,39 @@ export function SelectContent(props: IProps) {
     const { enqueueSnackbar } = useSnackbar()
 
     useEffect(() => {
-        const data = buildMenu(dataSystemOptions)
-        setMenu(data)
+        try {
+            const data = buildMenu(dataSystemOptions)
+            setMenu(data)
+            if (data.length && data[0].children.length) {
+                const selectedId = data[0].children[0].systemOption._id
+                const selectedNode = searchSelectedNode(selectedId, data)
+                props.setSelectedNode(selectedNode)
+                setModule(selectedId)
+            }
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
+        }
     }, [dataSystemOptions])
+
+    const searchSelectedNode = (_id: string, menu: IMenu[]) => {
+        const selectedNode = menu
+            .flatMap(e => [e, ...e.children])
+            .find(item => item.systemOption._id === _id)
+
+        if (!selectedNode) {
+            throw new Error('No se pudo obtener nodo seleccionado')
+        }
+        console.log("Nodo seleccionado:", selectedNode)
+        return selectedNode
+    }
 
     const handleChange = (event: SelectChangeEvent) => {
         try {
             const selectedId = event.target.value
-
-            const selectedNode = menu
-                .flatMap(e => [e, ...e.children])
-                .find(item => item.systemOption._id === selectedId)
-
-            if (!selectedNode) {
-                throw new Error('No se pudo obtener nodo seleccionado')
-            }
-
-            console.log("Nodo seleccionado:", selectedNode)
+            const selectedNode = searchSelectedNode(selectedId, menu)
             props.setSelectedNode(selectedNode)
             setModule(selectedId)
-
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
@@ -134,7 +147,7 @@ export function SelectContent(props: IProps) {
                     <ListSubheader key={`header-${e.systemOption._id}`} sx={{ pt: 0 }}>
                         {e.systemOption.name}
                     </ListSubheader>,
-                    ...e.children.map(c => {
+                    ...e.children.map((c) => {
                         const IconComponent = getIcon(c.systemOption.name);
                         return (
                             <MenuItem key={`menu-${c.systemOption._id}`} value={c.systemOption._id}>
