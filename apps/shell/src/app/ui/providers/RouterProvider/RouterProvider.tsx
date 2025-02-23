@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ErrorPage } from '../pages'
+import { ErrorPage } from '../../pages'
 import { lazy } from 'react'
 import { protectedLoader, publicLoader } from '@app/application'
+import { childrenConfiguration } from './configuration'
 
 const LayoutAuth = lazy(() => import('@processes/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
 const VerifyEmail = lazy(() => import('@processes/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
@@ -11,7 +12,6 @@ const SignUpForm = lazy(() => import('@processes/auth/ui/components/SignUpForm')
 const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
 const LayoutHome = lazy(() => import('@shared/ui/pages/LayoutHome').then(mo => ({ default: mo.LayoutHome })))
 const Dashboard = lazy(() => import('@shared/ui/pages/DashBoard').then(mo => ({ default: mo.Dashboard })))
-const LayoutProfile = lazy(() => import('@masters/profile/ui/pages/LayoutProfile').then(mo => ({ default: mo.LayoutProfile })))
 
 const router = createBrowserRouter([
     {
@@ -62,17 +62,7 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: 'configuration',
-                                children: [
-                                    {
-                                        path: 'masters',
-                                        children: [
-                                            {
-                                                path: 'profile',
-                                                Component: LayoutProfile,
-                                            }
-                                        ]
-                                    }
-                                ]
+                                children: childrenConfiguration
                             }
                         ]
                     }

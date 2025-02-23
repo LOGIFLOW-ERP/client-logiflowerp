@@ -1,2 +1,2 @@
-export * from './RouterProvider';
+export * from './RouterProvider/RouterProvider';
 export * from './SnackbarProvider';
