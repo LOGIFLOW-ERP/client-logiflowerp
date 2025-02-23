@@ -3,6 +3,7 @@ import { ErrorPage } from '../../pages'
 import { lazy } from 'react'
 import { protectedLoader, publicLoader } from '@app/application'
 import { childrenConfiguration } from './configuration'
+import { childrenLogistics } from './logistics'
 
 const LayoutAuth = lazy(() => import('@processes/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
 const VerifyEmail = lazy(() => import('@processes/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
                             {
                                 path: 'configuration',
                                 children: childrenConfiguration
+                            },
+                            {
+                                path: 'logistics',
+                                children: childrenLogistics
                             }
                         ]
                     }

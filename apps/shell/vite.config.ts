@@ -1,13 +1,25 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import federation from '@originjs/vite-plugin-federation'
 
 // https://vite.dev/config/
-export default defineConfig(() => {
-  return {
-    plugins: [
-      react(),
-      tsconfigPaths()
-    ],
-  }
+export default defineConfig(({ mode }) => {
+	const env = loadEnv(mode, process.cwd(), 'VITE_')
+	return {
+		plugins: [
+			react(),
+			tsconfigPaths(),
+			federation({
+				name: 'shell',
+				remotes: {
+					logistics: `${env.VITE_REMOTE_LOGISTICS_URL}/assets/remoteEntry.js`
+				},
+				shared: [
+					'react',
+					'react-dom'
+				]
+			})
+		],
+	}
 })
