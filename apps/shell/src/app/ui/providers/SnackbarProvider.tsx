@@ -14,12 +14,12 @@ export const SnackbarProviderCustom = ({ children }: SnackbarProviderProps) => {
             autoHideDuration={3000}
             action={(snackbarId) => (
                 <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
+                    aria-label='close'
+                    color='inherit'
+                    size='small'
                     onClick={() => closeSnackbar(snackbarId)}
                 >
-                    <CloseIcon fontSize="inherit" />
+                    <CloseIcon fontSize='inherit' />
                 </IconButton>
             )}
             disableWindowBlurListener

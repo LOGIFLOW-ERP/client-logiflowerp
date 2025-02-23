@@ -3,13 +3,13 @@ import { ErrorPage } from '../pages'
 import { lazy } from 'react'
 import { protectedLoader, publicLoader } from '@app/application'
 
-const LayoutAuth = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.LayoutAuth })))
-const VerifyEmail = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.VerifyEmail })))
-const ResetPassword = lazy(() => import('@processes/auth/ui/pages').then(mo => ({ default: mo.ResetPassword })))
-const LoginForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.LoginForm })))
-const SignUpForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.SignUpForm })))
-const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components').then(mo => ({ default: mo.RequestPasswordResetForm })))
-const Dashboard = lazy(() => import('@shared/ui/pages').then(mo => ({ default: mo.Dashboard })))
+const LayoutAuth = lazy(() => import('@processes/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
+const VerifyEmail = lazy(() => import('@processes/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
+const ResetPassword = lazy(() => import('@processes/auth/ui/pages/ResetPassword').then(mo => ({ default: mo.ResetPassword })))
+const LoginForm = lazy(() => import('@processes/auth/ui/components/LoginForm').then(mo => ({ default: mo.LoginForm })))
+const SignUpForm = lazy(() => import('@processes/auth/ui/components/SignUpForm').then(mo => ({ default: mo.SignUpForm })))
+const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
+const Dashboard = lazy(() => import('@shared/ui/pages/Dashboard').then(mo => ({ default: mo.Dashboard })))
 
 const router = createBrowserRouter([
     {
