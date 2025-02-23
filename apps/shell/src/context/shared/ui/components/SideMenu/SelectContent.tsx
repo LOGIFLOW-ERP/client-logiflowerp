@@ -9,9 +9,18 @@ import {
     Avatar,
     ListSubheader
 } from '@mui/material'
-import { useState } from 'react'
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
-import LocalShippingRoundedIcon from '@mui/icons-material/LocalShippingRounded'
+import { useEffect, useState } from 'react'
+import { useStore } from '@shared/ui/hooks'
+import { SystemOptionENTITY } from 'logiflowerp-sdk'
+import { useSnackbar } from 'notistack'
+import * as Icons from '@mui/icons-material'
+import { IMenu } from '@shared/domain'
+
+const iconMap: Record<string, React.ElementType> = {
+    Masters: Icons.DatasetRounded,
+    Processes: Icons.EngineeringRounded,
+    Reports: Icons.AssessmentRounded,
+}
 
 const CustomAvatar = styled(Avatar)(({ theme }) => ({
     width: 28,
@@ -26,19 +35,81 @@ const CustomListItemAvatar = styled(ListItemAvatar)({
     marginRight: 12,
 })
 
-export function SelectContent() {
+const getIcon = (iconName: string) => iconMap[iconName] || Icons.HelpOutline;
 
-    const [company, setCompany] = useState('')
+const buildMenu = (dataSystemOptions: SystemOptionENTITY[]): IMenu[] => {
+    const map = new Map<string, IMenu>()
+
+    dataSystemOptions.forEach(el => {
+        map.set(`${el.name}|${el.prefix}`, { systemOption: el, children: [] })
+    })
+
+    const menu: IMenu[] = []
+
+    dataSystemOptions.forEach(el => {
+        const childKey = `${el.name}|${el.prefix}`
+        const child = map.get(childKey) as IMenu | undefined
+
+        if (!child) return
+
+        if (el.father) {
+            const parentKey = `${el.father}|${el.prefix}`
+            const parent = map.get(parentKey) as IMenu | undefined
+
+            if (parent) {
+                parent.children.push(child)
+            }
+        } else {
+            menu.push(child)
+        }
+    })
+    return menu
+}
+
+interface IProps {
+    setSelectedNode: React.Dispatch<React.SetStateAction<IMenu | null>>
+}
+
+export function SelectContent(props: IProps) {
+
+    const { state: { dataSystemOptions } } = useStore('auth')
+    const [module, setModule] = useState('')
+    const [menu, setMenu] = useState<IMenu[]>([])
+    const { enqueueSnackbar } = useSnackbar()
+
+    useEffect(() => {
+        const data = buildMenu(dataSystemOptions)
+        setMenu(data)
+    }, [dataSystemOptions])
 
     const handleChange = (event: SelectChangeEvent) => {
-        setCompany(event.target.value)
+        try {
+            const selectedId = event.target.value
+
+            const selectedNode = menu
+                .flatMap(e => [e, ...e.children])
+                .find(item => item.systemOption._id === selectedId)
+
+            if (!selectedNode) {
+                throw new Error('No se pudo obtener nodo seleccionado')
+            }
+
+            console.log("Nodo seleccionado:", selectedNode)
+            props.setSelectedNode(selectedNode)
+            setModule(selectedId)
+
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
+        }
     }
+
 
     return (
         <Select
             labelId='logiflow-select'
             id='logiflow-simple-select'
-            value={company}
+            value={module}
             onChange={handleChange}
             displayEmpty
             inputProps={{ 'aria-label': 'Seleccione empresa' }}
@@ -55,24 +126,26 @@ export function SelectContent() {
                 }
             }}
         >
-            <ListSubheader sx={{ pt: 0 }}>Configuración</ListSubheader>
-            <MenuItem value=''>
-                <CustomListItemAvatar>
-                    <CustomAvatar alt='Mantenimientos'>
-                        <SettingsRoundedIcon sx={{ fontSize: '1rem' }} />
-                    </CustomAvatar>
-                </CustomListItemAvatar>
-                <ListItemText primary='Mantenimientos' secondary='Configuración' />
-            </MenuItem>
-            <ListSubheader sx={{ pt: 0 }}>Logística</ListSubheader>
-            <MenuItem value={10}>
-                <CustomListItemAvatar>
-                    <CustomAvatar alt='Procesos'>
-                        <LocalShippingRoundedIcon sx={{ fontSize: '1rem' }} />
-                    </CustomAvatar>
-                </CustomListItemAvatar>
-                <ListItemText primary='Procesos' secondary='Logística' />
-            </MenuItem>
+            {
+                menu.flatMap(e => [
+                    <ListSubheader key={`header-${e.systemOption._id}`} sx={{ pt: 0 }}>
+                        {e.systemOption.name}
+                    </ListSubheader>,
+                    ...e.children.map(c => {
+                        const IconComponent = getIcon(c.systemOption.name);
+                        return (
+                            <MenuItem key={`menu-${c.systemOption._id}`} value={c.systemOption._id}>
+                                <CustomListItemAvatar>
+                                    <CustomAvatar alt='Menu item'>
+                                        <IconComponent sx={{ fontSize: '1rem' }} />
+                                    </CustomAvatar>
+                                </CustomListItemAvatar>
+                                <ListItemText primary={c.systemOption.name} secondary={e.systemOption.name} />
+                            </MenuItem>
+                        )
+                    })
+                ])
+            }
         </Select>
     )
 }

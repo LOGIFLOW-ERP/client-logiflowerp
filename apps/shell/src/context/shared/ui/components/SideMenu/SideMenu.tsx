@@ -13,6 +13,7 @@ import { SelectContent } from './SelectContent'
 import { MenuContent } from './MenuContent'
 import { OptionsMenu } from './OptionsMenu'
 import { useStore } from '@shared/ui/hooks'
+import { IMenu } from '@shared/domain'
 
 const drawerWidth = 240
 
@@ -27,7 +28,12 @@ const CustomDrawer = styled(Drawer)({
     },
 })
 
-export function SideMenu() {
+interface IProps {
+    setSelectedNode: React.Dispatch<React.SetStateAction<IMenu | null>>
+    selectedNode: IMenu | null
+}
+
+export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
 
     const { state: { user } } = useStore('auth')
 
@@ -47,7 +53,7 @@ export function SideMenu() {
                     backgroundColor: alpha(theme.palette.background.default, 1)
                 })}
             >
-                <SelectContent />
+                <SelectContent setSelectedNode={setSelectedNode} />
             </Box>
             <Divider />
             <Box
@@ -59,7 +65,7 @@ export function SideMenu() {
                     backgroundColor: alpha(theme.palette.background.default, 1)
                 })}
             >
-                <MenuContent />
+                <MenuContent selectedNode={selectedNode} />
             </Box>
             <Stack
                 direction='row'

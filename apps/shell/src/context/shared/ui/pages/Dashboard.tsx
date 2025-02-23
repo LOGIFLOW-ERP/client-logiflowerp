@@ -1,11 +1,16 @@
 import { alpha, Box, Stack } from '@mui/material';
 import { Header, SideMenu } from '../components';
 import { Outlet } from 'react-router-dom';
+import { useState } from 'react';
+import { IMenu } from '@shared/domain';
 
 export function Dashboard() {
+
+    const [selectedNode, setSelectedNode] = useState<IMenu | null>(null)
+
     return (
         <Box sx={{ display: 'flex' }}>
-            <SideMenu />
+            <SideMenu selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
             <Box
                 component='main'
                 sx={(theme) => ({
@@ -23,7 +28,7 @@ export function Dashboard() {
                         mt: { xs: 8, md: 0 },
                     }}
                 >
-                    <Header />
+                    <Header selectedNode={selectedNode} />
                     <Outlet />
                 </Stack>
             </Box>
