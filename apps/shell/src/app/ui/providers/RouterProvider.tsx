@@ -9,7 +9,9 @@ const ResetPassword = lazy(() => import('@processes/auth/ui/pages/ResetPassword'
 const LoginForm = lazy(() => import('@processes/auth/ui/components/LoginForm').then(mo => ({ default: mo.LoginForm })))
 const SignUpForm = lazy(() => import('@processes/auth/ui/components/SignUpForm').then(mo => ({ default: mo.SignUpForm })))
 const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
-const Dashboard = lazy(() => import('@shared/ui/pages/Dashboard').then(mo => ({ default: mo.Dashboard })))
+const LayoutHome = lazy(() => import('@shared/ui/pages/LayoutHome').then(mo => ({ default: mo.LayoutHome })))
+const Dashboard = lazy(() => import('@shared/ui/pages/DashBoard').then(mo => ({ default: mo.Dashboard })))
+const LayoutProfile = lazy(() => import('@masters/profile/ui/pages/LayoutProfile').then(mo => ({ default: mo.LayoutProfile })))
 
 const router = createBrowserRouter([
     {
@@ -52,8 +54,22 @@ const router = createBrowserRouter([
                 loader: protectedLoader,
                 children: [
                     {
-                        Component: Dashboard,
-                        index: true,
+                        Component: LayoutHome,
+                        children: [
+                            {
+                                index: true,
+                                Component: Dashboard
+                            },
+                            {
+                                path: 'configuration',
+                                children: [
+                                    {
+                                        path: 'profile',
+                                        Component: LayoutProfile
+                                    }
+                                ]
+                            }
+                        ]
                     }
                 ]
             }

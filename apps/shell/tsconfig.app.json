@@ -17,6 +17,9 @@
       "@processes/*": [
         "./src/context/processes/*"
       ],
+      "@masters/*": [
+        "./src/context/masters/*"
+      ],
       "@shared/*": [
         "./src/context/shared/*"
       ],
