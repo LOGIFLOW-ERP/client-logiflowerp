@@ -16,18 +16,14 @@ export default defineConfig({
 			},
 			shared: [
 				'react',
-				'react-dom',
-				// 'react-router-dom'
+				'react-dom'
 			]
 		})
 	],
-	server: {
-		port: 5174
-	},
 	build: {
-		// modulePreload: false,
+		modulePreload: false,
 		target: 'esnext',
-		minify: 'esbuild',
-		cssCodeSplit: true
+		minify: false,
+		cssCodeSplit: false
 	}
 })

@@ -11,7 +11,6 @@ export default defineConfig(({ mode }) => {
 			react(),
 			tsconfigPaths(),
 			federation({
-				name: 'shell',
 				remotes: {
 					logistics: `${env.VITE_REMOTE_LOGISTICS_URL}/assets/remoteEntry.js`
 				},
@@ -21,5 +20,11 @@ export default defineConfig(({ mode }) => {
 				]
 			})
 		],
+		build: {
+			modulePreload: false,
+			target: 'esnext',
+			minify: false,
+			cssCodeSplit: false
+		}
 	}
 })
