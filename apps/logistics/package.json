@@ -11,6 +11,6 @@
     "serve": "vite preview --port 5001 --strictPort"
   },
   "dependencies": {
-    "shared-dependencies": "workspace:*"
+    "shared-dependencies": "1.0.0"
   }
 }
