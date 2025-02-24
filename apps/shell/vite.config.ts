@@ -16,7 +16,8 @@ export default defineConfig(({ mode }) => {
 				},
 				shared: [
 					'react',
-					'react-dom'
+					'react-dom',
+					'@mui/x-data-grid'
 				]
 			})
 		],
