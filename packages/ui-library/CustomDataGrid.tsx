@@ -22,17 +22,18 @@ declare module '@mui/x-data-grid' {
         setRowModesModel: (
             newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
         ) => void;
+        newRowTemplate: Record<string, any>
     }
 }
 
 function EditToolbar(props: GridSlotProps['toolbar']) {
-    const { setRows, setRowModesModel } = props;
+    const { setRows, setRowModesModel, newRowTemplate } = props;
 
     const handleClick = () => {
-        const id = Date.now().toString()
+        const id = crypto.randomUUID()
         setRows((oldRows) => [
             ...oldRows,
-            { id, name: '', age: '', role: '', isNew: true },
+            { ...newRowTemplate, id, isNew: true },
         ]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
@@ -43,7 +44,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
     return (
         <GridToolbarContainer>
             <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Add record
+                Agregar registro
             </Button>
         </GridToolbarContainer>
     );
@@ -55,11 +56,12 @@ interface IProps {
     rowModesModel: GridRowModesModel
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
     columns: GridColDef[]
+    newRowTemplate: Record<string, any>
 }
 
 export function CustomDataGrid(props: IProps) {
 
-    const { rows, setRows, rowModesModel, setRowModesModel, columns } = props
+    const { rows, setRows, rowModesModel, setRowModesModel, columns, newRowTemplate } = props
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -100,7 +102,7 @@ export function CustomDataGrid(props: IProps) {
                 processRowUpdate={processRowUpdate}
                 slots={{ toolbar: EditToolbar }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel },
+                    toolbar: { setRows, setRowModesModel, newRowTemplate },
                 }}
             />
         </Box>

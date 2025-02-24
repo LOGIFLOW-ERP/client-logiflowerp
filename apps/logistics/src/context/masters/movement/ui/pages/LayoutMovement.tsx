@@ -12,6 +12,7 @@ export default function LayoutMovement() {
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
+    const newRowTemplate: Record<string, any> = {}
 
     const handleEditClick = (id: GridRowId) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -50,6 +51,7 @@ export default function LayoutMovement() {
                 handleSaveClick,
                 rowModesModel
             })}
+            newRowTemplate={newRowTemplate}
         />
     )
 }
