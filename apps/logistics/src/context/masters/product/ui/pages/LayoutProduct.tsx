@@ -1,7 +1,10 @@
-import { Box } from '@mui/material'
+import Box from '@mui/material/Box'
 
 export default function LayoutProduct() {
-  return (
-    <Box>🚀LayoutProduct 2025</Box>
-  )
+
+	return (
+		<Box>
+			Product
+		</Box>
+	);
 }

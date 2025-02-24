@@ -10,7 +10,6 @@ export const childrenLogistics: RouteObject[] = [
         children: [
             {
                 path: 'product',
-                // element: <div>H63a</div>,
                 Component: LayoutProduct,
                 errorElement: <ErrorElement />
             }
