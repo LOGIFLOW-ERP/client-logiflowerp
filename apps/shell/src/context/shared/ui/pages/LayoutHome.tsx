@@ -29,7 +29,14 @@ export function LayoutHome() {
                     }}
                 >
                     <Header selectedNode={selectedNode} />
-                    <Outlet />
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            width: '100%'
+                        }}
+                    >
+                        <Outlet />
+                    </Box>
                 </Stack>
             </Box>
         </Box>

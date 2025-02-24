@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "shared-dependencies": "1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5"
   }
 }

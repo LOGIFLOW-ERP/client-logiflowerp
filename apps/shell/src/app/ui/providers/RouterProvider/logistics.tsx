@@ -1,3 +1,4 @@
+import { ErrorElement } from '@app/ui/components'
 import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
 
@@ -9,7 +10,9 @@ export const childrenLogistics: RouteObject[] = [
         children: [
             {
                 path: 'product',
-                Component: LayoutProduct
+                // element: <div>H63a</div>,
+                Component: LayoutProduct,
+                errorElement: <ErrorElement />
             }
         ]
     }

@@ -1,5 +1,7 @@
+import { Box } from '@mui/material'
+
 export default function LayoutProduct() {
   return (
-    <div>🚀LayoutProduct 2025</div>
+    <Box>🚀LayoutProduct 2025</Box>
   )
 }
