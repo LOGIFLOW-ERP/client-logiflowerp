@@ -7,7 +7,7 @@ import {
 import { RowActions } from '@shared/ui-library'
 
 interface IParams {
-    handleSaveClick: (id: GridRowId, isNew: boolean) => () => void
+    handleSaveClick: (row: GridValidRowModel) => () => void
     handleDeleteClick: (id: GridRowId) => () => void
     rowModesModel: GridRowModesModel
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>

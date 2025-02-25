@@ -10,7 +10,7 @@ interface RowActionsProps {
     row: GridValidRowModel;
     rowModesModel: GridRowModesModel;
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
-    handleSaveClick: (id: GridRowId, isNew: boolean) => () => void;
+    handleSaveClick: (row: GridValidRowModel) => () => void;
     handleDeleteClick: (id: GridRowId) => () => void;
     rows: readonly GridValidRowModel[]
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
@@ -28,7 +28,6 @@ export const RowActions: React.FC<RowActionsProps> = ({
 }) => {
 
     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
-    const isNew = row.isNew
 
     const handleEditClick = (id: GridRowId) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -52,7 +51,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
                 icon={<SaveIcon />}
                 label="Save"
                 sx={{ color: 'primary.main' }}
-                onClick={handleSaveClick(id, isNew)}
+                onClick={handleSaveClick(row)}
             />
             <GridActionsCellItem
                 icon={<CancelIcon />}
