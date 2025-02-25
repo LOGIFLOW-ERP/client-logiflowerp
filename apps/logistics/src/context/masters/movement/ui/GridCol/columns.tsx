@@ -1,20 +1,21 @@
 import {
     GridColDef,
     GridRowId,
-    GridRowModesModel
+    GridRowModesModel,
+    GridValidRowModel
 } from '@mui/x-data-grid'
 import { RowActions } from '@shared/ui-library'
 
 interface IParams {
-    handleSaveClick: (id: GridRowId) => () => void
-    handleCancelClick: (id: GridRowId) => () => void
-    handleEditClick: (id: GridRowId) => () => void
+    handleSaveClick: (id: GridRowId, isNew: boolean) => () => void
     handleDeleteClick: (id: GridRowId) => () => void
     rowModesModel: GridRowModesModel
+    setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
+    rows: readonly GridValidRowModel[]
+    setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
 }
 
 export const columns: (params: IParams) => GridColDef[] = (params) => {
-    const { rowModesModel, handleCancelClick, handleDeleteClick, handleEditClick, handleSaveClick } = params
     return [
         { field: 'code', headerName: 'Código', width: 90, editable: true },
         { field: 'name', headerName: 'Nombre', width: 180, editable: true },
@@ -24,14 +25,11 @@ export const columns: (params: IParams) => GridColDef[] = (params) => {
             headerName: 'Acciones',
             width: 100,
             cellClassName: 'actions',
-            getActions: ({ id }) => [
+            getActions: ({ id, row }) => [
                 <RowActions
                     id={id}
-                    handleCancelClick={handleCancelClick}
-                    handleDeleteClick={handleDeleteClick}
-                    handleEditClick={handleEditClick}
-                    handleSaveClick={handleSaveClick}
-                    rowModesModel={rowModesModel}
+                    row={row}
+                    {...params}
                 />
             ]
         },

@@ -15,29 +15,14 @@ export default function LayoutMovement() {
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
     const newRowTemplate: Partial<MovementENTITY & { fieldToFocus: keyof MovementENTITY }> = { code: '', name: '', fieldToFocus: 'code' }
 
-    const handleEditClick = (id: GridRowId) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    };
-
-    const handleSaveClick = (id: GridRowId) => () => {
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-    };
+    const handleSaveClick = (id: GridRowId, isNew: boolean) => () => {
+        console.log(isNew)
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
+    }
 
     const handleDeleteClick = (id: GridRowId) => () => {
-        setRows(rows.filter((row) => row.id !== id));
-    };
-
-    const handleCancelClick = (id: GridRowId) => () => {
-        setRowModesModel({
-            ...rowModesModel,
-            [id]: { mode: GridRowModes.View, ignoreModifications: true },
-        });
-
-        const editedRow = rows.find((row) => row.id === id);
-        if (editedRow!.isNew) {
-            setRows(rows.filter((row) => row.id !== id));
-        }
-    };
+        setRows(rows.filter((row) => row.id !== id))
+    }
 
     return (
         <CustomDataGrid
@@ -46,11 +31,12 @@ export default function LayoutMovement() {
             rowModesModel={rowModesModel}
             setRowModesModel={setRowModesModel}
             columns={columns({
-                handleCancelClick,
                 handleDeleteClick,
-                handleEditClick,
                 handleSaveClick,
-                rowModesModel
+                rowModesModel,
+                setRowModesModel,
+                rows,
+                setRows
             })}
             newRowTemplate={newRowTemplate}
         />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { GridActionsCellItem, GridRowId, GridRowModes, GridRowModesModel } from '@mui/x-data-grid';
+import { GridActionsCellItem, GridRowId, GridRowModes, GridRowModesModel, GridValidRowModel } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -7,22 +7,44 @@ import CancelIcon from '@mui/icons-material/Close';
 
 interface RowActionsProps {
     id: GridRowId;
+    row: GridValidRowModel;
     rowModesModel: GridRowModesModel;
-    handleSaveClick: (id: GridRowId) => () => void;
-    handleCancelClick: (id: GridRowId) => () => void;
-    handleEditClick: (id: GridRowId) => () => void;
+    setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
+    handleSaveClick: (id: GridRowId, isNew: boolean) => () => void;
     handleDeleteClick: (id: GridRowId) => () => void;
+    rows: readonly GridValidRowModel[]
+    setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
 }
 
 export const RowActions: React.FC<RowActionsProps> = ({
     id,
+    row,
     rowModesModel,
+    setRowModesModel,
     handleSaveClick,
-    handleCancelClick,
-    handleEditClick,
     handleDeleteClick,
+    rows,
+    setRows
 }) => {
-    const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+    const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
+    const isNew = row.isNew
+
+    const handleEditClick = (id: GridRowId) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    }
+
+    const handleCancelClick = (id: GridRowId) => () => {
+        setRowModesModel({
+            ...rowModesModel,
+            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+        })
+
+        const editedRow = rows.find((row) => row.id === id)
+        if (editedRow!.isNew) {
+            setRows(rows.filter((row) => row.id !== id))
+        }
+    }
 
     return isInEditMode ? (
         <>
@@ -30,7 +52,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
                 icon={<SaveIcon />}
                 label="Save"
                 sx={{ color: 'primary.main' }}
-                onClick={handleSaveClick(id)}
+                onClick={handleSaveClick(id, isNew)}
             />
             <GridActionsCellItem
                 icon={<CancelIcon />}
