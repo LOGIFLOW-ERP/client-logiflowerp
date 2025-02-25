@@ -1,5 +1,5 @@
 import { CustomDataGrid } from '@shared/ui-library'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     GridRowId,
     GridRowModes,
@@ -9,20 +9,22 @@ import {
 import { columns } from '../GridCol/columns'
 import { MovementENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
+import { useGetMovementsQuery } from '@shared/api'
 
 export default function LayoutMovement() {
-
-    const { enqueueSnackbar } = useSnackbar()
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
     const newRowTemplate: Partial<MovementENTITY & { fieldToFocus: keyof MovementENTITY }> = { code: '', name: '', fieldToFocus: 'code' }
 
+    const { enqueueSnackbar } = useSnackbar()
+    const { data: movements, error, isLoading } = useGetMovementsQuery()
+    useEffect(() => movements && setRows(movements), [movements])
+
     const handleSaveClick = (row: GridValidRowModel) => async () => {
         try {
-            const { id, isNew, ...data } = row
+            const { id, isNew } = row
             console.log(isNew)
-            console.log(data)
             setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
         } catch (error: any) {
             console.log(error)
@@ -33,6 +35,10 @@ export default function LayoutMovement() {
     const handleDeleteClick = (id: GridRowId) => () => {
         setRows(rows.filter((row) => row.id !== id))
     }
+
+    if (isLoading) return <p>Cargando movimientos...</p>;
+    if (error) return <p>Error al cargar movimientos</p>;
+
 
     return (
         <CustomDataGrid
