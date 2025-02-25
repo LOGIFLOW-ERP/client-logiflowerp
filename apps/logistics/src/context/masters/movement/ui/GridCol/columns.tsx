@@ -21,7 +21,7 @@ export const columns: (params: IParams) => GridColDef[] = (params) => {
         {
             field: 'actions',
             type: 'actions',
-            headerName: 'Actions',
+            headerName: 'Acciones',
             width: 100,
             cellClassName: 'actions',
             getActions: ({ id }) => [

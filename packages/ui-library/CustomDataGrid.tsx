@@ -105,6 +105,7 @@ export function CustomDataGrid(props: IProps) {
                 slotProps={{
                     toolbar: { setRows, setRowModesModel, newRowTemplate },
                 }}
+                density='compact'
             />
         </Box>
     );
