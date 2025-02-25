@@ -7,9 +7,9 @@ import {
     GridValidRowModel,
 } from '@mui/x-data-grid'
 import { columns } from '../GridCol/columns'
-import { MovementENTITY } from 'logiflowerp-sdk'
+import { MovementENTITY, validateCustom } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { useGetMovementsQuery } from '@shared/api'
+import { useGetMovementsQuery, useCreateMovementMutation } from '@shared/api'
 
 export default function LayoutMovement() {
 
@@ -19,13 +19,20 @@ export default function LayoutMovement() {
 
     const { enqueueSnackbar } = useSnackbar()
     const { data: movements, error, isLoading } = useGetMovementsQuery()
+    const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
     useEffect(() => movements && setRows(movements), [movements])
 
     const handleSaveClick = (row: GridValidRowModel) => async () => {
         try {
-            const { id, isNew } = row
-            console.log(isNew)
+            const { id, isNew, ...data } = row
+            const entity = new MovementENTITY()
+            entity.set(data)
+            const body = await validateCustom(entity, MovementENTITY, Error)
+            if (isNew) {
+                await createMovement(body).unwrap()
+            }
             setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
+            enqueueSnackbar({ message: '¡Cambios guardados!', variant: 'success' })
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -36,7 +43,7 @@ export default function LayoutMovement() {
         setRows(rows.filter((row) => row.id !== id))
     }
 
-    if (isLoading) return <CustomViewLoading />
+    if (isLoading || isLoadingCreate) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
     return (

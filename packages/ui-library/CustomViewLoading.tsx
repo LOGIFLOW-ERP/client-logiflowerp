@@ -14,7 +14,7 @@ export function CustomViewLoading() {
         >
             <CircularProgress size={30} />
             <Typography variant='h6' sx={{ marginTop: '1rem' }}>
-                Cargando datos...
+                Cargando...
             </Typography>
         </Box>
     );
