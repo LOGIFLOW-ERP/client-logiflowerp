@@ -14,6 +14,9 @@
       "@masters/*": [
         "./src/context/masters/*"
       ],
+      "@shared/*": [
+        "./src/context/shared/*"
+      ],
     },
     /* Bundler mode */
     "moduleResolution": "bundler",

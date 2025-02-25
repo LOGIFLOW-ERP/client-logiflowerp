@@ -1,4 +1,4 @@
-import { CustomDataGrid } from '@shared/ui-library'
+import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { useEffect, useState } from 'react'
 import {
     GridRowId,
@@ -36,8 +36,8 @@ export default function LayoutMovement() {
         setRows(rows.filter((row) => row.id !== id))
     }
 
-    if (isLoading) return <p>Cargando movimientos...</p>;
-    if (error) return <p>Error al cargar movimientos</p>;
+    if (isLoading) return <CustomViewLoading />
+    if (error) return <CustomViewError />
 
 
     return (
