@@ -39,7 +39,6 @@ export default function LayoutMovement() {
     if (isLoading) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
-
     return (
         <CustomDataGrid
             rows={rows}
