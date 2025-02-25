@@ -7,12 +7,13 @@ import {
     GridValidRowModel,
 } from '@mui/x-data-grid'
 import { columns } from '../GridCol/columns'
+import { MovementENTITY } from 'logiflowerp-sdk'
 
 export default function LayoutMovement() {
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
-    const newRowTemplate: Record<string, any> = {}
+    const newRowTemplate: Partial<MovementENTITY & { fieldToFocus: keyof MovementENTITY }> = { code: '', name: '', fieldToFocus: 'code' }
 
     const handleEditClick = (id: GridRowId) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });

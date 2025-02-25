@@ -16,31 +16,8 @@ interface IParams {
 export const columns: (params: IParams) => GridColDef[] = (params) => {
     const { rowModesModel, handleCancelClick, handleDeleteClick, handleEditClick, handleSaveClick } = params
     return [
-        { field: 'name', headerName: 'Name', width: 180, editable: true },
-        {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
-            width: 80,
-            align: 'left',
-            headerAlign: 'left',
-            editable: true,
-        },
-        {
-            field: 'joinDate',
-            headerName: 'Join date',
-            type: 'date',
-            width: 180,
-            editable: true,
-        },
-        {
-            field: 'role',
-            headerName: 'Department',
-            width: 220,
-            editable: true,
-            type: 'singleSelect',
-            valueOptions: ['Market', 'Finance', 'Development'],
-        },
+        { field: 'code', headerName: 'Código', width: 90, editable: true },
+        { field: 'name', headerName: 'Nombre', width: 180, editable: true },
         {
             field: 'actions',
             type: 'actions',

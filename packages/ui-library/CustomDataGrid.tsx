@@ -31,13 +31,14 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 
     const handleClick = () => {
         const id = crypto.randomUUID()
+        const { fieldToFocus, ...rowData } = newRowTemplate
         setRows((oldRows) => [
             ...oldRows,
-            { ...newRowTemplate, id, isNew: true },
+            { id, ...rowData, isNew: true },
         ]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+            [id]: { mode: GridRowModes.Edit, fieldToFocus },
         }));
     };
 
