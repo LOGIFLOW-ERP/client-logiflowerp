@@ -50,11 +50,6 @@ const LayoutMovement = () => {
         setRows(rows.filter((row) => row.id !== id))
     }
 
-    useEffect(() => {
-        console.log('isLoading', isLoading)
-        console.log('isLoadingCreate', isLoadingCreate)
-    }, [isLoading, isLoadingCreate])
-
     if (isLoading || isLoadingCreate) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
@@ -93,4 +88,3 @@ export default function WebComponentPage() {
     {/* @ts-ignore */ }
     return <layout-movement style={{ width: "100%", height: "100%" }}></layout-movement>
 }
-// export default LayoutMovement
