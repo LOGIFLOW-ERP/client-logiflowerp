@@ -17,6 +17,12 @@
       "@shared/*": [
         "./src/context/shared/*"
       ],
+      "@shared/ui-library": [
+        "../../packages/ui-library"
+      ],
+      "@shared/api": [
+        "../../packages/api"
+      ]
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
