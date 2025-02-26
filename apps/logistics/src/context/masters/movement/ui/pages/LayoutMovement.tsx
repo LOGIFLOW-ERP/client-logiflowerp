@@ -1,4 +1,3 @@
-import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { useEffect, useState } from 'react'
 import {
     GridRowId,
@@ -9,10 +8,14 @@ import {
 import { columns } from '../GridCol/columns'
 import { MovementENTITY, validateCustom } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { useGetMovementsQuery, useCreateMovementMutation } from '@shared/api'
-import { StoreProvider } from '@shared/ui/providers'
+import { StoreProvider } from '../../../../shared/ui/providers/StoreProvider'
+import React from "react"
+import ReactDOM from "react-dom/client"
+import r2wc from "react-to-webcomponent"
+import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { useCreateMovementMutation, useGetMovementsQuery } from '@shared/api'
 
-export default function LayoutMovement() {
+const LayoutMovement = () => {
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
@@ -26,12 +29,15 @@ export default function LayoutMovement() {
     const handleSaveClick = (row: GridValidRowModel) => async () => {
         try {
             const { id, isNew, ...data } = row
-            const entity = new MovementENTITY()
-            entity.set(data)
-            const body = await validateCustom(entity, MovementENTITY, Error)
-            if (isNew) {
-                await createMovement(body).unwrap()
-            }
+            // console.log(data)
+            // const entity = new MovementENTITY()
+            // entity.set(data)
+            // entity._id = crypto.randomUUID()
+            // console.log(entity)
+            // const body = await validateCustom(entity, MovementENTITY, Error)
+            // if (isNew) {
+            //     await createMovement(body).unwrap()
+            // }
             setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
             enqueueSnackbar({ message: '¡Cambios guardados!', variant: 'success' })
         } catch (error: any) {
@@ -53,22 +59,38 @@ export default function LayoutMovement() {
     if (error) return <CustomViewError />
 
     return (
-        <StoreProvider>
-            <CustomDataGrid
-                rows={rows}
-                setRows={setRows}
-                rowModesModel={rowModesModel}
-                setRowModesModel={setRowModesModel}
-                columns={columns({
-                    handleDeleteClick,
-                    handleSaveClick,
-                    rowModesModel,
-                    setRowModesModel,
-                    rows,
-                    setRows
-                })}
-                newRowTemplate={newRowTemplate}
-            />
-        </StoreProvider>
+        <CustomDataGrid
+            rows={rows}
+            setRows={setRows}
+            rowModesModel={rowModesModel}
+            setRowModesModel={setRowModesModel}
+            columns={columns({
+                handleDeleteClick,
+                handleSaveClick,
+                rowModesModel,
+                setRowModesModel,
+                rows,
+                setRows
+            })}
+            newRowTemplate={newRowTemplate}
+        />
     )
 }
+
+const WebGreeting = r2wc((props) => (
+    <StoreProvider>
+        <LayoutMovement {...props} />
+    </StoreProvider>
+), React, ReactDOM)
+
+export default function WebComponentPage() {
+    useEffect(() => {
+        if (!customElements.get("layout-movement")) {
+            customElements.define("layout-movement", WebGreeting);
+        }
+    }, []);
+
+    {/* @ts-ignore */ }
+    return <layout-movement style={{ width: "100%", height: "100%" }}></layout-movement>
+}
+// export default LayoutMovement

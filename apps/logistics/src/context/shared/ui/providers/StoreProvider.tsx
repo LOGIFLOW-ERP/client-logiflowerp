@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux'
 import { ReactNode } from 'react'
-import { store } from '@shared/infrastructure/redux'
+import { store } from '../../infrastructure/redux/store'
 
 export function StoreProvider({ children }: { children: ReactNode }) {
     return (
