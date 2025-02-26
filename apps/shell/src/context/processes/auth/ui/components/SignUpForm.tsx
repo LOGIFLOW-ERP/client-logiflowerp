@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/material'
-// import { CustomSelect } from '@shared/ui-library'
+import { CustomSelect } from '@shared/ui-library'
 import { useNavigate } from 'react-router-dom'
 import { dataCountry, State, getDataDocumentTypes, CreateUserDTO, DocumentType } from 'logiflowerp-sdk'
 import { Controller, useForm } from 'react-hook-form'
@@ -7,7 +7,6 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useSignUpMutation } from '@shared/api'
 import { useSnackbar } from 'notistack'
 import { useEffect } from 'react'
-import { CustomSelect } from '@shared/ui/components/ui-library'
 
 const resolver = classValidatorResolver(CreateUserDTO)
 
