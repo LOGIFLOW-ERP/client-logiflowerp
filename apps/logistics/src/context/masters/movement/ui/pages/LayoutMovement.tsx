@@ -10,6 +10,7 @@ import { columns } from '../GridCol/columns'
 import { MovementENTITY, validateCustom } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { useGetMovementsQuery, useCreateMovementMutation } from '@shared/api'
+import { StoreProvider } from '@shared/ui/providers'
 
 export default function LayoutMovement() {
 
@@ -43,24 +44,31 @@ export default function LayoutMovement() {
         setRows(rows.filter((row) => row.id !== id))
     }
 
+    useEffect(() => {
+        console.log('isLoading', isLoading)
+        console.log('isLoadingCreate', isLoadingCreate)
+    }, [isLoading, isLoadingCreate])
+
     if (isLoading || isLoadingCreate) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
     return (
-        <CustomDataGrid
-            rows={rows}
-            setRows={setRows}
-            rowModesModel={rowModesModel}
-            setRowModesModel={setRowModesModel}
-            columns={columns({
-                handleDeleteClick,
-                handleSaveClick,
-                rowModesModel,
-                setRowModesModel,
-                rows,
-                setRows
-            })}
-            newRowTemplate={newRowTemplate}
-        />
+        <StoreProvider>
+            <CustomDataGrid
+                rows={rows}
+                setRows={setRows}
+                rowModesModel={rowModesModel}
+                setRowModesModel={setRowModesModel}
+                columns={columns({
+                    handleDeleteClick,
+                    handleSaveClick,
+                    rowModesModel,
+                    setRowModesModel,
+                    rows,
+                    setRows
+                })}
+                newRowTemplate={newRowTemplate}
+            />
+        </StoreProvider>
     )
 }

@@ -17,7 +17,8 @@ export default defineConfig(({ mode }) => {
 				shared: [
 					'react',
 					'react-dom',
-					'@mui/x-data-grid'
+					'@mui/x-data-grid',
+					'react-redux'
 				]
 			})
 		],
