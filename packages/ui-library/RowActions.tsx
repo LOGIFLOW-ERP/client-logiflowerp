@@ -1,16 +1,20 @@
 import React from 'react'
-import { GridActionsCellItem, GridRowId, GridRowModes, GridRowModesModel, GridValidRowModel } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
+import {
+    GridActionsCellItem,
+    GridRowId,
+    GridRowModes,
+    GridRowModesModel,
+    GridValidRowModel
+} from '@mui/x-data-grid'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
+import SaveIcon from '@mui/icons-material/Save'
+import CancelIcon from '@mui/icons-material/Close'
 
 interface RowActionsProps {
     id: GridRowId;
-    row: GridValidRowModel;
     rowModesModel: GridRowModesModel;
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
-    handleSaveClick: (row: GridValidRowModel) => () => void;
     handleDeleteClick: (id: GridRowId) => () => void;
     rows: readonly GridValidRowModel[]
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
@@ -18,16 +22,18 @@ interface RowActionsProps {
 
 export const RowActions: React.FC<RowActionsProps> = ({
     id,
-    row,
     rowModesModel,
     setRowModesModel,
-    handleSaveClick,
     handleDeleteClick,
     rows,
     setRows
 }) => {
 
     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
+
+    const handleSaveClick = (id: GridRowId) => () => {
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    }
 
     const handleEditClick = (id: GridRowId) => () => {
         setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
@@ -36,7 +42,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
     const handleCancelClick = (id: GridRowId) => () => {
         setRowModesModel({
             ...rowModesModel,
-            [id]: { mode: GridRowModes.View, ignoreModifications: true },
+            [id]: { mode: GridRowModes.View, ignoreModifications: true }
         })
 
         const editedRow = rows.find((row) => row.id === id)
@@ -51,7 +57,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
                 icon={<SaveIcon />}
                 label="Save"
                 sx={{ color: 'primary.main' }}
-                onClick={handleSaveClick(row)}
+                onClick={handleSaveClick(id)}
             />
             <GridActionsCellItem
                 icon={<CancelIcon />}
@@ -77,5 +83,5 @@ export const RowActions: React.FC<RowActionsProps> = ({
                 color="inherit"
             />
         </>
-    );
+    )
 }

@@ -7,7 +7,6 @@ import {
 import { RowActions } from '@shared/ui-library'
 
 interface IParams {
-    handleSaveClick: (row: GridValidRowModel) => () => void
     handleDeleteClick: (id: GridRowId) => () => void
     rowModesModel: GridRowModesModel
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
@@ -25,10 +24,9 @@ export const columns: (params: IParams) => GridColDef[] = (params) => {
             headerName: 'Acciones',
             width: 100,
             cellClassName: 'actions',
-            getActions: ({ id, row }) => [
+            getActions: ({ id }) => [
                 <RowActions
                     id={id}
-                    row={row}
                     {...params}
                 />
             ]

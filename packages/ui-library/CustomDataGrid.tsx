@@ -58,23 +58,26 @@ interface IProps {
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
     columns: GridColDef[]
     newRowTemplate: Record<string, any>
+    processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean }>
 }
 
 export function CustomDataGrid(props: IProps) {
 
-    const { rows, setRows, rowModesModel, setRowModesModel, columns, newRowTemplate } = props
+    const {
+        rows,
+        setRows,
+        rowModesModel,
+        setRowModesModel,
+        columns,
+        newRowTemplate,
+        processRowUpdate
+    } = props
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
-            event.defaultMuiPrevented = true;
+            event.defaultMuiPrevented = true
         }
-    };
-
-    const processRowUpdate = (newRow: GridRowModel) => {
-        const updatedRow = { ...newRow, isNew: false };
-        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-        return updatedRow;
-    };
+    }
 
     const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
         setRowModesModel(newRowModesModel);
@@ -103,10 +106,10 @@ export function CustomDataGrid(props: IProps) {
                 processRowUpdate={processRowUpdate}
                 slots={{ toolbar: EditToolbar }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel, newRowTemplate },
+                    toolbar: { setRows, setRowModesModel, newRowTemplate }
                 }}
                 density='compact'
             />
         </Box>
-    );
+    )
 }

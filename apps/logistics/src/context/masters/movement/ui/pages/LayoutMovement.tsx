@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
     GridRowId,
-    GridRowModes,
+    GridRowModel,
     GridRowModesModel,
     GridValidRowModel,
 } from '@mui/x-data-grid'
@@ -26,20 +26,22 @@ const LayoutMovement = () => {
     const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
     useEffect(() => movements && setRows(movements), [movements])
 
-    const handleSaveClick = (row: GridValidRowModel) => async () => {
+    const processRowUpdate = async (newRow: GridRowModel) => {
+        const { isNew } = newRow
+        console.log(isNew)
+        const updatedRow = { ...newRow, isNew: false }
         try {
-            const { id, isNew, ...data } = row
-            // console.log(data)
-            // const entity = new MovementENTITY()
-            // entity.set(data)
-            // entity._id = crypto.randomUUID()
-            // console.log(entity)
-            // const body = await validateCustom(entity, MovementENTITY, Error)
-            // if (isNew) {
-            //     await createMovement(body).unwrap()
-            // }
-            setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
-            enqueueSnackbar({ message: '¡Cambios guardados!', variant: 'success' })
+            console.log(newRow)
+            const entity = new MovementENTITY()
+            entity.set(newRow)
+            entity._id = crypto.randomUUID()
+            console.log(entity)            
+            const body = await validateCustom(entity, MovementENTITY, Error)
+            if (isNew) {
+                await createMovement(body).unwrap()
+            }
+            setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+            return updatedRow
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -61,13 +63,13 @@ const LayoutMovement = () => {
             setRowModesModel={setRowModesModel}
             columns={columns({
                 handleDeleteClick,
-                handleSaveClick,
                 rowModesModel,
                 setRowModesModel,
                 rows,
                 setRows
             })}
             newRowTemplate={newRowTemplate}
+            processRowUpdate={processRowUpdate}
         />
     )
 }
