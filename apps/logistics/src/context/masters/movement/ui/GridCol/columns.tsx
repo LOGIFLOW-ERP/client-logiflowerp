@@ -16,8 +16,18 @@ interface IParams {
 
 export const columns: (params: IParams) => GridColDef[] = (params) => {
     return [
-        { field: 'code', headerName: 'Código', width: 90, editable: true },
-        { field: 'name', headerName: 'Nombre', width: 180, editable: true },
+        {
+            field: 'code',
+            headerName: 'Código',
+            width: 90,
+            editable: true
+        },
+        {
+            field: 'name',
+            headerName: 'Nombre',
+            width: 180,
+            editable: true
+        },
         {
             field: 'actions',
             type: 'actions',

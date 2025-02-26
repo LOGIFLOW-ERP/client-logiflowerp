@@ -32,6 +32,7 @@ const LayoutMovement = () => {
         try {
             const entity = new MovementENTITY()
             entity._id = crypto.randomUUID()
+            entity.set(newRow)
             const body = await validateCustom(entity, MovementENTITY, Error)
             if (isNew) {
                 await createMovement(body).unwrap()
