@@ -58,7 +58,7 @@ interface IProps {
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
     columns: GridColDef[]
     newRowTemplate: Record<string, any>
-    processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean }>
+    processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean } | undefined>
 }
 
 export function CustomDataGrid(props: IProps) {
@@ -109,6 +109,9 @@ export function CustomDataGrid(props: IProps) {
                     toolbar: { setRows, setRowModesModel, newRowTemplate }
                 }}
                 density='compact'
+                onProcessRowUpdateError={(error) => {
+                    console.error("Error en la actualización de fila:", error)
+                }}
             />
         </Box>
     )

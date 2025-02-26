@@ -7,7 +7,8 @@ import {
     FetchBaseQueryMeta,
     reactHooksModuleName
 } from '@reduxjs/toolkit/query/react'
-import { transformErrorResponse } from './transformErrorResponse';
+import { transformErrorResponse } from './transformErrorResponse'
+import { instanceToPlain } from 'class-transformer'
 
 export const createRepository = <T, ID>(
     resource: string,
@@ -41,7 +42,7 @@ export const createRepository = <T, ID>(
                 query: (newItem) => ({
                     url: `${resource}`,
                     method: 'POST',
-                    body: newItem,
+                    body: instanceToPlain(newItem),
                 }),
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
                 transformErrorResponse

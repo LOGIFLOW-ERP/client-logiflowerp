@@ -24,18 +24,14 @@ const LayoutMovement = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { data: movements, error, isLoading } = useGetMovementsQuery()
     const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
-    useEffect(() => movements && setRows(movements), [movements])
+    useEffect(() => movements && setRows(movements.map(e => ({ ...e, id: e._id }))), [movements])
 
     const processRowUpdate = async (newRow: GridRowModel) => {
         const { isNew } = newRow
-        console.log(isNew)
         const updatedRow = { ...newRow, isNew: false }
         try {
-            console.log(newRow)
             const entity = new MovementENTITY()
-            entity.set(newRow)
             entity._id = crypto.randomUUID()
-            console.log(entity)            
             const body = await validateCustom(entity, MovementENTITY, Error)
             if (isNew) {
                 await createMovement(body).unwrap()
@@ -43,7 +39,7 @@ const LayoutMovement = () => {
             setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
             return updatedRow
         } catch (error: any) {
-            console.log(error)
+            console.error(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
