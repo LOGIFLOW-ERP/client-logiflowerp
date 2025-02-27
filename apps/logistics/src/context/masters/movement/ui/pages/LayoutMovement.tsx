@@ -19,6 +19,7 @@ import {
     useGetMovementsQuery,
     useUpdateMovementMutation
 } from '@shared/api'
+import { SnackbarProviderCustom } from '@shared/ui/providers'
 
 const LayoutMovement = () => {
 
@@ -45,7 +46,8 @@ const LayoutMovement = () => {
             } {
                 await updateMovement({ id: body._id, data: body }).unwrap()
             }
-            setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+            setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+            enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
             return updatedRow
         } catch (error: any) {
             console.error(error)
@@ -84,7 +86,9 @@ const LayoutMovement = () => {
 
 const WebGreeting = r2wc((props) => (
     <StoreProvider>
-        <LayoutMovement {...props} />
+        <SnackbarProviderCustom>
+            <LayoutMovement {...props} />
+        </SnackbarProviderCustom>
     </StoreProvider>
 ), React, ReactDOM)
 
