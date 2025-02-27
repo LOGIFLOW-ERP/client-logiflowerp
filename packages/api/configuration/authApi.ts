@@ -42,7 +42,7 @@ export const authApi = baseApi.injectEndpoints({
             query: (body) => ({
                 url: `/${schema}/${resource}/reset-password`,
                 method: 'POST',
-                body:instanceToPlain(body),
+                body: instanceToPlain(body),
             }),
             transformErrorResponse
         }),
@@ -65,6 +65,7 @@ export const authApi = baseApi.injectEndpoints({
             }),
             transformResponse: () => {
                 localStorage.removeItem('authUser')
+                localStorage.removeItem('selectedNode')
             },
             transformErrorResponse
         })

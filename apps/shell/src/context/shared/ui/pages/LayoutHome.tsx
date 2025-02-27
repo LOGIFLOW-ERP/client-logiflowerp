@@ -1,12 +1,13 @@
-import { alpha, Box, Stack } from '@mui/material';
-import { Header, SideMenu } from '../components';
-import { Outlet } from 'react-router-dom';
-import { useState } from 'react';
-import { IMenu } from '@shared/domain';
+import { alpha, Box, Stack } from '@mui/material'
+import { Header, SideMenu } from '../components'
+import { Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { IMenu } from '@shared/domain'
 
 export function LayoutHome() {
 
     const [selectedNode, setSelectedNode] = useState<IMenu | null>(null)
+    useEffect(() => { localStorage.setItem('selectedNode', JSON.stringify(selectedNode)) }, [selectedNode])
 
     return (
         <Box sx={{ display: 'flex' }}>

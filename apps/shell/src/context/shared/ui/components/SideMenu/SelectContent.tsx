@@ -19,6 +19,9 @@ import AssessmentRounded from '@mui/icons-material/AssessmentRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain'
 
+const selectedNode = localStorage.getItem('selectedNode')
+const _selectedNode = selectedNode ? JSON.parse(selectedNode) as IMenu : null
+
 const iconMap: Record<string, React.ElementType> = {
     Masters: DatasetRounded,
     Processes: EngineeringRounded,
@@ -84,7 +87,10 @@ export function SelectContent(props: IProps) {
         try {
             const data = buildMenu(dataSystemOptions)
             setMenu(data)
-            if (data.length && data[0].children.length) {
+            if (_selectedNode) {
+                props.setSelectedNode(_selectedNode)
+                setModule(_selectedNode.systemOption._id)
+            } else if (data.length && data[0].children.length) {
                 const selectedId = data[0].children[0].systemOption._id
                 const selectedNode = searchSelectedNode(selectedId, data)
                 props.setSelectedNode(selectedNode)
