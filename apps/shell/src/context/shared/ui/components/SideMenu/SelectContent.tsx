@@ -156,7 +156,7 @@ export function SelectContent(props: IProps) {
                                         <IconComponent sx={{ fontSize: '1rem' }} />
                                     </CustomAvatar>
                                 </CustomListItemAvatar>
-                                <ListItemText primary={c.systemOption.name} secondary={e.systemOption.name} />
+                                <ListItemText primary={e.systemOption.name} secondary={c.systemOption.name} />
                             </MenuItem>
                         )
                     })
