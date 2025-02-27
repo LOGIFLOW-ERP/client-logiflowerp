@@ -126,7 +126,6 @@ export function SelectContent(props: IProps) {
         }
     }
 
-
     return (
         <Select
             labelId='logiflow-select'

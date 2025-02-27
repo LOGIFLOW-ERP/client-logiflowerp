@@ -6,6 +6,11 @@ import PersonRounded from '@mui/icons-material/PersonRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import { useState } from 'react';
+
+const selectedPage = localStorage.getItem('selectedPage')
+const _selectedPage = selectedPage ? JSON.parse(selectedPage) as IMenu : null
 
 const secondaryListItems = [
     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -25,6 +30,19 @@ const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
 export function MenuContent({ selectedNode }: IProps) {
 
     const navigate = useNavigate()
+    const { enqueueSnackbar } = useSnackbar()
+    const [selectedPage, setSelectedPage] = useState<IMenu | null>(_selectedPage)
+
+    const clickSelectedPage = (item: IMenu) => {
+        try {
+            setSelectedPage(item)
+            localStorage.setItem('selectedPage', JSON.stringify(item))
+            navigate(`/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}`)
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
+        }
+    }
 
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
@@ -38,9 +56,9 @@ export function MenuContent({ selectedNode }: IProps) {
                                     key={index}
                                     disablePadding
                                     sx={{ display: 'block' }}
-                                    onClick={() => navigate(`/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}`)}
+                                    onClick={() => clickSelectedPage(item)}
                                 >
-                                    <ListItemButton selected={index === 0}>
+                                    <ListItemButton selected={selectedPage?.systemOption._id === item.systemOption._id}>
                                         {
                                             IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>
                                         }
