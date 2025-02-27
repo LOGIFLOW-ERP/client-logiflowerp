@@ -47,11 +47,11 @@ export const createRepository = <T, ID>(
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
                 transformErrorResponse
             }),
-            update: builder.mutation<T, { id: ID; data: Partial<T> }>({
+            update: builder.mutation<T, { id: string; data: Partial<T> }>({
                 query: ({ id, data }) => ({
                     url: `${resource}/${id}`,
                     method: 'PUT',
-                    body: data,
+                    body: instanceToPlain(data),
                 }),
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
                 transformErrorResponse

@@ -14,7 +14,11 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import r2wc from "react-to-webcomponent"
 import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
-import { useCreateMovementMutation, useGetMovementsQuery } from '@shared/api'
+import {
+    useCreateMovementMutation,
+    useGetMovementsQuery,
+    useUpdateMovementMutation
+} from '@shared/api'
 
 const LayoutMovement = () => {
 
@@ -25,6 +29,7 @@ const LayoutMovement = () => {
     const { enqueueSnackbar } = useSnackbar()
     const { data: movements, error, isLoading } = useGetMovementsQuery()
     const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
+    const [updateMovement, { isLoading: isLoadingUpdate }] = useUpdateMovementMutation()
     useEffect(() => movements && setRows(movements.map(e => ({ ...e, id: e._id }))), [movements])
 
     const processRowUpdate = async (newRow: GridRowModel) => {
@@ -37,6 +42,8 @@ const LayoutMovement = () => {
             const body = await validateCustom(entity, MovementENTITY, Error)
             if (isNew) {
                 await createMovement(body).unwrap()
+            } {
+                await updateMovement({ id: body._id, data: body }).unwrap()
             }
             setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
             return updatedRow
@@ -52,7 +59,7 @@ const LayoutMovement = () => {
 
     const isCellEditable = (p: GridCellParams) => !['code'].includes(p.field) || p.row.isNew
 
-    if (isLoading || isLoadingCreate) return <CustomViewLoading />
+    if (isLoading || isLoadingCreate || isLoadingUpdate) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
     return (
