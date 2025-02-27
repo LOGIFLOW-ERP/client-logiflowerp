@@ -14,6 +14,8 @@ import {
     GridRowEditStopReasons,
     GridSlotProps,
     GridValidRowModel,
+    GridCellParams,
+    GridTreeNode,
 } from '@mui/x-data-grid'
 
 declare module '@mui/x-data-grid' {
@@ -59,6 +61,7 @@ interface IProps {
     columns: GridColDef[]
     newRowTemplate: Record<string, any>
     processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean } | undefined>
+    isCellEditable?: ((params: GridCellParams<any, GridValidRowModel, GridValidRowModel, GridTreeNode>) => boolean) | undefined
 }
 
 export function CustomDataGrid(props: IProps) {
@@ -70,7 +73,8 @@ export function CustomDataGrid(props: IProps) {
         setRowModesModel,
         columns,
         newRowTemplate,
-        processRowUpdate
+        processRowUpdate,
+        isCellEditable
     } = props
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -112,6 +116,7 @@ export function CustomDataGrid(props: IProps) {
                 onProcessRowUpdateError={(error) => {
                     console.error("Error en la actualización de fila:", error)
                 }}
+                isCellEditable={isCellEditable}
             />
         </Box>
     )

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+    GridCellParams,
     GridRowId,
     GridRowModel,
     GridRowModesModel,
@@ -49,6 +50,8 @@ const LayoutMovement = () => {
         setRows(rows.filter((row) => row.id !== id))
     }
 
+    const isCellEditable = (p: GridCellParams) => !['code'].includes(p.field) || p.row.isNew
+
     if (isLoading || isLoadingCreate) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
@@ -67,6 +70,7 @@ const LayoutMovement = () => {
             })}
             newRowTemplate={newRowTemplate}
             processRowUpdate={processRowUpdate}
+            isCellEditable={isCellEditable}
         />
     )
 }
