@@ -9,7 +9,7 @@ export function LayoutHome() {
     const [selectedNode, setSelectedNode] = useState<IMenu | null>(null)
     useEffect(() => {
         localStorage.setItem('selectedNode', JSON.stringify(selectedNode))
-        localStorage.removeItem('selectedPage')
+        
     }, [selectedNode])
 
     return (

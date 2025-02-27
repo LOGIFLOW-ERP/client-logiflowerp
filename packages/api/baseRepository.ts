@@ -56,7 +56,7 @@ export const createRepository = <T, ID>(
                 invalidatesTags: [{ type: resource, id: 'LIST' }],
                 transformErrorResponse
             }),
-            delete: builder.mutation<void, ID>({
+            delete: builder.mutation<void, string>({
                 query: (id) => ({
                     url: `${resource}/${id}`,
                     method: 'DELETE',

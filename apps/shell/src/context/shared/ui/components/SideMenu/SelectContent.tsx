@@ -88,9 +88,11 @@ export function SelectContent(props: IProps) {
             const data = buildMenu(dataSystemOptions)
             setMenu(data)
             if (_selectedNode) {
+                localStorage.removeItem('selectedPage')
                 props.setSelectedNode(_selectedNode)
                 setModule(_selectedNode.systemOption._id)
             } else if (data.length && data[0].children.length) {
+                localStorage.removeItem('selectedPage')
                 const selectedId = data[0].children[0].systemOption._id
                 const selectedNode = searchSelectedNode(selectedId, data)
                 props.setSelectedNode(selectedNode)
@@ -110,7 +112,7 @@ export function SelectContent(props: IProps) {
         if (!selectedNode) {
             throw new Error('No se pudo obtener nodo seleccionado')
         }
-        console.log("Nodo seleccionado:", selectedNode)
+        // console.log("Nodo seleccionado:", selectedNode)
         return selectedNode
     }
 

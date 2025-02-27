@@ -36,7 +36,7 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
         const { fieldToFocus, ...rowData } = newRowTemplate
         setRows((oldRows) => [
             ...oldRows,
-            { id, ...rowData, isNew: true },
+            { id, ...rowData, _id: id, isNew: true },
         ]);
         setRowModesModel((oldModel) => ({
             ...oldModel,

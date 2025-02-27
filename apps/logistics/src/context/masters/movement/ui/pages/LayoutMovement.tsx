@@ -16,6 +16,7 @@ import r2wc from "react-to-webcomponent"
 import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import {
     useCreateMovementMutation,
+    useDeleteMovementMutation,
     useGetMovementsQuery,
     useUpdateMovementMutation
 } from '@shared/api'
@@ -31,6 +32,7 @@ const LayoutMovement = () => {
     const { data: movements, error, isLoading } = useGetMovementsQuery()
     const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
     const [updateMovement, { isLoading: isLoadingUpdate }] = useUpdateMovementMutation()
+    const [deleteMovement, { isLoading: isLoadingDelete }] = useDeleteMovementMutation()
     useEffect(() => movements && setRows(movements.map(e => ({ ...e, id: e._id }))), [movements])
 
     const processRowUpdate = async (newRow: GridRowModel) => {
@@ -55,13 +57,20 @@ const LayoutMovement = () => {
         }
     }
 
-    const handleDeleteClick = (id: GridRowId) => () => {
-        setRows(rows.filter((row) => row.id !== id))
+    const handleDeleteClick = (id: GridRowId) => async () => {
+        try {
+            await deleteMovement(id as string).unwrap()
+            setRows(rows.filter((row) => row.id !== id))
+            enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
     }
 
     const isCellEditable = (p: GridCellParams) => !['code'].includes(p.field) || p.row.isNew
 
-    if (isLoading || isLoadingCreate || isLoadingUpdate) return <CustomViewLoading />
+    if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
     return (
