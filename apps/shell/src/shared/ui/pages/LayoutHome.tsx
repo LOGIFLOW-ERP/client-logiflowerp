@@ -6,22 +6,16 @@ import { IMenu } from '@shared/domain'
 
 export function LayoutHome() {
 
-    const __selectedPage = localStorage.getItem('selectedPage')
-    const _selectedPage = __selectedPage ? JSON.parse(__selectedPage) as IMenu : null
-
     const [selectedNode, setSelectedNode] = useState<IMenu | null>(null)
     useEffect(() => {
         localStorage.setItem('selectedNode', JSON.stringify(selectedNode))
     }, [selectedNode])
-    const [selectedPage, setSelectedPage] = useState<IMenu | null>(_selectedPage)
 
     return (
         <Box sx={{ display: 'flex' }}>
             <SideMenu
                 selectedNode={selectedNode}
                 setSelectedNode={setSelectedNode}
-                selectedPage={selectedPage}
-                setSelectedPage={setSelectedPage}
             />
             <Box
                 component='main'
