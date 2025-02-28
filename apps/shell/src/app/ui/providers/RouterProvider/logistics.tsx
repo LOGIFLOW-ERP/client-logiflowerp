@@ -15,5 +15,10 @@ export const childrenLogistics: RouteObject[] = [
                 Component: LayoutMovement,
             }
         ]
+    },
+    {
+        path: 'processes',
+        Component: null,
+        children: []
     }
 ]

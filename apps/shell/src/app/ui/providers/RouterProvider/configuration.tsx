@@ -13,5 +13,10 @@ export const childrenConfiguration: RouteObject[] = [
                 Component: LayoutProfile,
             }
         ]
+    },
+    {
+        path: 'processes',
+        Component: null,
+        children: []
     }
 ]
