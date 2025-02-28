@@ -22,7 +22,7 @@ import {
 } from '@shared/api'
 import { SnackbarProviderCustom } from '@shared/ui/providers'
 
-const LayoutMovement = () => {
+export const LayoutMovement = () => {
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
