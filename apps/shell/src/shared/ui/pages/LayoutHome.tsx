@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { IMenu } from '@shared/domain'
 
 export function LayoutHome() {
-    
+
     const __selectedPage = localStorage.getItem('selectedPage')
     const _selectedPage = __selectedPage ? JSON.parse(__selectedPage) as IMenu : null
 
@@ -40,7 +40,7 @@ export function LayoutHome() {
                         mt: { xs: 8, md: 0 },
                     }}
                 >
-                    <Header selectedNode={selectedNode} selectedPage={selectedPage} />
+                    <Header />
                     <Box
                         sx={{
                             display: 'flex',

@@ -1,7 +1,8 @@
 import { styled, Typography } from '@mui/material'
 import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
-import { IMenu } from '@shared/domain'
+import { useLocation } from 'react-router-dom'
+import { Children } from 'react'
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     margin: theme.spacing(1, 0),
@@ -12,29 +13,27 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     [`& .${breadcrumbsClasses.ol}`]: { alignItems: 'center' }
 }))
 
-interface IProps {
-    selectedNode: IMenu | null
-    selectedPage: IMenu | null
-}
+export function NavbarBreadcrumbs() {
 
-export function NavbarBreadcrumbs({ selectedNode, selectedPage }: IProps) {
-
-    if (!selectedNode) return <StyledBreadcrumbs></StyledBreadcrumbs>
+    const location = useLocation()
+    const pathnames = location.pathname.split("/").filter((x) => x)
 
     return (
         <StyledBreadcrumbs
             aria-label='breadcrumb'
             separator={<NavigateNextRoundedIcon fontSize='small' />}
         >
-            <Typography variant='body1'>{selectedNode.systemOption.father}</Typography>
-            <Typography variant='body1' sx={selectedPage ? {} : { color: 'text.primary', fontWeight: 600 }}>
-                {selectedNode.systemOption.name}
-            </Typography>
             {
-                selectedPage &&
-                <Typography variant='body1' sx={{ color: 'text.primary', fontWeight: 600 }}>
-                    {selectedPage.systemOption.name}
-                </Typography>
+                Children.toArray(
+                    pathnames.map((el, i) => (
+                        <Typography
+                            variant='body1'
+                            sx={pathnames.length - 1 === i ? { color: 'text.primary', fontWeight: 600 } : {}}
+                        >
+                            {el.replace('%20', ' ')}
+                        </Typography>
+                    ))
+                )
             }
         </StyledBreadcrumbs>
     )

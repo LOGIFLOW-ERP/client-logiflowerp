@@ -4,14 +4,8 @@ import CustomDatePicker from './CustomDatePicker'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 import Search from './Search'
 import MenuButton from './MenuButton'
-import { IMenu } from '@shared/domain'
 
-interface IProps {
-    selectedNode: IMenu | null
-    selectedPage: IMenu | null
-}
-
-export function Header({ selectedNode, selectedPage }: IProps) {
+export function Header() {
     return (
         <Stack
             direction='row'
@@ -25,7 +19,7 @@ export function Header({ selectedNode, selectedPage }: IProps) {
             }}
             spacing={2}
         >
-            <NavbarBreadcrumbs selectedNode={selectedNode} selectedPage={selectedPage} />
+            <NavbarBreadcrumbs />
             <Stack direction="row" sx={{ gap: 1 }}>
                 <Search />
                 <CustomDatePicker />
