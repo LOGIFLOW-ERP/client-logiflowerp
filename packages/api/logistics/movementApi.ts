@@ -9,7 +9,7 @@ export const movementApi = createRepository<MovementENTITY, number>(`${schema}/$
 
 export const {
     useGetAllQuery: useGetMovementsQuery,
-    useGetByIdQuery: useGetMovementtByIdQuery,
+    useGetByIdQuery: useGetMovementByIdQuery,
     useCreateMutation: useCreateMovementMutation,
     useUpdateMutation: useUpdateMovementMutation,
     useDeleteMutation: useDeleteMovementMutation,
