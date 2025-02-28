@@ -55,7 +55,7 @@ export function MenuContent({ selectedNode }: IProps) {
                                     onClick={() => clickSelectedPage(item)}
                                 >
                                     <ListItemButton selected={
-                                        `/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}` === location.pathname.replace('%20', '')}>
+                                        `/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}` === location.pathname.replace('%20', ' ')}>
                                         {
                                             IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>
                                         }
