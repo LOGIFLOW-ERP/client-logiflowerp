@@ -1,10 +1,13 @@
 import { Box, Button, Typography } from '@mui/material'
+import { useEffect } from 'react'
 import { useNavigate, useRouteError } from 'react-router-dom'
 
 export function ErrorPage() {
 
     const error = useRouteError()
     const navigate = useNavigate()
+
+    useEffect(() => { localStorage.removeItem('selectedPage') }, [])
 
     return (
         <Box
@@ -31,7 +34,7 @@ export function ErrorPage() {
                 onClick={() => navigate('/')}
                 color='inherit'
             >
-                Ir a Inicio
+                Volver
             </Button>
         </Box>
     )

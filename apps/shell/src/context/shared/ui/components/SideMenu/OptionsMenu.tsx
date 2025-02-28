@@ -46,7 +46,7 @@ export function OptionsMenu() {
             await signOut().unwrap()
             // setAnchorEl(null)
             setState({ isAuthenticated: false, user: new AuthUserDTO() })
-            navigate('/sign-in')
+            navigate('/sign-in', { replace: true })
         } catch (error: any) {
             console.error(error)
             enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })

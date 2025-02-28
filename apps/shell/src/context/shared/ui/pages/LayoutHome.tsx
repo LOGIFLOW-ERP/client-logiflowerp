@@ -4,10 +4,10 @@ import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { IMenu } from '@shared/domain'
 
-const selectedPage = localStorage.getItem('selectedPage')
-const _selectedPage = selectedPage ? JSON.parse(selectedPage) as IMenu : null
-
 export function LayoutHome() {
+    
+    const __selectedPage = localStorage.getItem('selectedPage')
+    const _selectedPage = __selectedPage ? JSON.parse(__selectedPage) as IMenu : null
 
     const [selectedNode, setSelectedNode] = useState<IMenu | null>(null)
     useEffect(() => {

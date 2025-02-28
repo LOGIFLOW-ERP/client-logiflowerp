@@ -20,9 +20,6 @@ import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain'
 import { useNavigate } from 'react-router-dom'
 
-const selectedNode = localStorage.getItem('selectedNode')
-const _selectedNode = selectedNode ? JSON.parse(selectedNode) as IMenu : null
-
 const iconMap: Record<string, React.ElementType> = {
     Masters: DatasetRounded,
     Processes: EngineeringRounded,
@@ -75,6 +72,7 @@ const buildMenu = (dataSystemOptions: SystemOptionENTITY[]): IMenu[] => {
 
 interface IProps {
     setSelectedNode: React.Dispatch<React.SetStateAction<IMenu | null>>
+    setSelectedPage: React.Dispatch<React.SetStateAction<IMenu | null>>
 }
 
 export function SelectContent(props: IProps) {
@@ -84,21 +82,28 @@ export function SelectContent(props: IProps) {
     const [menu, setMenu] = useState<IMenu[]>([])
     const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
+    const selectedNode = localStorage.getItem('selectedNode')
+    const _selectedNode = selectedNode ? JSON.parse(selectedNode) as IMenu : null
+    const selectedPage = localStorage.getItem('selectedPage')
+    const _selectedPage = selectedPage ? JSON.parse(selectedPage) as IMenu : null
 
     useEffect(() => {
         try {
             const data = buildMenu(dataSystemOptions)
             setMenu(data)
             if (_selectedNode) {
-                localStorage.removeItem('selectedPage')
                 props.setSelectedNode(_selectedNode)
                 setModule(_selectedNode.systemOption._id)
+                props.setSelectedPage(_selectedPage)
+                if (!_selectedPage) {
+                    navigate(`/${_selectedNode.systemOption.father}/${_selectedNode.systemOption.name}`)
+                }
             } else if (data.length && data[0].children.length) {
-                localStorage.removeItem('selectedPage')
                 const selectedId = data[0].children[0].systemOption._id
                 const selectedNode = searchSelectedNode(selectedId, data)
                 props.setSelectedNode(selectedNode)
                 setModule(selectedId)
+                navigate(`/${selectedNode.systemOption.father}/${selectedNode.systemOption.name}`)
             }
         } catch (error) {
             console.error(error)
@@ -124,8 +129,8 @@ export function SelectContent(props: IProps) {
             const selectedNode = searchSelectedNode(selectedId, menu)
             props.setSelectedNode(selectedNode)
             setModule(selectedId)
-            localStorage.removeItem('selectedPage')
-            navigate('/')
+            props.setSelectedPage(null)
+            navigate(`/${selectedNode.systemOption.father}/${selectedNode.systemOption.name}`)
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })

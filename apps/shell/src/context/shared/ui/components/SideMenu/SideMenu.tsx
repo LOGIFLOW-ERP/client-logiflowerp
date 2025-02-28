@@ -55,7 +55,7 @@ export function SideMenu({ setSelectedNode, selectedNode, selectedPage, setSelec
                     backgroundColor: alpha(theme.palette.background.default, 1)
                 })}
             >
-                <SelectContent setSelectedNode={setSelectedNode} />
+                <SelectContent setSelectedNode={setSelectedNode} setSelectedPage={setSelectedPage} />
             </Box>
             <Divider />
             <Box

@@ -66,6 +66,7 @@ export const authApi = baseApi.injectEndpoints({
             transformResponse: () => {
                 localStorage.removeItem('authUser')
                 localStorage.removeItem('selectedNode')
+                localStorage.removeItem('selectedPage')
             },
             transformErrorResponse
         })
