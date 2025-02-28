@@ -2,7 +2,6 @@ import { styled, Typography } from '@mui/material'
 import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 import { IMenu } from '@shared/domain'
-import { useEffect } from 'react'
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     margin: theme.spacing(1, 0),
@@ -19,8 +18,6 @@ interface IProps {
 }
 
 export function NavbarBreadcrumbs({ selectedNode, selectedPage }: IProps) {
-
-    useEffect(()=>{console.log(selectedPage)},[selectedPage])
 
     if (!selectedNode) return <StyledBreadcrumbs></StyledBreadcrumbs>
 

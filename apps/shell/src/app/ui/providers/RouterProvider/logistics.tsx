@@ -8,11 +8,8 @@ export const childrenLogistics: RouteObject[] = [
     {
         path: 'masters',
         errorElement: <ErrorElement />,
+        Component: null,
         children: [
-            // {
-            //     path: 'product',
-            //     Component: LayoutProduct,
-            // },
             {
                 path: 'movement',
                 Component: LayoutMovement,

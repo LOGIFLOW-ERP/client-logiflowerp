@@ -119,7 +119,6 @@ export function SelectContent(props: IProps) {
         if (!selectedNode) {
             throw new Error('No se pudo obtener nodo seleccionado')
         }
-        // console.log("Nodo seleccionado:", selectedNode)
         return selectedNode
     }
 

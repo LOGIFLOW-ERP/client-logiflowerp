@@ -6,6 +6,7 @@ const LayoutProfile = lazy(() => import('@masters/profile/ui/pages/LayoutProfile
 export const childrenConfiguration: RouteObject[] = [
     {
         path: 'masters',
+        Component: null,
         children: [
             {
                 path: 'profile',
