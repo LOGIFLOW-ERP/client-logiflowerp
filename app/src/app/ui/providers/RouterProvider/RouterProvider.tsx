@@ -5,12 +5,12 @@ import { protectedLoader, publicLoader } from '@app/application'
 import { childrenConfiguration } from './configuration'
 import { childrenLogistics } from './logistics'
 
-const LayoutAuth = lazy(() => import('@processes/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
-const VerifyEmail = lazy(() => import('@processes/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
-const ResetPassword = lazy(() => import('@processes/auth/ui/pages/ResetPassword').then(mo => ({ default: mo.ResetPassword })))
-const LoginForm = lazy(() => import('@processes/auth/ui/components/LoginForm').then(mo => ({ default: mo.LoginForm })))
-const SignUpForm = lazy(() => import('@processes/auth/ui/components/SignUpForm').then(mo => ({ default: mo.SignUpForm })))
-const RequestPasswordResetForm = lazy(() => import('@processes/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
+const LayoutAuth = lazy(() => import('@processes-configuration/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
+const VerifyEmail = lazy(() => import('@processes-configuration/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
+const ResetPassword = lazy(() => import('@processes-configuration/auth/ui/pages/ResetPassword').then(mo => ({ default: mo.ResetPassword })))
+const LoginForm = lazy(() => import('@processes-configuration/auth/ui/components/LoginForm').then(mo => ({ default: mo.LoginForm })))
+const SignUpForm = lazy(() => import('@processes-configuration/auth/ui/components/SignUpForm').then(mo => ({ default: mo.SignUpForm })))
+const RequestPasswordResetForm = lazy(() => import('@processes-configuration/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
 const LayoutHome = lazy(() => import('@shared/ui/pages/LayoutHome').then(mo => ({ default: mo.LayoutHome })))
 const Dashboard = lazy(() => import('@shared/ui/pages/DashBoard').then(mo => ({ default: mo.Dashboard })))
 

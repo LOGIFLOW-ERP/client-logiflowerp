@@ -14,11 +14,11 @@
       "@app/*": [
         "./src/app/*"
       ],
-      "@processes/*": [
-        "./src/context/processes/*"
+      "@processes-configuration/*": [
+        "./src/contextConfiguration/processes/*"
       ],
-      "@masters/*": [
-        "./src/context/masters/*"
+      "@masters-configuration/*": [
+        "./src/contextConfiguration/masters/*"
       ],
       "@masters-logistics/*": [
         "./src/contextLogistics/masters/*"
