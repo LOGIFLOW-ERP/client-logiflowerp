@@ -1,1 +1,0 @@
-export { LayoutMovement } from '@masters/movement/ui/pages/LayoutMovement'
