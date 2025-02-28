@@ -5,9 +5,8 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import PersonRounded from '@mui/icons-material/PersonRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
 
 const secondaryListItems = [
     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -23,16 +22,17 @@ const iconMap: Record<string, React.ElementType> = {
 interface IProps {
     selectedNode: IMenu | null
 }
-const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
+
+const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline
+
 export function MenuContent({ selectedNode }: IProps) {
 
     const navigate = useNavigate()
     const { enqueueSnackbar } = useSnackbar()
-    const [selectedPage, setSelectedPage] = useState<IMenu | null>(null)
+    const location = useLocation()
 
     const clickSelectedPage = (item: IMenu) => {
         try {
-            setSelectedPage(item)
             navigate(`/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}`)
         } catch (error) {
             console.error(error)
@@ -54,7 +54,8 @@ export function MenuContent({ selectedNode }: IProps) {
                                     sx={{ display: 'block' }}
                                     onClick={() => clickSelectedPage(item)}
                                 >
-                                    <ListItemButton selected={selectedPage?.systemOption._id === item.systemOption._id}>
+                                    <ListItemButton selected={
+                                        `/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}` === location.pathname.replace('%20', '')}>
                                         {
                                             IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>
                                         }
