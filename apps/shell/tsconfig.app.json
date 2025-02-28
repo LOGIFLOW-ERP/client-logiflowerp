@@ -20,8 +20,11 @@
       "@masters/*": [
         "./src/context/masters/*"
       ],
+      "@masters-logistics/*": [
+        "./src/contextLogistics/masters/*"
+      ],
       "@shared/*": [
-        "./src/context/shared/*"
+        "./src/shared/*"
       ],
       "@shared/ui-library": [
         "../../packages/ui-library"

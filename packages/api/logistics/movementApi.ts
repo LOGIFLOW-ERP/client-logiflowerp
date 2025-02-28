@@ -1,11 +1,13 @@
 import { createRepository } from '../baseRepository'
 import { MovementENTITY } from 'logiflowerp-sdk'
-import { baseApi } from './baseApi';
+import { getBaseApiLogistics } from './baseApi';
 
 const schema = 'masters'
 const resource = 'movement'
 
-export const movementApi = createRepository<MovementENTITY, number>(`${schema}/${resource}`, baseApi)
+const path = `${schema}/${resource}`
+
+export const movementApi = createRepository<MovementENTITY, number>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetMovementsQuery,

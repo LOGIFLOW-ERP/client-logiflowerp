@@ -25,13 +25,13 @@ export const createRepository = <T, ID>(
         string,
         typeof coreModuleName | typeof reactHooksModuleName
     >
-) => {
+) => {    
     return baseApi.injectEndpoints({
         endpoints: (builder) => ({
             getAll: builder.query<T[], void>({
                 query: () => `${resource}`,
                 providesTags: (result) =>
-                    result ? [{ type: resource, id: 'LIST' }] : [],
+                    result ? [{ type: resource, id: `LIST${resource}` }] : [],
                 transformErrorResponse
             }),
             getById: builder.query<T, ID>({
@@ -44,7 +44,7 @@ export const createRepository = <T, ID>(
                     method: 'POST',
                     body: instanceToPlain(newItem),
                 }),
-                invalidatesTags: [{ type: resource, id: 'LIST' }],
+                invalidatesTags: [{ type: resource, id: `LIST${resource}` }],
                 transformErrorResponse
             }),
             update: builder.mutation<T, { id: string; data: Partial<T> }>({
@@ -53,7 +53,7 @@ export const createRepository = <T, ID>(
                     method: 'PUT',
                     body: instanceToPlain(data),
                 }),
-                invalidatesTags: [{ type: resource, id: 'LIST' }],
+                invalidatesTags: [{ type: resource, id: `LIST${resource}` }],
                 transformErrorResponse
             }),
             delete: builder.mutation<void, string>({
@@ -61,7 +61,7 @@ export const createRepository = <T, ID>(
                     url: `${resource}/${id}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: [{ type: resource, id: 'LIST' }],
+                invalidatesTags: [{ type: resource, id: `LIST${resource}` }],
                 transformErrorResponse
             }),
         }),

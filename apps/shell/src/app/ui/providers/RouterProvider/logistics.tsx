@@ -3,7 +3,7 @@ import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
 
 const LayoutMovement = lazy(() => import('../../../../../../logistics/src/context/masters/movement/ui/pages/LayoutMovement'))
-const LayoutProductGroup = lazy(() => import('../../../../../../logistics/src/context/masters/productGroup/ui/pages/LayoutProductGroup'))
+const LayoutProductGroup = lazy(() => import('@masters-logistics/productGroup/ui/pages/LayoutProductGroup'))
 
 export const childrenLogistics: RouteObject[] = [
     {

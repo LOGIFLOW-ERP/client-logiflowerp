@@ -1,4 +1,4 @@
-import { baseApi } from './baseApi'
+import { getBaseApiLogistics } from './baseApi'
 import { transformErrorResponse } from '../transformErrorResponse'
 import {
     CreateUserDTO,
@@ -11,6 +11,10 @@ import { instanceToPlain } from 'class-transformer'
 
 const schema = 'processes'
 const resource = 'auth'
+
+const path = `${schema}/${resource}`
+
+const baseApi = getBaseApiLogistics(path)
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
