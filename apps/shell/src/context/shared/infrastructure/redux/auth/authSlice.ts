@@ -3,11 +3,11 @@ import { setStateShared } from '../actions'
 import { AuthUserDTO, ResponseSignIn, SystemOptionENTITY } from 'logiflowerp-sdk'
 
 const authUser = localStorage.getItem('authUser')
-const user = new AuthUserDTO()
+let user = new AuthUserDTO()
 let dataSystemOptions: SystemOptionENTITY[] = []
 if (authUser) {
     const { user: _user, dataSystemOptions: _dataSystemOptions } = JSON.parse(authUser) as ResponseSignIn
-    user.set(_user)
+    user = _user
     dataSystemOptions = _dataSystemOptions
 }
 
