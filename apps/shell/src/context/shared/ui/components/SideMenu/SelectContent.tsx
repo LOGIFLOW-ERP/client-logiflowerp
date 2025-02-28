@@ -18,6 +18,7 @@ import EngineeringRounded from '@mui/icons-material/EngineeringRounded'
 import AssessmentRounded from '@mui/icons-material/AssessmentRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain'
+import { useNavigate } from 'react-router-dom'
 
 const selectedNode = localStorage.getItem('selectedNode')
 const _selectedNode = selectedNode ? JSON.parse(selectedNode) as IMenu : null
@@ -82,6 +83,7 @@ export function SelectContent(props: IProps) {
     const [module, setModule] = useState('')
     const [menu, setMenu] = useState<IMenu[]>([])
     const { enqueueSnackbar } = useSnackbar()
+    const navigate = useNavigate()
 
     useEffect(() => {
         try {
@@ -122,6 +124,8 @@ export function SelectContent(props: IProps) {
             const selectedNode = searchSelectedNode(selectedId, menu)
             props.setSelectedNode(selectedNode)
             setModule(selectedId)
+            localStorage.removeItem('selectedPage')
+            navigate('/')
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })

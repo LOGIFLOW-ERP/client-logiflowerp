@@ -101,12 +101,11 @@ const WebGreeting = r2wc((props) => (
     </StoreProvider>
 ), React, ReactDOM)
 
+if (!customElements.get("layout-movement")) {
+    customElements.define("layout-movement", WebGreeting);
+}
+
 export default function WebComponentPage() {
-    useEffect(() => {
-        if (!customElements.get("layout-movement")) {
-            customElements.define("layout-movement", WebGreeting);
-        }
-    }, []);
 
     {/* @ts-ignore */ }
     return <layout-movement style={{ width: "100%", height: "100%" }}></layout-movement>

@@ -8,9 +8,10 @@ import { IMenu } from '@shared/domain'
 
 interface IProps {
     selectedNode: IMenu | null
+    selectedPage: IMenu | null
 }
 
-export function Header({ selectedNode }: IProps) {
+export function Header({ selectedNode, selectedPage }: IProps) {
     return (
         <Stack
             direction='row'
@@ -24,7 +25,7 @@ export function Header({ selectedNode }: IProps) {
             }}
             spacing={2}
         >
-            <NavbarBreadcrumbs selectedNode={selectedNode} />
+            <NavbarBreadcrumbs selectedNode={selectedNode} selectedPage={selectedPage} />
             <Stack direction="row" sx={{ gap: 1 }}>
                 <Search />
                 <CustomDatePicker />

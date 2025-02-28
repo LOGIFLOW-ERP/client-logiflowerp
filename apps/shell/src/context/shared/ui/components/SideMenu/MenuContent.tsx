@@ -7,10 +7,6 @@ import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
-
-const selectedPage = localStorage.getItem('selectedPage')
-const _selectedPage = selectedPage ? JSON.parse(selectedPage) as IMenu : null
 
 const secondaryListItems = [
     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -25,13 +21,15 @@ const iconMap: Record<string, React.ElementType> = {
 }
 interface IProps {
     selectedNode: IMenu | null
+    setSelectedPage: React.Dispatch<React.SetStateAction<IMenu | null>>
+    selectedPage: IMenu | null
 }
 const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
-export function MenuContent({ selectedNode }: IProps) {
+export function MenuContent({ selectedNode, setSelectedPage, selectedPage }: IProps) {
 
     const navigate = useNavigate()
     const { enqueueSnackbar } = useSnackbar()
-    const [selectedPage, setSelectedPage] = useState<IMenu | null>(_selectedPage)
+
 
     const clickSelectedPage = (item: IMenu) => {
         try {

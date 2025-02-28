@@ -4,17 +4,25 @@ import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { IMenu } from '@shared/domain'
 
+const selectedPage = localStorage.getItem('selectedPage')
+const _selectedPage = selectedPage ? JSON.parse(selectedPage) as IMenu : null
+
 export function LayoutHome() {
 
     const [selectedNode, setSelectedNode] = useState<IMenu | null>(null)
     useEffect(() => {
         localStorage.setItem('selectedNode', JSON.stringify(selectedNode))
-        
     }, [selectedNode])
+    const [selectedPage, setSelectedPage] = useState<IMenu | null>(_selectedPage)
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <SideMenu selectedNode={selectedNode} setSelectedNode={setSelectedNode} />
+            <SideMenu
+                selectedNode={selectedNode}
+                setSelectedNode={setSelectedNode}
+                selectedPage={selectedPage}
+                setSelectedPage={setSelectedPage}
+            />
             <Box
                 component='main'
                 sx={(theme) => ({
@@ -32,7 +40,7 @@ export function LayoutHome() {
                         mt: { xs: 8, md: 0 },
                     }}
                 >
-                    <Header selectedNode={selectedNode} />
+                    <Header selectedNode={selectedNode} selectedPage={selectedPage} />
                     <Box
                         sx={{
                             display: 'flex',

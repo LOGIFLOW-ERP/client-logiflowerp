@@ -31,9 +31,11 @@ const CustomDrawer = styled(Drawer)({
 interface IProps {
     setSelectedNode: React.Dispatch<React.SetStateAction<IMenu | null>>
     selectedNode: IMenu | null
+    setSelectedPage: React.Dispatch<React.SetStateAction<IMenu | null>>
+    selectedPage: IMenu | null
 }
 
-export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
+export function SideMenu({ setSelectedNode, selectedNode, selectedPage, setSelectedPage }: IProps) {
 
     const { state: { user } } = useStore('auth')
 
@@ -65,7 +67,7 @@ export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
                     backgroundColor: alpha(theme.palette.background.default, 1)
                 })}
             >
-                <MenuContent selectedNode={selectedNode} />
+                <MenuContent selectedNode={selectedNode} selectedPage={selectedPage} setSelectedPage={setSelectedPage} />
             </Box>
             <Stack
                 direction='row'
