@@ -86,6 +86,7 @@ export function SelectContent(props: IProps) {
     const _selectedNode = selectedNode ? JSON.parse(selectedNode) as IMenu : null
     const selectedPage = localStorage.getItem('selectedPage')
     const _selectedPage = selectedPage ? JSON.parse(selectedPage) as IMenu : null
+    const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
         try {
@@ -145,6 +146,8 @@ export function SelectContent(props: IProps) {
             displayEmpty
             inputProps={{ 'aria-label': 'Seleccione empresa' }}
             fullWidth
+            onOpen={() => setIsOpen(true)}
+            onClose={() => setIsOpen(false)}
             sx={{
                 maxHeight: 56,
                 width: 215,
@@ -171,7 +174,7 @@ export function SelectContent(props: IProps) {
                                         <IconComponent sx={{ fontSize: '1rem' }} />
                                     </CustomAvatar>
                                 </CustomListItemAvatar>
-                                <ListItemText primary={e.systemOption.name} secondary={c.systemOption.name} />
+                                <ListItemText primary={isOpen ? '' : e.systemOption.name} secondary={c.systemOption.name} />
                             </MenuItem>
                         )
                     })
