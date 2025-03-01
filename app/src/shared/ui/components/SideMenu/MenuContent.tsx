@@ -2,7 +2,10 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } fro
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
-import PersonRounded from '@mui/icons-material/PersonRounded'
+// import PersonRounded from '@mui/icons-material/PersonRounded'
+import TransformRounded from '@mui/icons-material/TransformRounded'
+import CategoryRounded from '@mui/icons-material/CategoryRounded'
+import MonetizationOnRounded from '@mui/icons-material/MonetizationOnRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,10 +17,10 @@ const secondaryListItems = [
     { text: 'Feedback', icon: <HelpRoundedIcon /> },
 ]
 const iconMap: Record<string, React.ElementType> = {
-    User: PersonRounded,
-    // Home: Icons.Home,
-    // Settings: Icons.Settings,
-    // Dashboard: Icons.Dashboard,
+    // User: PersonRounded,
+    Movement: TransformRounded,
+    'Product Group': CategoryRounded,
+    Currency: MonetizationOnRounded,
 }
 interface IProps {
     selectedNode: IMenu | null
