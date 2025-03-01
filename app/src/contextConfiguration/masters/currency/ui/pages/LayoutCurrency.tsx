@@ -63,10 +63,9 @@ export default function LayoutCurrency() {
 		}
 	}
 
-	// const isCellEditable = (p: GridCellParams) => !['code'].includes(p.field) || p.row.isNew
 	const isCellEditable = (p: GridCellParams) => {
-		const row = p.row as CurrencyENTITY & { isNew: boolean }; // 👈 Se le añade `isNew`
-		return !(['code'] as (keyof CurrencyENTITY)[]).includes(p.field as keyof CurrencyENTITY) || row.isNew;
+		const row = p.row as CurrencyENTITY & { isNew: boolean }
+		return !(['code'] as (keyof CurrencyENTITY)[]).includes(p.field as keyof CurrencyENTITY) || row.isNew
 	}
 
 	if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />

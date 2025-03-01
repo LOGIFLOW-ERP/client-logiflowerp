@@ -1,7 +1,7 @@
 import { configureStore, Reducer } from '@reduxjs/toolkit'
 import { sharedReducer } from './sharedSlice'
 import { authReducer } from './auth'
-import { authApi, currencyApi, movementApi, productGroupApi } from '@shared/api'
+import { authApi, currencyApi, movementApi, productGroupApi, productPriceApi } from '@shared/api'
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +11,7 @@ export const store = configureStore({
         [productGroupApi.reducerPath]: productGroupApi.reducer as Reducer,
         [movementApi.reducerPath]: movementApi.reducer as Reducer,
         [currencyApi.reducerPath]: currencyApi.reducer as Reducer,
+        [productPriceApi.reducerPath]: productPriceApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -18,6 +19,7 @@ export const store = configureStore({
             .concat(productGroupApi.middleware)
             .concat(movementApi.middleware)
             .concat(currencyApi.middleware)
+            .concat(productPriceApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

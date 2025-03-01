@@ -63,7 +63,10 @@ export default function LayoutProductGroup() {
 		}
 	}
 
-	const isCellEditable = (p: GridCellParams) => !['itmsGrpCod'].includes(p.field) || p.row.isNew
+	const isCellEditable = (p: GridCellParams) => {
+		const row = p.row as ProductGroupENTITY & { isNew: boolean }
+		return !(['itmsGrpCod'] as (keyof ProductGroupENTITY)[]).includes(p.field as keyof ProductGroupENTITY) || row.isNew
+	}
 
 	if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />
 	if (error) return <CustomViewError />

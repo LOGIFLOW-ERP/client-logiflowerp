@@ -1,6 +1,9 @@
 {
     "name": "microfrontends",
     "private": true,
+    "scripts": {
+        "dev": "npm run --workspace app dev"
+    },
     "workspaces": [
         "app",
         "packages/*"

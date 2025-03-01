@@ -63,7 +63,10 @@ export default function LayoutMovement() {
         }
     }
 
-    const isCellEditable = (p: GridCellParams) => !['code'].includes(p.field) || p.row.isNew
+    const isCellEditable = (p: GridCellParams) => {
+        const row = p.row as MovementENTITY & { isNew: boolean }
+        return !(['code'] as (keyof MovementENTITY)[]).includes(p.field as keyof MovementENTITY) || row.isNew
+    }
 
     if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />
     if (error) return <CustomViewError />

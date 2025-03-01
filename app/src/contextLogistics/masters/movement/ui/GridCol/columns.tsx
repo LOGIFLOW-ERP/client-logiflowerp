@@ -14,7 +14,7 @@ interface IParams {
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
 }
 
-export const columns: (params: IParams) => GridColDef[] = (params) => {
+export const columns = <T extends GridValidRowModel,>(params: IParams): GridColDef<T>[] => {
     return [
         {
             field: 'code',
