@@ -7,6 +7,7 @@ import TransformRounded from '@mui/icons-material/TransformRounded'
 import CategoryRounded from '@mui/icons-material/CategoryRounded'
 import MonetizationOnRounded from '@mui/icons-material/MonetizationOnRounded'
 import LocalOfferRounded from '@mui/icons-material/LocalOfferRounded'
+import ScaleRounded from '@mui/icons-material/ScaleRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { IMenu } from '@shared/domain';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -23,6 +24,7 @@ const iconMap: Record<string, React.ElementType> = {
     'Product Group': CategoryRounded,
     'Product Price': LocalOfferRounded,
     Currency: MonetizationOnRounded,
+    'Unit Of Measure': ScaleRounded,
 }
 interface IProps {
     selectedNode: IMenu | null
