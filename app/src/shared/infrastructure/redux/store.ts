@@ -7,7 +7,11 @@ import {
     movementApi,
     productGroupApi,
     productPriceApi,
-    unitOfMeasureApi
+    storeApi,
+    unitOfMeasureApi,
+    companyApi,
+    rootCompanyApi,
+    systemOptionApi
 } from '@shared/api'
 
 export const store = configureStore({
@@ -20,6 +24,10 @@ export const store = configureStore({
         [currencyApi.reducerPath]: currencyApi.reducer as Reducer,
         [productPriceApi.reducerPath]: productPriceApi.reducer as Reducer,
         [unitOfMeasureApi.reducerPath]: unitOfMeasureApi.reducer as Reducer,
+        [storeApi.reducerPath]: storeApi.reducer as Reducer,
+        [companyApi.reducerPath]: companyApi.reducer as Reducer,
+        [rootCompanyApi.reducerPath]: rootCompanyApi.reducer as Reducer,
+        [systemOptionApi.reducerPath]: systemOptionApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -29,6 +37,10 @@ export const store = configureStore({
             .concat(currencyApi.middleware)
             .concat(productPriceApi.middleware)
             .concat(unitOfMeasureApi.middleware)
+            .concat(storeApi.middleware)
+            .concat(companyApi.middleware)
+            .concat(rootCompanyApi.middleware)
+            .concat(systemOptionApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

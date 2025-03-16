@@ -9,9 +9,11 @@ import MonetizationOnRounded from '@mui/icons-material/MonetizationOnRounded'
 import LocalOfferRounded from '@mui/icons-material/LocalOfferRounded'
 import ScaleRounded from '@mui/icons-material/ScaleRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
-import { IMenu } from '@shared/domain';
+import LocalConvenienceStoreRounded from '@mui/icons-material/LocalConvenienceStoreRounded'
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { MenuDTO } from 'logiflowerp-sdk'
 
 const secondaryListItems = [
     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -25,9 +27,11 @@ const iconMap: Record<string, React.ElementType> = {
     'Product Price': LocalOfferRounded,
     Currency: MonetizationOnRounded,
     'Unit Of Measure': ScaleRounded,
+    Store: LocalConvenienceStoreRounded,
+    'Root Company': BusinessRoundedIcon,
 }
 interface IProps {
-    selectedNode: IMenu | null
+    selectedNode: MenuDTO | null
 }
 
 const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline
@@ -38,9 +42,9 @@ export function MenuContent({ selectedNode }: IProps) {
     const { enqueueSnackbar } = useSnackbar()
     const location = useLocation()
 
-    const clickSelectedPage = (item: IMenu) => {
+    const clickSelectedPage = (item: MenuDTO, selectedNode: MenuDTO) => {
         try {
-            navigate(`/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}`)
+            navigate(`/${item.systemOption.prefix}/${selectedNode.systemOption.name}/${item.systemOption.name}`)
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
@@ -59,10 +63,10 @@ export function MenuContent({ selectedNode }: IProps) {
                                     key={index}
                                     disablePadding
                                     sx={{ display: 'block' }}
-                                    onClick={() => clickSelectedPage(item)}
+                                    onClick={() => clickSelectedPage(item, selectedNode)}
                                 >
                                     <ListItemButton selected={
-                                        `/${item.systemOption.prefix}/${item.systemOption.father}/${item.systemOption.name}` === location.pathname.replace('%20', ' ')}>
+                                        `/${item.systemOption.prefix}/${selectedNode.systemOption.name}/${item.systemOption.name}` === location.pathname.replaceAll('%20', ' ')}>
                                         {
                                             IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>
                                         }

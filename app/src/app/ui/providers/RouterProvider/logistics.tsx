@@ -6,6 +6,7 @@ const LayoutProductGroup = lazy(() => import('@masters-logistics/productGroup/ui
 const LayoutMovement = lazy(() => import('@masters-logistics/movement/ui/pages/LayoutMovement'))
 const LayoutProductPrice = lazy(() => import('@masters-logistics/productPrice/ui/pages/LayoutProductPrice'))
 const LayoutUnitOfMeasure = lazy(() => import('@masters-logistics/unitOfMeasure/ui/pages/LayoutUnitOfMeasure'))
+const LayoutStore = lazy(() => import('@masters-logistics/store/ui/pages/LayoutStore'))
 
 export const childrenLogistics: RouteObject[] = [
     {
@@ -28,6 +29,10 @@ export const childrenLogistics: RouteObject[] = [
             {
                 path: 'unit Of Measure',
                 Component: LayoutUnitOfMeasure,
+            },
+            {
+                path: 'store',
+                Component: LayoutStore,
             }
         ]
     },

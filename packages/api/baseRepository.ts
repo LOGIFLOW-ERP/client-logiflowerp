@@ -25,7 +25,7 @@ export const createRepository = <T, ID>(
         string,
         typeof coreModuleName | typeof reactHooksModuleName
     >
-) => {    
+) => {
     return baseApi.injectEndpoints({
         endpoints: (builder) => ({
             getAll: builder.query<T[], void>({
@@ -38,13 +38,34 @@ export const createRepository = <T, ID>(
                 query: (id) => `${resource}/${id}`,
                 transformErrorResponse
             }),
+            getPipeline: builder.query<T[], any[]>({
+                query: (pipeline) => ({
+                    url: `${resource}/find`,
+                    method: 'POST',
+                    body: pipeline
+                }),
+                transformErrorResponse
+            }),
+            getStaticPipeline: builder.query<T[], void>({
+                query: () => ({
+                    url: `${resource}/find`,
+                    method: 'POST',
+                    body: []
+                }),
+                providesTags: (result) =>
+                    result ? [{ type: resource, id: `STATIC_PIPELINE${resource}` }] : [],
+                transformErrorResponse
+            }),
             create: builder.mutation<T, Partial<T>>({
                 query: (newItem) => ({
                     url: `${resource}`,
                     method: 'POST',
                     body: instanceToPlain(newItem),
                 }),
-                invalidatesTags: [{ type: resource, id: `LIST${resource}` }],
+                invalidatesTags: [
+                    { type: resource, id: `LIST${resource}` },
+                    { type: resource, id: `STATIC_PIPELINE${resource}` },
+                ],
                 transformErrorResponse
             }),
             update: builder.mutation<T, { id: string; data: Partial<T> }>({
@@ -53,7 +74,10 @@ export const createRepository = <T, ID>(
                     method: 'PUT',
                     body: instanceToPlain(data),
                 }),
-                invalidatesTags: [{ type: resource, id: `LIST${resource}` }],
+                invalidatesTags: [
+                    { type: resource, id: `LIST${resource}` },
+                    { type: resource, id: `STATIC_PIPELINE${resource}` },
+                ],
                 transformErrorResponse
             }),
             delete: builder.mutation<void, string>({
@@ -61,7 +85,10 @@ export const createRepository = <T, ID>(
                     url: `${resource}/${id}`,
                     method: 'DELETE',
                 }),
-                invalidatesTags: [{ type: resource, id: `LIST${resource}` }],
+                invalidatesTags: [
+                    { type: resource, id: `LIST${resource}` },
+                    { type: resource, id: `STATIC_PIPELINE${resource}` },
+                ],
                 transformErrorResponse
             }),
         }),

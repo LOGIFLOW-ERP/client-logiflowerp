@@ -1,4 +1,4 @@
-import { getBaseApiLogistics } from './baseApi'
+import { getBaseApiConfiguration } from './baseApi'
 import { transformErrorResponse } from '../transformErrorResponse'
 import {
     CreateUserDTO,
@@ -14,7 +14,7 @@ const resource = 'auth'
 
 const path = `${schema}/${resource}`
 
-const baseApi = getBaseApiLogistics(path)
+const baseApi = getBaseApiConfiguration(path)
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({

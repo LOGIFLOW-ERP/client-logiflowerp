@@ -30,7 +30,7 @@ export function NavbarBreadcrumbs() {
                             variant='body1'
                             sx={pathnames.length - 1 === i ? { color: 'text.primary', fontWeight: 600 } : {}}
                         >
-                            {el.replace('%20', ' ')}
+                            {el.replaceAll('%20', ' ')}
                         </Typography>
                     ))
                 )

@@ -11,13 +11,12 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useStore } from '@shared/ui/hooks'
-import { SystemOptionENTITY } from 'logiflowerp-sdk'
+import { MenuDTO, buildMenu } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import DatasetRounded from '@mui/icons-material/DatasetRounded'
 import EngineeringRounded from '@mui/icons-material/EngineeringRounded'
 import AssessmentRounded from '@mui/icons-material/AssessmentRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
-import { IMenu } from '@shared/domain'
 import { useNavigate } from 'react-router-dom'
 
 const iconMap: Record<string, React.ElementType> = {
@@ -41,48 +40,19 @@ const CustomListItemAvatar = styled(ListItemAvatar)({
 
 const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline;
 
-const buildMenu = (dataSystemOptions: SystemOptionENTITY[]): IMenu[] => {
-    const map = new Map<string, IMenu>()
-
-    dataSystemOptions.forEach(el => {
-        map.set(`${el.name}|${el.prefix}`, { systemOption: el, children: [] })
-    })
-
-    const menu: IMenu[] = []
-
-    dataSystemOptions.forEach(el => {
-        const childKey = `${el.name}|${el.prefix}`
-        const child = map.get(childKey) as IMenu | undefined
-
-        if (!child) return
-
-        if (el.father) {
-            const parentKey = `${el.father}|${el.prefix}`
-            const parent = map.get(parentKey) as IMenu | undefined
-
-            if (parent) {
-                parent.children.push(child)
-            }
-        } else {
-            menu.push(child)
-        }
-    })
-    return menu
-}
-
 interface IProps {
-    setSelectedNode: React.Dispatch<React.SetStateAction<IMenu | null>>
+    setSelectedNode: React.Dispatch<React.SetStateAction<MenuDTO | null>>
 }
 
 export function SelectContent(props: IProps) {
 
     const { state: { dataSystemOptions } } = useStore('auth')
     const [module, setModule] = useState('')
-    const [menu, setMenu] = useState<IMenu[]>([])
+    const [menu, setMenu] = useState<MenuDTO[]>([])
     const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
     const selectedNode = localStorage.getItem('selectedNode')
-    const _selectedNode = selectedNode ? JSON.parse(selectedNode) as IMenu : null
+    const _selectedNode = selectedNode ? JSON.parse(selectedNode) as MenuDTO : null
     const [isOpen, setIsOpen] = useState(false)
 
     useEffect(() => {
@@ -105,7 +75,7 @@ export function SelectContent(props: IProps) {
         }
     }, [dataSystemOptions])
 
-    const searchSelectedNode = (_id: string, menu: IMenu[]) => {
+    const searchSelectedNode = (_id: string, menu: MenuDTO[]) => {
         const selectedNode = menu
             .flatMap(e => [e, ...e.children])
             .find(item => item.systemOption._id === _id)
