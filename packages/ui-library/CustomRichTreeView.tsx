@@ -119,7 +119,7 @@ export function CustomRichTreeView(props: IProps) {
 	}
 
 	return (
-		<Box sx={{ minHeight: 352, minWidth: 290 }} marginY={2}>
+		<Box sx={{ minHeight: 200, minWidth: 300 }} marginY={2}>
 			<RichTreeView
 				multiSelect
 				checkboxSelection

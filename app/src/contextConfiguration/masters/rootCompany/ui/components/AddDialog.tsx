@@ -21,7 +21,7 @@ export function AddDialog(props: IProps) {
         handleSubmit,
         formState: { errors },
         register, control
-    } = useForm({ resolver, defaultValues: { ...new CreateRootCompanyPERDTO() } })
+    } = useForm({ resolver, defaultValues: { ...new CreateRootCompanyPERDTO(), country: 'PER' } })
     const { enqueueSnackbar } = useSnackbar()
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const filtersSystemOptions = [{ $match: { root: false } }]
@@ -43,7 +43,7 @@ export function AddDialog(props: IProps) {
 
     if (isLoadingSystemOptions) return <CustomViewLoading />
     if (errorSystemOptions) return <CustomViewError />
- 
+
     return (
         <CustomDialog
             open={open}
@@ -126,14 +126,14 @@ export function AddDialog(props: IProps) {
                     helperText={errors.website?.message}
                 />
                 <TextField
-                    label='Gerente'
+                    label='ID Gerente'
                     variant='outlined'
                     fullWidth
                     margin='normal'
                     size='small'
-                    {...register('manager')}
-                    error={!!errors.manager}
-                    helperText={errors.manager?.message}
+                    {...register('identityManager')}
+                    error={!!errors.identityManager}
+                    helperText={errors.identityManager?.message}
                 />
                 <CustomRichTreeView
                     selectedItems={selectedItems}

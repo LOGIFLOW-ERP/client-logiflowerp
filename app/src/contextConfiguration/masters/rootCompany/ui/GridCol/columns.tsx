@@ -53,8 +53,8 @@ export const columns = <T extends GridValidRowModel,>(): GridColDef<T>[] => {
             width: 100,
         },
         {
-            field: 'manager',
-            headerName: 'Gerente',
+            field: 'identityManager',
+            headerName: 'ID Gerente',
             width: 100,
         },
         {
