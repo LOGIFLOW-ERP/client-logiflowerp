@@ -14,5 +14,4 @@ export const {
     useGetByIdQuery: useGetRootCompanyByIdQuery,
     useCreateMutation: useCreateRootCompanyMutation,
     useUpdateMutation: useUpdateRootCompanyMutation,
-    useDeleteMutation: useDeleteRootCompanyMutation,
 } = rootCompanyApi;

@@ -1,11 +1,18 @@
 import {
-    GridColDef,
-    GridValidRowModel
+    GridActionsCellItem,
+    GridColDef
 } from '@mui/x-data-grid'
-import { getDataState } from 'logiflowerp-sdk'
+import { getDataState, RootCompanyENTITY, State } from 'logiflowerp-sdk'
 import { CustomStatus } from '@shared/ui-library'
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
+import EditIcon from '@mui/icons-material/Edit'
 
-export const columns = <T extends GridValidRowModel,>(): GridColDef<T>[] => {
+interface IParams {
+    handleChangeStatusClick: (row: RootCompanyENTITY) => void
+}
+
+export const columns = (params: IParams): GridColDef<RootCompanyENTITY>[] => {
+    const { handleChangeStatusClick } = params
     return [
         {
             field: 'code',
@@ -15,17 +22,17 @@ export const columns = <T extends GridValidRowModel,>(): GridColDef<T>[] => {
         {
             field: 'ruc',
             headerName: 'RUC',
-            width: 90,
+            width: 110,
         },
         {
             field: 'companyname',
             headerName: 'Nombre',
-            width: 180,
+            width: 220,
         },
         {
             field: 'suppliertype',
             headerName: 'Tipo',
-            width: 100,
+            width: 80,
         },
         {
             field: 'email',
@@ -70,8 +77,27 @@ export const columns = <T extends GridValidRowModel,>(): GridColDef<T>[] => {
             renderCell: CustomStatus,
             type: 'singleSelect',
             valueOptions: getDataState(),
-            width: 150,
+            width: 100,
             editable: true,
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            width: 50,
+            getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<ChangeCircleIcon />}
+                    label={params.row.state === State.ACTIVO ? 'Desactivar' : 'Activar'}
+                    onClick={() => handleChangeStatusClick(params.row)}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={<EditIcon />}
+                    label='Editar'
+                    onClick={() => console.log(params.id)}
+                    showInMenu
+                />
+            ],
         },
     ]
 }
