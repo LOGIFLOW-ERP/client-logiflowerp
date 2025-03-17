@@ -9,10 +9,11 @@ import EditIcon from '@mui/icons-material/Edit'
 
 interface IParams {
     handleChangeStatusClick: (row: RootCompanyENTITY) => void
+    handleEditClick: (row: RootCompanyENTITY) => void
 }
 
 export const columns = (params: IParams): GridColDef<RootCompanyENTITY>[] => {
-    const { handleChangeStatusClick } = params
+    const { handleChangeStatusClick, handleEditClick } = params
     return [
         {
             field: 'code',
@@ -94,7 +95,7 @@ export const columns = (params: IParams): GridColDef<RootCompanyENTITY>[] => {
                 <GridActionsCellItem
                     icon={<EditIcon />}
                     label='Editar'
-                    onClick={() => console.log(params.id)}
+                    onClick={() => handleEditClick(params.row)}
                     showInMenu
                 />
             ],

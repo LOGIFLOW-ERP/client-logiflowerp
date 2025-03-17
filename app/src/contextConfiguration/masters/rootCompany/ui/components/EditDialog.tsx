@@ -1,38 +1,40 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { CustomDialog, CustomRichTreeView, CustomSelect, CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { Controller, useForm } from 'react-hook-form'
-import { buildMenu, CreateRootCompanyPERDTO, dataCountry, getDataSupplier, State } from 'logiflowerp-sdk'
+import { buildMenu, UpdateRootCompanyDTO, getDataSupplier, RootCompanyENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, TextField } from '@mui/material'
-import { useCreateRootCompanyMutation, useGetSystemOptionsPipelineQuery } from '@shared/api'
-import { useState } from 'react'
+import { useGetSystemOptionsPipelineQuery, useUpdateRootCompanyMutation } from '@shared/api'
+import { useEffect, useState } from 'react'
 
-const resolver = classValidatorResolver(CreateRootCompanyPERDTO)
+const resolver = classValidatorResolver(UpdateRootCompanyDTO)
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
+    row: RootCompanyENTITY
 }
 
-export function AddDialog(props: IProps) {
+export function EditDialog(props: IProps) {
 
-    const { open, setOpen } = props
+    const { open, setOpen, row } = props
     const {
         handleSubmit,
         formState: { errors },
         register, control
-    } = useForm({ resolver, defaultValues: { ...new CreateRootCompanyPERDTO(), country: 'PER' } })
+    } = useForm({ resolver, defaultValues: { ...row } })
     const { enqueueSnackbar } = useSnackbar()
     const [selectedItems, setSelectedItems] = useState<string[]>([])
     const filtersSystemOptions = [{ $match: { root: false } }]
     const { data: dataSystemOptions, error: errorSystemOptions, isLoading: isLoadingSystemOptions } = useGetSystemOptionsPipelineQuery(filtersSystemOptions)
-    const [create, { isLoading }] = useCreateRootCompanyMutation()
+    const [update, { isLoading }] = useUpdateRootCompanyMutation()
+    useEffect(() => setSelectedItems(row.systemOptions), [row])
 
-    const onSubmit = async (data: CreateRootCompanyPERDTO) => {
+    const onSubmit = async (data: UpdateRootCompanyDTO) => {
         try {
             data.systemOptions = selectedItems
-            await create(data).unwrap()
-            enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
+            await update({ id: row._id, data }).unwrap()
+            enqueueSnackbar({ message: 'Actualizado correctamente!', variant: 'success' })
             setOpen(false)
         } catch (error: any) {
             console.log(error)
@@ -47,36 +49,9 @@ export function AddDialog(props: IProps) {
         <CustomDialog
             open={open}
             setOpen={setOpen}
-            title='AGREGAR'
+            title={`EDITAR (${row.companyname})`}
         >
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Controller
-                    name='country'
-                    control={control}
-                    render={({ field }) => (
-                        <CustomSelect
-                            label='País'
-                            options={dataCountry.filter(e => e.estado === State.ACTIVO)}
-                            {...field}
-                            labelKey='nombre'
-                            valueKey='alfa3'
-                            margin='normal'
-                            error={!!errors.country}
-                            helperText={errors.country?.message}
-                        />
-                    )}
-                />
-                <TextField
-                    label='RUC'
-                    autoFocus
-                    variant='outlined'
-                    fullWidth
-                    margin='normal'
-                    size='small'
-                    {...register('ruc')}
-                    error={!!errors.ruc}
-                    helperText={errors.ruc?.message}
-                />
                 <Controller
                     name='suppliertype'
                     control={control}

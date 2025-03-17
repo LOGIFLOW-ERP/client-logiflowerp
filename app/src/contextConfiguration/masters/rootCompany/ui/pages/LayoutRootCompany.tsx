@@ -11,20 +11,33 @@ import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
+const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
 export default function LayoutRootCompany() {
 
 	const [rows, setRows] = useState<readonly RootCompanyENTITY[]>([])
-	const [open, setOpen] = useState(false)
+	const [openAdd, setOpenAdd] = useState(false)
+	const [openEdit, setOpenEdit] = useState(false)
+	const [selectedRow, setSelectedRow] = useState<RootCompanyENTITY>()
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetRootCompaniesQuery()
 	const [updateRootCompany, { isLoading: isLoadingUpdate }] = useUpdateRootCompanyMutation()
 	useEffect(() => data && setRows(data), [data])
 
-	const handleClick = () => {
+	const handleAddClick = () => {
 		try {
-			setOpen(true)
+			setOpenAdd(true)
+		} catch (error: any) {
+			console.error(error)
+			enqueueSnackbar({ message: error.message, variant: 'error' })
+		}
+	}
+
+	const handleEditClick = (row: RootCompanyENTITY) => {
+		try {
+			setSelectedRow(row)
+			setOpenEdit(true)
 		} catch (error: any) {
 			console.error(error)
 			enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -52,17 +65,26 @@ export default function LayoutRootCompany() {
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<RootCompanyENTITY>
 					rows={rows}
-					columns={columns({ handleChangeStatusClick })}
+					columns={columns({ handleChangeStatusClick, handleEditClick })}
 					disableRowSelectionOnClick
-					slots={{ toolbar: () => <CustomToolbar handleClickAdd={handleClick} /> }}
+					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 					getRowId={row => row._id}
 				/>
 			</Box>
 			{
-				open && (
+				openAdd && (
 					<AddDialog
-						open={open}
-						setOpen={setOpen}
+						open={openAdd}
+						setOpen={setOpenAdd}
+					/>
+				)
+			}
+			{
+				(openEdit && selectedRow) && (
+					<EditDialog
+						open={openEdit}
+						setOpen={setOpenEdit}
+						row={selectedRow}
 					/>
 				)
 			}
