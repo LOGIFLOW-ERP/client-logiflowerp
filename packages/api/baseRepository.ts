@@ -64,6 +64,7 @@ export const createRepository = <T, ID>(
                 }),
                 invalidatesTags: [
                     { type: resource, id: `LIST${resource}` },
+                    { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                 ],
                 transformErrorResponse
@@ -76,6 +77,7 @@ export const createRepository = <T, ID>(
                 }),
                 invalidatesTags: [
                     { type: resource, id: `LIST${resource}` },
+                    { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                 ],
                 transformErrorResponse
@@ -87,6 +89,7 @@ export const createRepository = <T, ID>(
                 }),
                 invalidatesTags: [
                     { type: resource, id: `LIST${resource}` },
+                    { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                 ],
                 transformErrorResponse

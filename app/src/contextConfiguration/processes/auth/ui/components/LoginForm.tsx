@@ -1,11 +1,12 @@
 import { Box, Button, CircularProgress, Divider, Link, TextField } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { SignInDTO } from 'logiflowerp-sdk'
-import { useSignInMutation } from '@shared/api'
+import { useGetActiveRootCompaniesQuery, useSignInMutation } from '@shared/api'
 import { useStore } from '@shared/ui/hooks'
 import { useSnackbar } from 'notistack'
+import { CustomSelect, CustomViewError, CustomViewLoading } from '@shared/ui-library'
 
 const resolver = classValidatorResolver(SignInDTO)
 
@@ -13,16 +14,20 @@ export function LoginForm() {
 
     const navigate = useNavigate()
     const { actions: { setState } } = useStore('auth')
+    const companyCode = localStorage.getItem('companyCode') ?? ''
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({ resolver })
+        control
+    } = useForm({ resolver, defaultValues: { companyCode } })
     const [signIn, { isLoading }] = useSignInMutation()
+    const { data: dataRootCompanies, error: errorRootCompanies, isLoading: isLoadingRootCompanies } = useGetActiveRootCompaniesQuery()
     const { enqueueSnackbar } = useSnackbar()
 
     const onSubmit = async (data: SignInDTO) => {
         try {
+            localStorage.setItem('companyCode', data.companyCode)
             const { user, dataSystemOptions } = await signIn(data).unwrap()
             setState({ isAuthenticated: true, user, dataSystemOptions })
             navigate('/')
@@ -32,8 +37,27 @@ export function LoginForm() {
         }
     }
 
+    if (isLoadingRootCompanies) return <CustomViewLoading />
+    if (errorRootCompanies) return <CustomViewError />
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+                name='companyCode'
+                control={control}
+                render={({ field }) => (
+                    <CustomSelect
+                        label='Empresa'
+                        options={dataRootCompanies ?? []}
+                        {...field}
+                        labelKey='companyname'
+                        valueKey='code'
+                        margin='normal'
+                        error={!!errors.companyCode}
+                        helperText={errors.companyCode?.message}
+                    />
+                )}
+            />
             <TextField
                 label='Correo electrónico'
                 variant='outlined'
