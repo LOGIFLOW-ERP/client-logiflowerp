@@ -13,7 +13,7 @@ import { SelectContent } from './SelectContent'
 import { MenuContent } from './MenuContent'
 import { OptionsMenu } from './OptionsMenu'
 import { useStore } from '@shared/ui/hooks'
-import { IMenu } from '@shared/domain'
+import { MenuDTO } from 'logiflowerp-sdk'
 
 const drawerWidth = 240
 
@@ -29,8 +29,8 @@ const CustomDrawer = styled(Drawer)({
 })
 
 interface IProps {
-    setSelectedNode: React.Dispatch<React.SetStateAction<IMenu | null>>
-    selectedNode: IMenu | null
+    setSelectedNode: React.Dispatch<React.SetStateAction<MenuDTO | null>>
+    selectedNode: MenuDTO | null
 }
 
 export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
@@ -84,11 +84,30 @@ export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
                     // src='/static/images/avatar/7.jpg'
                     sx={{ width: 36, height: 36 }}
                 />
-                <Box sx={{ mr: 'auto' }}>
-                    <Typography variant='body2' sx={{ fontWeight: 500, lineHeight: '16px' }}>
+                <Box
+                    sx={{
+                        mr: 'auto', overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
+                    <Typography
+                        variant='body2'
+                        sx={{
+                            fontWeight: 500,
+                            lineHeight: '16px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                        }}
+                    >
                         {user.names}
                     </Typography>
-                    <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                    <Typography
+                        variant='caption'
+                        sx={{
+                            color: 'text.secondary'
+                        }}
+                    >
                         {user.email}
                     </Typography>
                 </Box>

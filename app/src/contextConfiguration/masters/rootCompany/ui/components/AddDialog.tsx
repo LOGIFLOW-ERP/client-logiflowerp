@@ -1,5 +1,5 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomRichTreeView, CustomSelect, CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomRichTreeView, CustomSelect } from '@shared/ui-library'
 import { Controller, useForm } from 'react-hook-form'
 import { buildMenu, CreateRootCompanyPERDTO, dataCountry, getDataSupplier, State } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
@@ -40,8 +40,8 @@ export function AddDialog(props: IProps) {
         }
     }
 
-    if (isLoadingSystemOptions) return <CustomViewLoading />
-    if (errorSystemOptions) return <CustomViewError />
+    if (isLoadingSystemOptions) return <CustomDialogLoading open={open} setOpen={setOpen} />
+    if (errorSystemOptions) return <CustomDialogError open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog

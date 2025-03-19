@@ -10,7 +10,8 @@ import LocalOfferRounded from '@mui/icons-material/LocalOfferRounded'
 import ScaleRounded from '@mui/icons-material/ScaleRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import LocalConvenienceStoreRounded from '@mui/icons-material/LocalConvenienceStoreRounded'
-import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded'
+import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { MenuDTO } from 'logiflowerp-sdk'
@@ -29,6 +30,7 @@ const iconMap: Record<string, React.ElementType> = {
     'Unit Of Measure': ScaleRounded,
     Store: LocalConvenienceStoreRounded,
     'Root Company': BusinessRoundedIcon,
+    'Profile': AdminPanelSettingsRoundedIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null

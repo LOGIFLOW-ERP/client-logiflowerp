@@ -4,5 +4,7 @@ export * from './CustomSelect';
 export * from './CustomViewError';
 export * from './CustomViewLoading';
 export * from './CustomDialog';
+export * from './CustomDialogError';
+export * from './CustomDialogLoading';
 export * from './CustomStatus';
 export * from './CustomRichTreeView';

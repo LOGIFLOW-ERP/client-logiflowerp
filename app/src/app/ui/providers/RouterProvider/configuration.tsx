@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router-dom'
 
 const LayoutCurrency = lazy(() => import('@masters-configuration/currency/ui/pages/LayoutCurrency'))
 const LayoutRootCompany = lazy(() => import('@masters-configuration/rootCompany/ui/pages/LayoutRootCompany'))
+const LayoutProfile = lazy(() => import('@masters-configuration/profile/ui/pages/LayoutProfile'))
 
 export const childrenConfiguration: RouteObject[] = [
     {
@@ -16,6 +17,10 @@ export const childrenConfiguration: RouteObject[] = [
             {
                 path: 'root company',
                 Component: LayoutRootCompany,
+            },
+            {
+                path: 'profile',
+                Component: LayoutProfile,
             },
         ]
     },
