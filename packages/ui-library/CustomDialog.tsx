@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material'
+import { Dialog, DialogContent, DialogProps, DialogTitle, IconButton } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import CloseIcon from '@mui/icons-material/Close'
 
@@ -17,17 +17,19 @@ interface IProps {
 	open: boolean
 	title: string
 	children: React.ReactNode
+	maxWidth?: DialogProps['maxWidth']
 }
 
 export function CustomDialog(props: IProps) {
 
-	const { open, setOpen, title, children } = props
+	const { open, setOpen, title, children, maxWidth } = props
 
 	return (
 		<BootstrapDialog
 			onClose={() => setOpen(false)}
 			aria-labelledby="customized-dialog-title"
 			open={open}
+			maxWidth={maxWidth}
 		>
 			<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
 				{title}

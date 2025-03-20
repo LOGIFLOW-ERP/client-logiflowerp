@@ -7,7 +7,7 @@ const resource = 'company'
 
 const path = `${schema}/${resource}`
 
-export const companyApi = createRepository<CompanyENTITY, number>(path, getBaseApiConfiguration(path))
+export const companyApi = createRepository<CompanyENTITY, string>(path, getBaseApiConfiguration(path))
 
 export const {
     useGetAllQuery: useGetCompaniesQuery,

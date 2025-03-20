@@ -7,7 +7,7 @@ const resource = 'profile'
 
 const path = `${schema}/${resource}`
 
-export const profileApi = createRepository<ProfileENTITY, number>(path, getBaseApiConfiguration(path))
+export const profileApi = createRepository<ProfileENTITY, string>(path, getBaseApiConfiguration(path))
 
 export const {
     useGetAllQuery: useGetProfilesQuery,

@@ -1,7 +1,7 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { CustomDialog, CustomRichTreeView } from '@shared/ui-library'
 import { useForm } from 'react-hook-form'
-import { buildMenu, CreateProfileDTO } from 'logiflowerp-sdk'
+import { CreateProfileDTO, buildMenu } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, TextField } from '@mui/material'
 import { useCreateProfileMutation } from '@shared/api'

@@ -69,7 +69,7 @@ export const createRepository = <T, ID>(
                 ],
                 transformErrorResponse
             }),
-            update: builder.mutation<T, { id: string; data: Partial<T> }>({
+            update: builder.mutation<T, { id: ID; data: Partial<T> }>({
                 query: ({ id, data }) => ({
                     url: `${resource}/${id}`,
                     method: 'PUT',
@@ -82,7 +82,7 @@ export const createRepository = <T, ID>(
                 ],
                 transformErrorResponse
             }),
-            delete: builder.mutation<void, string>({
+            delete: builder.mutation<void, ID>({
                 query: (id) => ({
                     url: `${resource}/${id}`,
                     method: 'DELETE',

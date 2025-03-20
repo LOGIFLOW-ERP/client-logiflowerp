@@ -7,7 +7,7 @@ const resource = 'currency'
 
 const path = `${schema}/${resource}`
 
-export const currencyApi = createRepository<CurrencyENTITY, number>(path, getBaseApiConfiguration(path))
+export const currencyApi = createRepository<CurrencyENTITY, string>(path, getBaseApiConfiguration(path))
 
 export const {
     useGetAllQuery: useGetCurrenciesQuery,

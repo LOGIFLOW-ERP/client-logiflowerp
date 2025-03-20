@@ -8,7 +8,7 @@ const resource = 'rootcompany'
 
 const path = `${schema}/${resource}`
 
-export const rootCompanyApi = createRepository<RootCompanyENTITY, number>(path, getBaseApiConfiguration(path))
+export const rootCompanyApi = createRepository<RootCompanyENTITY, string>(path, getBaseApiConfiguration(path))
     .injectEndpoints({
         endpoints: (builder) => ({
             getActive: builder.query<RootCompanyENTITY[], void>({

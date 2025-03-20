@@ -12,7 +12,9 @@ import {
     companyApi,
     rootCompanyApi,
     systemOptionApi,
-    profileApi
+    profileApi,
+    personnelApi,
+    rootUserApi
 } from '@shared/api'
 
 export const store = configureStore({
@@ -30,6 +32,8 @@ export const store = configureStore({
         [rootCompanyApi.reducerPath]: rootCompanyApi.reducer as Reducer,
         [systemOptionApi.reducerPath]: systemOptionApi.reducer as Reducer,
         [profileApi.reducerPath]: profileApi.reducer as Reducer,
+        [personnelApi.reducerPath]: personnelApi.reducer as Reducer,
+        [rootUserApi.reducerPath]: rootUserApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -44,6 +48,8 @@ export const store = configureStore({
             .concat(rootCompanyApi.middleware)
             .concat(systemOptionApi.middleware)
             .concat(profileApi.middleware)
+            .concat(personnelApi.middleware)
+            .concat(rootUserApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

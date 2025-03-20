@@ -7,7 +7,7 @@ const resource = 'rootsystemoption'
 
 const path = `${schema}/${resource}`
 
-export const systemOptionApi = createRepository<SystemOptionENTITY, number>(path, getBaseApiConfiguration(path))
+export const systemOptionApi = createRepository<SystemOptionENTITY, string>(path, getBaseApiConfiguration(path))
 
 export const {
     useGetAllQuery: useGetSystemOptionsQuery,
