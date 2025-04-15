@@ -33,7 +33,6 @@ export default function LayoutMovement() {
     const processRowUpdate = async (newRow: GridRowModel) => {
         const { isNew } = newRow
         const updatedRow = { ...newRow, isNew: false }
-        console.log('qqqq')
         try {
             if (isNew) {
                 const body = await validateCustom(newRow, CreateMovementDTO, Error)
