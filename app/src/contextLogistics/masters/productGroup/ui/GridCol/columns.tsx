@@ -5,6 +5,7 @@ import {
     GridValidRowModel
 } from '@mui/x-data-grid'
 import { RowActions } from '@shared/ui-library'
+import { ProductGroupENTITY } from 'logiflowerp-sdk'
 
 interface IParams {
     handleDeleteClick: (id: GridRowId) => () => void
@@ -14,7 +15,7 @@ interface IParams {
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
 }
 
-export const columns = <T extends GridValidRowModel,>(params: IParams): GridColDef<T>[] => {
+export const columns = (params: IParams): GridColDef<ProductGroupENTITY>[] => {
     return [
         {
             field: 'itmsGrpCod',

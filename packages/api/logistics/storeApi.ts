@@ -7,7 +7,7 @@ const resource = 'store'
 
 const path = `${schema}/${resource}`
 
-export const storeApi = createRepository<StoreENTITY, number>(path, getBaseApiLogistics(path))
+export const storeApi = createRepository<StoreENTITY, string>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetStoresQuery,

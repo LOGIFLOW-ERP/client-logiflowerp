@@ -7,7 +7,7 @@ const resource = 'productPrice'
 
 const path = `${schema}/${resource}`
 
-export const productPriceApi = createRepository<ProductPriceENTITY, number>(path, getBaseApiLogistics(path))
+export const productPriceApi = createRepository<ProductPriceENTITY, string>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetProductPricesQuery,

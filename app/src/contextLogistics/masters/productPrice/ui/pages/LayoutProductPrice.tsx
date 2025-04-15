@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CreateProductPriceDTO, CurrencyDTO, ProductPriceENTITY, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
+import { CreateProductPriceDTO, ProductPriceENTITY, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
 import {
 	GridCellParams,
 	GridRowId,
@@ -23,7 +23,7 @@ export default function LayoutProductPrice() {
 	const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
 	const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
 	const newRowTemplate: Partial<ProductPriceENTITY & { fieldToFocus: keyof ProductPriceENTITY, currencyCode: string }> = {
-		fieldToFocus: 'itemCode', price: 0, currencyCode: '', currency: new CurrencyDTO()
+		fieldToFocus: 'itemCode', ...new ProductPriceENTITY()
 	}
 
 	const { enqueueSnackbar } = useSnackbar()
@@ -32,7 +32,7 @@ export default function LayoutProductPrice() {
 	const [createProductPrice, { isLoading: isLoadingCreate }] = useCreateProductPriceMutation()
 	const [updateProductPrice, { isLoading: isLoadingUpdate }] = useUpdateProductPriceMutation()
 	const [deleteProductPrice, { isLoading: isLoadingDelete }] = useDeleteProductPriceMutation()
-	useEffect(() => data && setRows(data.map(e => ({ ...e, id: e._id, currencyCode: e.currency.code }))), [data])
+	useEffect(() => data && setRows(data), [data])
 
 	const processRowUpdate = async (newRow: GridRowModel) => {
 		const { isNew } = newRow
@@ -42,12 +42,10 @@ export default function LayoutProductPrice() {
 				const body = await validateCustom(newRow, CreateProductPriceDTO, Error)
 				await createProductPrice(body).unwrap()
 			} else {
-				const dto = new UpdateProductPriceDTO()
-				dto.set(newRow)
-				const body = await validateCustom(dto, UpdateProductPriceDTO, Error)
-				await updateProductPrice({ id: newRow.id, data: body }).unwrap()
+				const body = await validateCustom(newRow, UpdateProductPriceDTO, Error)
+				await updateProductPrice({ id: newRow._id, data: body }).unwrap()
 			}
-			setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+			// setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
 			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
 			return updatedRow
 		} catch (error: any) {
@@ -59,7 +57,7 @@ export default function LayoutProductPrice() {
 	const handleDeleteClick = (id: GridRowId) => async () => {
 		try {
 			await deleteProductPrice(id as string).unwrap()
-			setRows(rows.filter((row) => row.id !== id))
+			// setRows(rows.filter((row) => row.id !== id))
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
 		} catch (error: any) {
 			console.error(error)

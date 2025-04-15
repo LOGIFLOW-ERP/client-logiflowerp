@@ -45,9 +45,9 @@ export const RowActions: React.FC<RowActionsProps> = ({
             [id]: { mode: GridRowModes.View, ignoreModifications: true }
         })
 
-        const editedRow = rows.find((row) => row.id === id)
+        const editedRow = rows.find((row) => row._id === id)
         if (editedRow!.isNew) {
-            setRows(rows.filter((row) => row.id !== id))
+            setRows(rows.filter((row) => row._id !== id))
         }
     }
 

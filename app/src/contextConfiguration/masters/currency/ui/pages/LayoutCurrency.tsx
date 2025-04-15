@@ -28,7 +28,7 @@ export default function LayoutCurrency() {
 	const [createCurrency, { isLoading: isLoadingCreate }] = useCreateCurrencyMutation()
 	const [updateCurrency, { isLoading: isLoadingUpdate }] = useUpdateCurrencyMutation()
 	const [deleteCurrency, { isLoading: isLoadingDelete }] = useDeleteCurrencyMutation()
-	useEffect(() => data && setRows(data.map(e => ({ ...e, id: e._id }))), [data])
+	useEffect(() => data && setRows(data), [data])
 
 	const processRowUpdate = async (newRow: GridRowModel) => {
 		const { isNew } = newRow
@@ -38,12 +38,10 @@ export default function LayoutCurrency() {
 				const body = await validateCustom(newRow, CreateCurrencyDTO, Error)
 				await createCurrency(body).unwrap()
 			} else {
-				const dto = new UpdateCurrencyDTO()
-				dto.set(newRow)
-				const body = await validateCustom(dto, UpdateCurrencyDTO, Error)
-				await updateCurrency({ id: newRow.id, data: body }).unwrap()
+				const body = await validateCustom(newRow, UpdateCurrencyDTO, Error)
+				await updateCurrency({ id: newRow._id, data: body }).unwrap()
 			}
-			setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+			// setRows(rows.map((row) => (row.id === newRow._id ? updatedRow : row)))
 			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
 			return updatedRow
 		} catch (error: any) {
@@ -55,7 +53,7 @@ export default function LayoutCurrency() {
 	const handleDeleteClick = (id: GridRowId) => async () => {
 		try {
 			await deleteCurrency(id as string).unwrap()
-			setRows(rows.filter((row) => row.id !== id))
+			// setRows(rows.filter((row) => row.id !== id))
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
 		} catch (error: any) {
 			console.error(error)

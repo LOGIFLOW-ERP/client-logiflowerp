@@ -7,7 +7,7 @@ const resource = 'productGroup'
 
 const path = `${schema}/${resource}`
 
-export const productGroupApi = createRepository<ProductGroupENTITY, number>(path, getBaseApiLogistics(path))
+export const productGroupApi = createRepository<ProductGroupENTITY, string>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetProductGroupsQuery,

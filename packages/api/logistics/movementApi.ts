@@ -7,7 +7,7 @@ const resource = 'movement'
 
 const path = `${schema}/${resource}`
 
-export const movementApi = createRepository<MovementENTITY, number>(path, getBaseApiLogistics(path))
+export const movementApi = createRepository<MovementENTITY, string>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetMovementsQuery,

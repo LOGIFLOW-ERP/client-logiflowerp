@@ -32,15 +32,15 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
     const { setRows, setRowModesModel, newRowTemplate } = props;
 
     const handleClick = () => {
-        const id = crypto.randomUUID()
+        const _id = crypto.randomUUID()
         const { fieldToFocus, ...rowData } = newRowTemplate
         setRows((oldRows) => [
             ...oldRows,
-            { id, ...rowData, _id: id, isNew: true },
+            { ...rowData, _id, isNew: true },
         ]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus },
+            [_id]: { mode: GridRowModes.Edit, fieldToFocus },
         }));
     };
 
@@ -117,6 +117,7 @@ export function CustomDataGrid(props: IProps) {
                     console.error("Error en la actualización de fila:", error)
                 }}
                 isCellEditable={isCellEditable}
+                getRowId={row => row._id}
             />
         </Box>
     )

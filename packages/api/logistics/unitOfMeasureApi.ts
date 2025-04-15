@@ -7,7 +7,7 @@ const resource = 'unitOfMeasure'
 
 const path = `${schema}/${resource}`
 
-export const unitOfMeasureApi = createRepository<UnitOfMeasureENTITY, number>(path, getBaseApiLogistics(path))
+export const unitOfMeasureApi = createRepository<UnitOfMeasureENTITY, string>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetUnitOfMeasuresQuery,

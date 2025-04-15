@@ -28,7 +28,7 @@ export default function LayoutProductGroup() {
 	const [createProductGroup, { isLoading: isLoadingCreate }] = useCreateProductGroupMutation()
 	const [updateProductGroup, { isLoading: isLoadingUpdate }] = useUpdateProductGroupMutation()
 	const [deleteProductGroup, { isLoading: isLoadingDelete }] = useDeleteProductGroupMutation()
-	useEffect(() => data && setRows(data.map(e => ({ ...e, id: e._id }))), [data])
+	useEffect(() => data && setRows(data), [data])
 
 	const processRowUpdate = async (newRow: GridRowModel) => {
 		const { isNew } = newRow
@@ -38,12 +38,10 @@ export default function LayoutProductGroup() {
 				const body = await validateCustom(newRow, CreateProductGroupDTO, Error)
 				await createProductGroup(body).unwrap()
 			} else {
-				const dto = new UpdateProductGroupDTO()
-				dto.set(newRow)
-				const body = await validateCustom(dto, UpdateProductGroupDTO, Error)
-				await updateProductGroup({ id: newRow.id, data: body }).unwrap()
+				const body = await validateCustom(newRow, UpdateProductGroupDTO, Error)
+				await updateProductGroup({ id: newRow._id, data: body }).unwrap()
 			}
-			setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+			// setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
 			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
 			return updatedRow
 		} catch (error: any) {
@@ -55,7 +53,7 @@ export default function LayoutProductGroup() {
 	const handleDeleteClick = (id: GridRowId) => async () => {
 		try {
 			await deleteProductGroup(id as string).unwrap()
-			setRows(rows.filter((row) => row.id !== id))
+			// setRows(rows.filter((row) => row.id !== id))
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
 		} catch (error: any) {
 			console.error(error)

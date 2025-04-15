@@ -30,7 +30,7 @@ export default function LayoutUnitOfMeasure() {
 	const [createUnitOfMeasure, { isLoading: isLoadingCreate }] = useCreateUnitOfMeasureMutation()
 	const [updateUnitOfMeasure, { isLoading: isLoadingUpdate }] = useUpdateUnitOfMeasureMutation()
 	const [deleteUnitOfMeasure, { isLoading: isLoadingDelete }] = useDeleteUnitOfMeasureMutation()
-	useEffect(() => data && setRows(data.map(e => ({ ...e, id: e._id }))), [data])
+	useEffect(() => data && setRows(data), [data])
 
 	const processRowUpdate = async (newRow: GridRowModel) => {
 		const { isNew } = newRow
@@ -40,12 +40,10 @@ export default function LayoutUnitOfMeasure() {
 				const body = await validateCustom(newRow, CreateUnitOfMeasureDTO, Error)
 				await createUnitOfMeasure(body).unwrap()
 			} else {
-				const dto = new UpdateUnitOfMeasureDTO()
-				dto.set(newRow)
-				const body = await validateCustom(dto, UpdateUnitOfMeasureDTO, Error)
-				await updateUnitOfMeasure({ id: newRow.id, data: body }).unwrap()
+				const body = await validateCustom(newRow, UpdateUnitOfMeasureDTO, Error)
+				await updateUnitOfMeasure({ id: newRow._id, data: body }).unwrap()
 			}
-			setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+			// setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
 			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
 			return updatedRow
 		} catch (error: any) {
@@ -57,7 +55,7 @@ export default function LayoutUnitOfMeasure() {
 	const handleDeleteClick = (id: GridRowId) => async () => {
 		try {
 			await deleteUnitOfMeasure(id as string).unwrap()
-			setRows(rows.filter((row) => row.id !== id))
+			// setRows(rows.filter((row) => row.id !== id))
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
 		} catch (error: any) {
 			console.error(error)
@@ -67,7 +65,7 @@ export default function LayoutUnitOfMeasure() {
 
 	const isCellEditable = (p: GridCellParams) => {
 		const row = p.row as UnitOfMeasureENTITY & { isNew: boolean }
-		return !(['uomName'] as (keyof UnitOfMeasureENTITY)[]).includes(p.field as keyof UnitOfMeasureENTITY) || row.isNew
+		return !(['uomCode'] as (keyof UnitOfMeasureENTITY)[]).includes(p.field as keyof UnitOfMeasureENTITY) || row.isNew
 	}
 
 	if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />

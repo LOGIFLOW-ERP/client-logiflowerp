@@ -7,7 +7,7 @@ import {
     GridValidRowModel,
 } from '@mui/x-data-grid'
 import { columns } from '../GridCol'
-import { MovementENTITY, validateCustom } from 'logiflowerp-sdk'
+import { CreateMovementDTO, MovementENTITY, UpdateMovementDTO, validateCustom } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import {
@@ -21,29 +21,28 @@ export default function LayoutMovement() {
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
-    const newRowTemplate: Partial<MovementENTITY & { fieldToFocus: keyof MovementENTITY }> = { code: '', name: '', fieldToFocus: 'code' }
+    const newRowTemplate: Partial<MovementENTITY & { fieldToFocus: keyof MovementENTITY }> = { ...new MovementENTITY(), fieldToFocus: 'code' }
 
     const { enqueueSnackbar } = useSnackbar()
     const { data: movements, error, isLoading } = useGetMovementsQuery()
     const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
     const [updateMovement, { isLoading: isLoadingUpdate }] = useUpdateMovementMutation()
     const [deleteMovement, { isLoading: isLoadingDelete }] = useDeleteMovementMutation()
-    useEffect(() => movements && setRows(movements.map(e => ({ ...e, id: e._id }))), [movements])
+    useEffect(() => movements && setRows(movements), [movements])
 
     const processRowUpdate = async (newRow: GridRowModel) => {
         const { isNew } = newRow
         const updatedRow = { ...newRow, isNew: false }
+        console.log('qqqq')
         try {
-            const entity = new MovementENTITY()
-            entity._id = crypto.randomUUID()
-            entity.set(newRow)
-            const body = await validateCustom(entity, MovementENTITY, Error)
             if (isNew) {
+                const body = await validateCustom(newRow, CreateMovementDTO, Error)
                 await createMovement(body).unwrap()
-            } {
-                await updateMovement({ id: body._id, data: body }).unwrap()
+            } else {
+                const body = await validateCustom(newRow, UpdateMovementDTO, Error)
+                await updateMovement({ id: newRow._id, data: body }).unwrap()
             }
-            setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
+            // setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
             enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
             return updatedRow
         } catch (error: any) {
@@ -55,7 +54,7 @@ export default function LayoutMovement() {
     const handleDeleteClick = (id: GridRowId) => async () => {
         try {
             await deleteMovement(id as string).unwrap()
-            setRows(rows.filter((row) => row.id !== id))
+            // setRows(rows.filter((row) => row.id !== id))
             enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
         } catch (error: any) {
             console.error(error)

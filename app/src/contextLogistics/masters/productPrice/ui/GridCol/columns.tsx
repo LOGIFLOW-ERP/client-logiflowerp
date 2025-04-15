@@ -5,7 +5,7 @@ import {
     GridValidRowModel,
 } from '@mui/x-data-grid'
 import { RowActions } from '@shared/ui-library'
-import { CurrencyENTITY } from 'logiflowerp-sdk'
+import { CurrencyDTO, CurrencyENTITY, ProductPriceENTITY } from 'logiflowerp-sdk'
 
 interface IParams {
     handleDeleteClick: (id: GridRowId) => () => void
@@ -16,7 +16,7 @@ interface IParams {
     dataCurrency: CurrencyENTITY[]
 }
 
-export const columns = <T extends GridValidRowModel,>(params: IParams): GridColDef<T>[] => {
+export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
     return [
         {
             field: 'itemCode',
@@ -25,7 +25,7 @@ export const columns = <T extends GridValidRowModel,>(params: IParams): GridColD
             editable: true
         },
         {
-            field: 'currencyCode',
+            field: 'currency',
             headerName: 'Divisa',
             type: 'singleSelect',
             width: 180,
@@ -34,8 +34,10 @@ export const columns = <T extends GridValidRowModel,>(params: IParams): GridColD
             valueSetter: (value, row) => {
                 const currency = params.dataCurrency.find(e => e.code === value)
                 if (!currency) return row
-                return { ...row, currency }
+                row.currency = currency
+                return row
             },
+            valueGetter: (value: CurrencyDTO) => value.code
         },
         {
             field: 'price',
