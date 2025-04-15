@@ -1,11 +1,8 @@
-import {
-    GridColDef,
-    GridValidRowModel
-} from '@mui/x-data-grid'
-import { CompanyDTO, getDataState } from 'logiflowerp-sdk'
+import { GridColDef } from '@mui/x-data-grid'
+import { CompanyDTO, getDataState, StoreENTITY } from 'logiflowerp-sdk'
 import { CustomStatus } from '@shared/ui-library'
 
-export const columns = <T extends GridValidRowModel,>(): GridColDef<T>[] => {
+export const columns = (): GridColDef<StoreENTITY>[] => {
     return [
         {
             field: 'company',
