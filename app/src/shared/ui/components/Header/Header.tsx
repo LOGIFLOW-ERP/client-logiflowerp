@@ -1,8 +1,6 @@
-import { Stack } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import { NavbarBreadcrumbs } from './NavbarBreadcrumbs'
-import CustomDatePicker from './CustomDatePicker'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
-import Search from './Search'
 import MenuButton from './MenuButton'
 
 export function Header() {
@@ -21,9 +19,22 @@ export function Header() {
         >
             <NavbarBreadcrumbs />
             <Stack direction="row" sx={{ gap: 1 }}>
-                <Search />
-                <CustomDatePicker />
-                <MenuButton showBadge aria-label="Open notifications">
+                {/* <Search />
+                <CustomDatePicker /> */}
+                <Typography
+                    sx={{
+                        alignSelf: 'center',
+                        border: 1,
+                        paddingX: 2,
+                        borderRadius: 1,
+                        borderColor: 'gray',
+                        color: 'gray'
+                    }}
+                    variant='button'
+                >
+                    {new Date().toLocaleDateString()}
+                </Typography>
+                <MenuButton showBadge={false} aria-label="Open notifications">
                     <NotificationsRoundedIcon />
                 </MenuButton>
                 {/* <ColorModeIconDropdown /> */}

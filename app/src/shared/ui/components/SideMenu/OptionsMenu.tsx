@@ -20,6 +20,7 @@ import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@shared/ui/hooks'
 import { AuthUserDTO } from 'logiflowerp-sdk'
+import { ProfileDialog } from './ProfileDialog'
 
 const CustomMenuItem = styled(MenuItem)({
     margin: '2px 0',
@@ -32,6 +33,7 @@ export function OptionsMenu() {
     const navigate = useNavigate()
     const { actions: { setState } } = useStore('auth')
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+    const [openProfile, setOpenProfile] = useState(false);
     const open = Boolean(anchorEl)
 
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -82,7 +84,7 @@ export function OptionsMenu() {
                     },
                 }}
             >
-                <CustomMenuItem onClick={handleClose}>Profile</CustomMenuItem>
+                <CustomMenuItem onClick={() => { setOpenProfile(true); handleClose() }}>Perfil</CustomMenuItem>
                 <CustomMenuItem onClick={handleClose}>My account</CustomMenuItem>
                 <Divider />
                 <CustomMenuItem onClick={handleClose}>Add another account</CustomMenuItem>
@@ -110,6 +112,9 @@ export function OptionsMenu() {
                     }
                 </CustomMenuItem>
             </Menu>
+            {
+                openProfile && <ProfileDialog onClose={setOpenProfile} open={openProfile} />
+            }
         </>
     )
 }

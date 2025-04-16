@@ -23,8 +23,8 @@ export function LoginFormRoot() {
 
     const onSubmit = async (data: SignInRootDTO) => {
         try {
-            const { user, dataSystemOptions } = await signIn(data).unwrap()
-            setState({ isAuthenticated: true, user, dataSystemOptions })
+            const { user, dataSystemOptions, company, profile, root } = await signIn(data).unwrap()
+            setState({ isAuthenticated: true, user, dataSystemOptions, company, profile, root })
             navigate('/')
         } catch (error: any) {
             console.log(error)

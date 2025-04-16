@@ -7,6 +7,7 @@ import {
     drawerClasses,
     Stack,
     styled,
+    Tooltip,
     Typography
 } from '@mui/material'
 import { SelectContent } from './SelectContent'
@@ -14,6 +15,7 @@ import { MenuContent } from './MenuContent'
 import { OptionsMenu } from './OptionsMenu'
 import { useStore } from '@shared/ui/hooks'
 import { MenuDTO } from 'logiflowerp-sdk'
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 const drawerWidth = 240
 
@@ -35,7 +37,7 @@ interface IProps {
 
 export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
 
-    const { state: { user } } = useStore('auth')
+    const { state: { user, root } } = useStore('auth')
 
     return (
         <CustomDrawer
@@ -91,17 +93,30 @@ export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
                         textOverflow: 'ellipsis',
                     }}
                 >
-                    <Typography
-                        variant='body2'
+                    <Box
                         sx={{
-                            fontWeight: 500,
-                            lineHeight: '16px',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
+                            display: 'flex',
+                            gap: 0.2
                         }}
                     >
-                        {user.names}
-                    </Typography>
+                        <Tooltip title={root ? 'Superadministrador' : user.root ? 'Administrador' : 'Usuario'}>
+                            <VerifiedIcon
+                                sx={{ color: root ? 'goldenrod' : user.root ? 'dodgerblue' : 'gray', }}
+                                fontSize="inherit"
+                            />
+                        </Tooltip>
+                        <Typography
+                            variant='body2'
+                            sx={{
+                                fontWeight: 500,
+                                lineHeight: '16px',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}
+                        >
+                            {user.names} {user.surnames}
+                        </Typography>
+                    </Box>
                     <Typography
                         variant='caption'
                         sx={{
