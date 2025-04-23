@@ -79,7 +79,6 @@ export const columns = (params: IParams): GridColDef<RootCompanyENTITY>[] => {
             type: 'singleSelect',
             valueOptions: getDataState(),
             width: 100,
-            editable: true,
         },
         {
             field: 'actions',

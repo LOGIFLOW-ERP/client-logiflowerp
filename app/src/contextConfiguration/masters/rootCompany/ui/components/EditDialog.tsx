@@ -34,7 +34,7 @@ export function EditDialog(props: IProps) {
         try {
             data.systemOptions = selectedItems
             await update({ id: row._id, data }).unwrap()
-            enqueueSnackbar({ message: 'Actualizado correctamente!', variant: 'success' })
+            enqueueSnackbar({ message: '¡Actualizado correctamente!', variant: 'success' })
             setOpen(false)
         } catch (error: any) {
             console.log(error)
