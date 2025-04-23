@@ -11,7 +11,7 @@ export function CustomViewError() {
             }}
         >
             <Alert severity='error'>
-                Ocurrió un problema. Por favor, inténtalo nuevamente. Si el problema continúa, contacta con Soporte.
+                Ocurrió un problema. Por favor, inténtalo nuevamente o actualice la página. Si el problema continúa, contacta con Soporte.
             </Alert>
         </Box>
     )
