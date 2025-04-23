@@ -39,7 +39,7 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
         try {
             await changePassword(data).unwrap()
             reset()
-            setFocus('password')
+            setTimeout(() => setFocus('password'), 1)
             enqueueSnackbar({ message: '¡Actualizado correctamente!', variant: 'success' })
         } catch (error: any) {
             console.log(error)
