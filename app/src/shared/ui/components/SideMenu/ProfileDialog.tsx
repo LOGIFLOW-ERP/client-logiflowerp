@@ -19,7 +19,6 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 export const ProfileDialog = ({ open, onClose, }: { open: boolean; onClose: React.Dispatch<React.SetStateAction<boolean>>; }) => {
 
     const { state: { user, company, profile, root } } = useStore('auth')
-    console.log(root)
 
     return (
         <CustomDialog open={open} setOpen={onClose} title="Mi Perfil">

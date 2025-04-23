@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react'
+import { lazy, MouseEvent, useState } from 'react'
 import { MenuButton } from './MenuButton'
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
@@ -20,7 +20,8 @@ import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@shared/ui/hooks'
 import { AuthUserDTO } from 'logiflowerp-sdk'
-import { ProfileDialog } from './ProfileDialog'
+const SettingsDialog = lazy(() => import('./SettingsDialog').then(m => ({ default: m.SettingsDialog })))
+const ProfileDialog = lazy(() => import('./ProfileDialog').then(m => ({ default: m.ProfileDialog })))
 
 const CustomMenuItem = styled(MenuItem)({
     margin: '2px 0',
@@ -34,6 +35,7 @@ export function OptionsMenu() {
     const { actions: { setState } } = useStore('auth')
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [openProfile, setOpenProfile] = useState(false);
+    const [openSettings, setOpenSettings] = useState(false);
     const open = Boolean(anchorEl)
 
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -87,8 +89,8 @@ export function OptionsMenu() {
                 <CustomMenuItem onClick={() => { setOpenProfile(true); handleClose() }}>Perfil</CustomMenuItem>
                 <CustomMenuItem onClick={handleClose}>My account</CustomMenuItem>
                 <Divider />
-                <CustomMenuItem onClick={handleClose}>Add another account</CustomMenuItem>
-                <CustomMenuItem onClick={handleClose}>Settings</CustomMenuItem>
+                {/* <CustomMenuItem onClick={handleClose}>Add another account</CustomMenuItem> */}
+                <CustomMenuItem onClick={() => { setOpenSettings(true); handleClose() }}>Configuración</CustomMenuItem>
                 <Divider />
                 <CustomMenuItem
                     onClick={handleClickLogout}
@@ -114,6 +116,9 @@ export function OptionsMenu() {
             </Menu>
             {
                 openProfile && <ProfileDialog onClose={setOpenProfile} open={openProfile} />
+            }
+            {
+                openSettings && <SettingsDialog onClose={setOpenSettings} open={openSettings} />
             }
         </>
     )

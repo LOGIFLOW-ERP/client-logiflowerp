@@ -1,6 +1,7 @@
 import { getBaseApiConfiguration } from './baseApi'
 import { transformErrorResponse } from '../transformErrorResponse'
 import {
+    ChangePasswordDTO,
     CreateUserDTO,
     RequestPasswordResetDTO,
     ResetPasswordDTO,
@@ -46,6 +47,14 @@ export const authApi = baseApi.injectEndpoints({
         resetPassword: builder.mutation<void, ResetPasswordDTO>({
             query: (body) => ({
                 url: `/${schema}/${resource}/reset-password`,
+                method: 'POST',
+                body: instanceToPlain(body),
+            }),
+            transformErrorResponse
+        }),
+        changePassword: builder.mutation<void, ChangePasswordDTO>({
+            query: (body) => ({
+                url: `/${schema}/${resource}/change-password`,
                 method: 'POST',
                 body: instanceToPlain(body),
             }),
@@ -97,4 +106,5 @@ export const {
     useSignInMutation,
     useSignInRootMutation,
     useSignOutMutation,
+    useChangePasswordMutation
 } = authApi
