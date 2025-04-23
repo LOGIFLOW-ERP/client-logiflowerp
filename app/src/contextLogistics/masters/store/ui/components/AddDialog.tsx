@@ -1,11 +1,11 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomSelect, CustomSelectDto } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { CreateStoreDTO, getDataStoreType } from 'logiflowerp-sdk'
+import { CreateStoreDTO, getDataStoreType, State } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, TextField } from '@mui/material'
-import { useCreateStoreMutation } from '@shared/api'
+import { useCreateStoreMutation, useGetCompaniesPipelineQuery } from '@shared/api'
 
 const resolver = classValidatorResolver(CreateStoreDTO)
 
@@ -20,10 +20,15 @@ export function AddDialog(props: IProps) {
     const {
         handleSubmit,
         formState: { errors },
-        register, control
-    } = useForm({ resolver, defaultValues: { ...new CreateStoreDTO(), _id: crypto.randomUUID() } })
+        register,
+        control
+    } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
-    const [createStore, { isLoading }] = useCreateStoreMutation()
+
+    const pipelineCompanies = [{ $match: { state: State.ACTIVO } }]
+    const { data: dataCompanies, isError: isErrorCompanies, isLoading: isLoadingCompanies } = useGetCompaniesPipelineQuery(pipelineCompanies)
+
+    const [createStore, { isLoading, isError }] = useCreateStoreMutation()
 
     const onSubmit = async (data: CreateStoreDTO) => {
         try {
@@ -36,6 +41,9 @@ export function AddDialog(props: IProps) {
         }
     }
 
+    if (isLoading || isLoadingCompanies) return <CustomDialogLoading open={open} setOpen={setOpen} />
+    if (isError || isErrorCompanies) return <CustomDialogError open={open} setOpen={setOpen} />
+
     return (
         <CustomDialog
             open={open}
@@ -43,9 +51,24 @@ export function AddDialog(props: IProps) {
             title='AGREGAR'
         >
             <form onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                    name='company'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomSelectDto
+                            label='Empresa'
+                            options={dataCompanies ?? []}
+                            {...field}
+                            labelKey='companyname'
+                            valueKey='code'
+                            margin='normal'
+                            error={!!errors.company}
+                            helperText={errors.company?.message}
+                        />
+                    )}
+                />
                 <TextField
                     label='Código'
-                    autoFocus
                     variant='outlined'
                     fullWidth
                     margin='normal'

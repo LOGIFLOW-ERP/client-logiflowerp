@@ -15,4 +15,5 @@ export const {
     useCreateMutation: useCreateCompanyMutation,
     useUpdateMutation: useUpdateCompanyMutation,
     useDeleteMutation: useDeleteCompanyMutation,
+    useGetPipelineQuery: useGetCompaniesPipelineQuery
 } = companyApi;

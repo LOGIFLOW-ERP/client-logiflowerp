@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
@@ -9,13 +9,14 @@ import {
 } from '@shared/api'
 import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { columns } from '../GridCol'
-import { AddDialog, CustomToolbar } from '../components'
+import { CustomToolbar } from '../components'
 import { StoreENTITY } from 'logiflowerp-sdk'
+const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutStore() {
 
 	const [rows, setRows] = useState<readonly StoreENTITY[]>([])
-	const [open, setOpen] = useState(false)
+	const [openAdd, setOpenAdd] = useState(false)
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetStoresQuery()
@@ -23,9 +24,9 @@ export default function LayoutStore() {
 	const [deleteStore, { isLoading: isLoadingDelete }] = useDeleteStoreMutation()
 	useEffect(() => data && setRows(data), [data])
 
-	const handleClick = () => {
+	const handleAddClick = () => {
 		try {
-			setOpen(true)
+			setOpenAdd(true)
 		} catch (error: any) {
 			console.error(error)
 			enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -42,14 +43,18 @@ export default function LayoutStore() {
 					rows={rows}
 					columns={columns()}
 					disableRowSelectionOnClick
-					slots={{ toolbar: () => <CustomToolbar handleClickAdd={handleClick} /> }}
+					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 					getRowId={row => row._id}
 				/>
 			</Box>
-			<AddDialog
-				open={open}
-				setOpen={setOpen}
-			/>
+			{
+				openAdd && (
+					<AddDialog
+						open={openAdd}
+						setOpen={setOpenAdd}
+					/>
+				)
+			}
 		</>
 	)
 }

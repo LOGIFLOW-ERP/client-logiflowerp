@@ -1,6 +1,7 @@
 export * from './CustomDataGrid';
 export * from './RowActions';
 export * from './CustomSelect';
+export * from './CustomSelectDto';
 export * from './CustomViewError';
 export * from './CustomViewLoading';
 export * from './CustomDialog';

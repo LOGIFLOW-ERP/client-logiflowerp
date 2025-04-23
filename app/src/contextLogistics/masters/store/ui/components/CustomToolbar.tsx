@@ -3,13 +3,13 @@ import { Box, Button } from '@mui/material'
 import { Add } from '@mui/icons-material'
 
 interface IProps {
-    handleClickAdd: React.MouseEventHandler<HTMLButtonElement>
+    handleAddClick: React.MouseEventHandler<HTMLButtonElement>
 }
 
-export function CustomToolbar({ handleClickAdd }: IProps) {
+export function CustomToolbar({ handleAddClick }: IProps) {
     return (
         <GridToolbarContainer>
-            <Button color='primary' startIcon={<Add />} onClick={handleClickAdd}>
+            <Button color='primary' startIcon={<Add />} onClick={handleAddClick}>
                 Agregar
             </Button>
             <Box sx={{ flexGrow: 1 }} />

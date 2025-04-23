@@ -1,11 +1,18 @@
 import React from 'react'
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import {
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent
+} from '@mui/material'
 
 interface CustomSelectProps<T> {
     label: string
-    value: string | undefined
+    value: T | undefined
     name: string
-    onChange: (event: SelectChangeEvent) => void
+    onChange: (...event: any[]) => void
     options: T[]
     valueKey: keyof T
     labelKey: keyof T
@@ -14,7 +21,7 @@ interface CustomSelectProps<T> {
     helperText?: string
 }
 
-export function CustomSelect<T>({
+export function CustomSelectDto<T>({
     label,
     value,
     onChange,
@@ -26,10 +33,22 @@ export function CustomSelect<T>({
     error,
     helperText,
 }: CustomSelectProps<T>) {
+
+    const resolvedValue = value && typeof value[valueKey] === 'string'
+        ? value[valueKey]
+        : ''
+
+    const handleChange = (event: SelectChangeEvent) => {
+        const selected = options.find((option) => option[valueKey] === event.target.value)
+        if (selected) {
+            onChange(selected)
+        }
+    }
+
     return (
         <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
-            <Select value={value ?? ''} onChange={onChange} label={label} name={name}>
+            <Select value={resolvedValue} onChange={handleChange} label={label} name={name}>
                 {options.map((option, index) => {
                     const valueOption = option[valueKey]
                     const labelOption = option[labelKey]
@@ -51,7 +70,7 @@ export function CustomSelect<T>({
                     )
                 })}
             </Select>
-            {error && <FormHelperText>{helperText}</FormHelperText>}
+            {error && <FormHelperText>{helperText ?? `¡Seleccione ${label.toLowerCase()}!`}</FormHelperText>}
         </FormControl>
     )
 }
