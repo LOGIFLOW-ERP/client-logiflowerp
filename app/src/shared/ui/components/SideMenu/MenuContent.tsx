@@ -33,6 +33,7 @@ const iconMap: Record<string, React.ElementType> = {
     'Unit Of Measure': ScaleRounded,
     Store: LocalConvenienceStoreRounded,
     'Root Company': BusinessRoundedIcon,
+    Company: BusinessRoundedIcon,
     Profile: AdminPanelSettingsRoundedIcon,
     Personnel: EngineeringRoundedIcon,
 }
