@@ -10,6 +10,7 @@ import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { WarehouseEntryENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
+import { Box, Button, Typography } from '@mui/material'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseEntry() {
@@ -54,19 +55,26 @@ export default function LayoutWarehouseEntry() {
 		}
 	}
 
-	if (isLoading || isLoadingDelete) return <CustomViewLoading />
+	// if () return <CustomViewLoading />
 	if (error) return <CustomViewError />
 
 	return (
 		<>
-			<Paper elevation={2} sx={{ height: '89vh', width: '100%' }}>
-				<DataGrid<WarehouseEntryENTITY>
-					rows={rows}
-					columns={columns({ handleEditClick, handleDeleteClick })}
-					disableRowSelectionOnClick
-					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
-					getRowId={row => row._id}
-				/>
+			<Paper elevation={2} sx={{ height: '89vh', width: '100%', p: 2, position: 'relative' }}>
+				<Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+					<Typography variant="h6">Documentos de Ingreso No Validados</Typography>
+				</Box>
+				<Box sx={{ height: '94%' }}>
+					<DataGrid<WarehouseEntryENTITY>
+						rows={rows}
+						columns={columns({ handleEditClick, handleDeleteClick })}
+						disableRowSelectionOnClick
+						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
+						getRowId={row => row._id}
+						loading={isLoading || isLoadingDelete}
+						autoPageSize
+					/>
+				</Box>
 			</Paper>
 			{
 				openAdd && (

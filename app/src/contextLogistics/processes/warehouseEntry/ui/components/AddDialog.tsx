@@ -1,10 +1,11 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialogLoading, CustomFullScreenDialog, CustomSelectDto } from '@shared/ui-library'
-import { Controller, useForm } from 'react-hook-form'
+import { CustomFullScreenDialog } from '@shared/ui-library'
+import { useForm } from 'react-hook-form'
 import { CreateWarehouseEntryDTO, WarehouseEntryENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Box, Button, CircularProgress, Grid2, TextField } from '@mui/material'
-import { useCreateWarehouseEntryMutation, useGetMovementPipelineQuery, useGetStorePipelineQuery, useValidateWarehouseEntryMutation } from '@shared/api'
+import { Box, Button, CircularProgress } from '@mui/material'
+import { useCreateWarehouseEntryMutation, useValidateWarehouseEntryMutation } from '@shared/api'
+import { CabeceraForm } from './CabeceraForm'
 
 const resolver = classValidatorResolver(CreateWarehouseEntryDTO)
 
@@ -25,9 +26,6 @@ export function AddDialog(props: IProps) {
         control,
     } = useForm({ resolver, defaultValues: { ...selectedRow } })
     const { enqueueSnackbar } = useSnackbar()
-
-    const { data: dataMovements, isLoading: isLoadingMovements } = useGetMovementPipelineQuery([])
-    const { data: dataStores, isLoading: isLoadingStores } = useGetStorePipelineQuery([])
 
     const [create, { isLoading }] = useCreateWarehouseEntryMutation()
     const [validate, { isLoading: isLoadingValidate }] = useValidateWarehouseEntryMutation()
@@ -57,8 +55,6 @@ export function AddDialog(props: IProps) {
         }
     }
 
-    if (isLoadingMovements || isLoadingStores) return <CustomDialogLoading open={open} setOpen={setOpen} />
-
     return (
         <CustomFullScreenDialog
             open={open}
@@ -82,110 +78,14 @@ export function AddDialog(props: IProps) {
             }
         >
             <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }} padding={1}>
-                <Grid2 container spacing={2} columns={16}>
-                    <Grid2 size={{ md: 2 }} component='div'>
-                        <Controller
-                            name='movement'
-                            control={control}
-                            render={({ field }) => (
-                                <CustomSelectDto
-                                    label='Movimiento'
-                                    options={dataMovements ?? []}
-                                    {...field}
-                                    labelKey='name'
-                                    valueKey='code'
-                                    margin='dense'
-                                    error={!!errors.movement}
-                                    helperText={errors.movement?.message}
-                                    readOnly={!!selectedRow}
-                                />
-                            )}
-                        />
-                    </Grid2>
-                    <Grid2 size={{ md: 2 }} component='div'>
-                        <Controller
-                            name='store'
-                            control={control}
-                            render={({ field }) => (
-                                <CustomSelectDto
-                                    label='Almacén'
-                                    options={dataStores ?? []}
-                                    {...field}
-                                    labelKey='name'
-                                    valueKey='code'
-                                    margin='dense'
-                                    error={!!errors.store}
-                                    helperText={errors.store?.message}
-                                    readOnly={!!selectedRow}
-                                />
-                            )}
-                        />
-                    </Grid2>
-                    <Grid2 size={{ md: 2 }} component='div'>
-                        <TextField
-                            label='Dirección'
-                            variant='outlined'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            {...register('address')}
-                            error={!!errors.address}
-                            helperText={errors.address?.message}
-                            slotProps={{ input: { readOnly: !!selectedRow } }}
-                        />
-                    </Grid2>
-                    <Grid2 size={{ md: 2 }} component='div'>
-                        <TextField
-                            label='Guía de transporte'
-                            variant='outlined'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            {...register('transportGuide')}
-                            error={!!errors.transportGuide}
-                            helperText={errors.transportGuide?.message}
-                            slotProps={{ input: { readOnly: !!selectedRow } }}
-                        />
-                    </Grid2>
-                    <Grid2 size={{ md: 1 }} component='div'>
-                        {
-                            !selectedRow && (
-                                <Button
-                                    type='submit'
-                                    variant='contained'
-                                    color='primary'
-                                    fullWidth
-                                    sx={{ marginTop: 1 }}
-                                    loading={isLoading}
-                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
-                                    loadingPosition='center'
-                                >
-                                    crear
-                                </Button>
-                            )
-                        }
-                    </Grid2>
-                </Grid2>
+                <CabeceraForm
+                    control={control}
+                    errors={errors}
+                    isLoading={isLoading}
+                    readOnly={!!selectedRow}
+                    register={register}
+                />
             </Box>
-            {/* <Grid2 size={{ md: 1 }} component='div'>
-                {
-                    selectedRow ? (
-                        <Button
-                            variant='contained'
-                            color='primary'
-                            fullWidth
-                            sx={{ marginTop: 1 }}
-                            loading={isLoadingValidate}
-                            loadingIndicator={<CircularProgress size={24} color='inherit' />}
-                            loadingPosition='center'
-                            onClick={handleValidateClick}
-                        >
-                            validar
-                        </Button>
-                    )
-                        : null
-                }
-            </Grid2> */}
         </CustomFullScreenDialog>
     )
 }
