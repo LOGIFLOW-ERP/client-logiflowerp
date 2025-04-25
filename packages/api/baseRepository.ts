@@ -44,6 +44,8 @@ export const createRepository = <T, ID>(
                     method: 'POST',
                     body: pipeline
                 }),
+                providesTags: (result) =>
+                    result ? [{ type: resource, id: `PIPELINE${resource}` }] : [],
                 transformErrorResponse
             }),
             getStaticPipeline: builder.query<T[], void>({
@@ -66,6 +68,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `LIST${resource}` },
                     { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
+                    { type: resource, id: `PIPELINE${resource}` },
                 ],
                 transformErrorResponse
             }),
@@ -79,6 +82,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `LIST${resource}` },
                     { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
+                    { type: resource, id: `PIPELINE${resource}` },
                 ],
                 transformErrorResponse
             }),
@@ -91,6 +95,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `LIST${resource}` },
                     { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
+                    { type: resource, id: `PIPELINE${resource}` },
                 ],
                 transformErrorResponse
             }),
