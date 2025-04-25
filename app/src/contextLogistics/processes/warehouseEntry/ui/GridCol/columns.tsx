@@ -52,8 +52,8 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         {
             field: 'creation_date',
             headerName: 'Fecha Registro',
-            width: 115,
-            type: 'date',
+            width: 190,
+            type: 'dateTime',
             valueGetter: (_value, row) => new Date(row.workflow.register.date)
         },
         {
