@@ -63,7 +63,7 @@ export function CabeceraForm(props: Props) {
                     )}
                 />
             </Grid2>
-            <Grid2 size={{ md: 2 }} component='div'>
+            <Grid2 size={{ md: 2.5 }} component='div'>
                 <TextField
                     label='Dirección'
                     variant='outlined'

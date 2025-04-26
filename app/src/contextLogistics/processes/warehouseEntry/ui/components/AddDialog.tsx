@@ -3,9 +3,11 @@ import { CustomFullScreenDialog } from '@shared/ui-library'
 import { useForm } from 'react-hook-form'
 import { CreateWarehouseEntryDTO, WarehouseEntryENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button, Chip, CircularProgress, Divider } from '@mui/material'
 import { useCreateWarehouseEntryMutation, useValidateWarehouseEntryMutation } from '@shared/api'
 import { CabeceraForm } from './CabeceraForm'
+import { lazy } from 'react'
+const DetalleForm = lazy(() => import('./DetalleForm').then(m => ({ default: m.DetalleForm })))
 
 const resolver = classValidatorResolver(CreateWarehouseEntryDTO)
 
@@ -86,6 +88,16 @@ export function AddDialog(props: IProps) {
                     register={register}
                 />
             </Box>
+            {
+                selectedRow && (
+                    <>
+                        <Divider textAlign='left'>
+                            <Chip label='Agregar Detalle' size='small' />
+                        </Divider>
+                        <DetalleForm selectedRow={selectedRow} />
+                    </>
+                )
+            }
         </CustomFullScreenDialog>
     )
 }
