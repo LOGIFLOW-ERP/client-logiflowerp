@@ -19,6 +19,7 @@ interface CustomSelectProps<T> {
     margin?: 'dense' | 'normal' | 'none' | undefined
     error?: boolean
     helperText?: string
+    readOnly?: boolean
 }
 
 export function CustomSelectDto<T>({
@@ -32,6 +33,7 @@ export function CustomSelectDto<T>({
     margin,
     error,
     helperText,
+    readOnly,
 }: CustomSelectProps<T>) {
 
     const resolvedValue = value && typeof value[valueKey] === 'string'
@@ -48,7 +50,7 @@ export function CustomSelectDto<T>({
     return (
         <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
-            <Select value={resolvedValue} onChange={handleChange} label={label} name={name}>
+            <Select value={resolvedValue} onChange={handleChange} label={label} name={name} readOnly={readOnly}>
                 {options.map((option, index) => {
                     const valueOption = option[valueKey]
                     const labelOption = option[labelKey]

@@ -15,4 +15,5 @@ export const {
     useCreateMutation: useCreateStoreMutation,
     useUpdateMutation: useUpdateStoreMutation,
     useDeleteMutation: useDeleteStoreMutation,
+    useGetPipelineQuery: useGetStorePipelineQuery
 } = storeApi;

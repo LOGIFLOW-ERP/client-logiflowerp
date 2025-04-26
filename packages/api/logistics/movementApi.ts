@@ -15,4 +15,5 @@ export const {
     useCreateMutation: useCreateMovementMutation,
     useUpdateMutation: useUpdateMovementMutation,
     useDeleteMutation: useDeleteMovementMutation,
+    useGetPipelineQuery: useGetMovementPipelineQuery
 } = movementApi;

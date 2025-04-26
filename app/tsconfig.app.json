@@ -23,6 +23,9 @@
       "@masters-logistics/*": [
         "./src/contextLogistics/masters/*"
       ],
+      "@processes-logistics/*": [
+        "./src/contextLogistics/processes/*"
+      ],
       "@shared/*": [
         "./src/shared/*"
       ],
