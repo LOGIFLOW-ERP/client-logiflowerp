@@ -4,6 +4,7 @@ import { RouteObject } from 'react-router-dom'
 
 const LayoutProductGroup = lazy(() => import('@masters-logistics/productGroup/ui/pages/LayoutProductGroup'))
 const LayoutMovement = lazy(() => import('@masters-logistics/movement/ui/pages/LayoutMovement'))
+const LayoutProduct = lazy(() => import('@masters-logistics/product/ui/pages/LayoutProduct'))
 const LayoutProductPrice = lazy(() => import('@masters-logistics/productPrice/ui/pages/LayoutProductPrice'))
 const LayoutUnitOfMeasure = lazy(() => import('@masters-logistics/unitOfMeasure/ui/pages/LayoutUnitOfMeasure'))
 const LayoutStore = lazy(() => import('@masters-logistics/store/ui/pages/LayoutStore'))
@@ -15,6 +16,10 @@ export const childrenLogistics: RouteObject[] = [
         errorElement: <ErrorElement />,
         Component: null,
         children: [
+            {
+                path: 'product',
+                Component: LayoutProduct,
+            },
             {
                 path: 'movement',
                 Component: LayoutMovement,

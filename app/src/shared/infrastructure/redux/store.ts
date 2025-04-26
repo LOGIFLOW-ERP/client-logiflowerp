@@ -5,6 +5,7 @@ import {
     authApi,
     currencyApi,
     movementApi,
+    productApi,
     productGroupApi,
     productPriceApi,
     storeApi,
@@ -24,6 +25,7 @@ export const store = configureStore({
         auth: authReducer,
         [authApi.reducerPath]: authApi.reducer as Reducer,
         [productGroupApi.reducerPath]: productGroupApi.reducer as Reducer,
+        [productApi.reducerPath]: productApi.reducer as Reducer,
         [movementApi.reducerPath]: movementApi.reducer as Reducer,
         [currencyApi.reducerPath]: currencyApi.reducer as Reducer,
         [productPriceApi.reducerPath]: productPriceApi.reducer as Reducer,
@@ -41,6 +43,7 @@ export const store = configureStore({
         getDefaultMiddleware({ serializableCheck: false })
             .concat(authApi.middleware)
             .concat(productGroupApi.middleware)
+            .concat(productApi.middleware)
             .concat(movementApi.middleware)
             .concat(currencyApi.middleware)
             .concat(productPriceApi.middleware)
