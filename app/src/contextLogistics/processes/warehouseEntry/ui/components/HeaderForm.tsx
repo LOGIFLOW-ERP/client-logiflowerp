@@ -1,7 +1,7 @@
 import { Button, CircularProgress, Grid2, TextField } from '@mui/material'
 import { useGetMovementPipelineQuery, useGetStorePipelineQuery } from '@shared/api'
 import { CustomSelectDto } from '@shared/ui-library'
-import { CreateWarehouseEntryDTO } from 'logiflowerp-sdk'
+import { CreateWarehouseEntryDTO, MovementOrder, State } from 'logiflowerp-sdk'
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
 
 interface Props {
@@ -16,8 +16,10 @@ export function CabeceraForm(props: Props) {
 
     const { control, errors, readOnly, isLoading, register } = props
 
-    const { data: dataMovements, isLoading: isLoadingMovements } = useGetMovementPipelineQuery([])
-    const { data: dataStores, isLoading: isLoadingStores } = useGetStorePipelineQuery([])
+    const pipelineMovement = [{ $match: { movement: MovementOrder.INGRESO } }]
+    const { data: dataMovements, isLoading: isLoadingMovements } = useGetMovementPipelineQuery(pipelineMovement)
+    const pipelineStore = [{ $match: { state: State.ACTIVO } }]
+    const { data: dataStores, isLoading: isLoadingStores } = useGetStorePipelineQuery(pipelineStore)
 
     if (isLoadingMovements || isLoadingStores) {
         return <CircularProgress />
@@ -40,6 +42,7 @@ export function CabeceraForm(props: Props) {
                             error={!!errors.movement}
                             helperText={errors.movement?.message}
                             readOnly={readOnly}
+                            autoFocus
                         />
                     )}
                 />

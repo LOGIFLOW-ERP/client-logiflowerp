@@ -1,5 +1,4 @@
 import { configureStore, Reducer } from '@reduxjs/toolkit'
-import { sharedReducer } from './sharedSlice'
 import { authReducer } from './auth'
 import {
     authApi,
@@ -18,11 +17,12 @@ import {
     rootUserApi,
     warehouseEntryApi
 } from '@shared/api'
+import { warehouseEntryReducer } from './warehouseEntry'
 
 export const store = configureStore({
     reducer: {
-        shared: sharedReducer,
         auth: authReducer,
+        warehouseEntry: warehouseEntryReducer,
         [authApi.reducerPath]: authApi.reducer as Reducer,
         [productGroupApi.reducerPath]: productGroupApi.reducer as Reducer,
         [productApi.reducerPath]: productApi.reducer as Reducer,

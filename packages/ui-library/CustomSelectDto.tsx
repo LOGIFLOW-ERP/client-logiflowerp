@@ -20,6 +20,7 @@ interface CustomSelectProps<T> {
     error?: boolean
     helperText?: string
     readOnly?: boolean
+    autoFocus?: boolean
 }
 
 export function CustomSelectDto<T>({
@@ -34,6 +35,7 @@ export function CustomSelectDto<T>({
     error,
     helperText,
     readOnly,
+    autoFocus
 }: CustomSelectProps<T>) {
 
     const resolvedValue = value && typeof value[valueKey] === 'string'
@@ -50,7 +52,14 @@ export function CustomSelectDto<T>({
     return (
         <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
-            <Select value={resolvedValue} onChange={handleChange} label={label} name={name} readOnly={readOnly}>
+            <Select
+                value={resolvedValue}
+                onChange={handleChange}
+                label={label}
+                name={name}
+                readOnly={readOnly}
+                autoFocus={autoFocus}
+            >
                 {options.map((option, index) => {
                     const valueOption = option[valueKey]
                     const labelOption = option[labelKey]

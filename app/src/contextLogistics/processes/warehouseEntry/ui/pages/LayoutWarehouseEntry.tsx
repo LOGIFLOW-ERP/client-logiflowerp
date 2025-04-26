@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from 'react'
+import { lazy, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import Paper from '@mui/material/Paper'
 import { useSnackbar } from 'notistack'
@@ -6,29 +6,28 @@ import {
 	useDeleteWarehouseEntryMutation,
 	useGetWarehouseEntryPipelineQuery,
 } from '@shared/api'
-import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomViewError } from '@shared/ui-library'
 import { WarehouseEntryENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import { useStore } from '@shared/ui/hooks'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseEntry() {
 
-	const [rows, setRows] = useState<readonly WarehouseEntryENTITY[]>([])
 	const [openAdd, setOpenAdd] = useState(false)
-	const [selectedRow, setSelectedRow] = useState<WarehouseEntryENTITY>()
+	const { setState } = useStore('warehouseEntry')
 
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
 	const { data, error, isLoading } = useGetWarehouseEntryPipelineQuery(pipeline)
 	const [deleteWarehouseEntry, { isLoading: isLoadingDelete }] = useDeleteWarehouseEntryMutation()
-	useEffect(() => data && setRows(data), [data])
 
 	const handleAddClick = () => {
 		try {
 			setOpenAdd(true)
-			setSelectedRow(undefined)
+			setState({ selectedDocument: null })
 		} catch (error: any) {
 			console.error(error)
 			enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -37,7 +36,7 @@ export default function LayoutWarehouseEntry() {
 
 	const handleEditClick = (row: WarehouseEntryENTITY) => {
 		try {
-			setSelectedRow(row)
+			setState({ selectedDocument: row })
 			setOpenAdd(true)
 		} catch (error: any) {
 			console.error(error)
@@ -55,7 +54,6 @@ export default function LayoutWarehouseEntry() {
 		}
 	}
 
-	// if () return <CustomViewLoading />
 	if (error) return <CustomViewError />
 
 	return (
@@ -66,7 +64,7 @@ export default function LayoutWarehouseEntry() {
 				</Box>
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseEntryENTITY>
-						rows={rows}
+						rows={data}
 						columns={columns({ handleEditClick, handleDeleteClick })}
 						disableRowSelectionOnClick
 						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
@@ -81,8 +79,6 @@ export default function LayoutWarehouseEntry() {
 					<AddDialog
 						open={openAdd}
 						setOpen={setOpenAdd}
-						selectedRow={selectedRow}
-						setSelectedRow={setSelectedRow}
 					/>
 				)
 			}

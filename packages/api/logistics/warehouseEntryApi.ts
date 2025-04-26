@@ -1,7 +1,8 @@
 import { createRepository } from '../baseRepository'
-import { WarehouseEntryENTITY } from 'logiflowerp-sdk'
+import { CreateOrderDetailDTO, StockSerialDTO, WarehouseEntryENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
+import { instanceToPlain } from 'class-transformer';
 
 const schema = 'processes'
 const resource = 'warehouseEntry'
@@ -23,7 +24,61 @@ export const warehouseEntryApi = createRepository<WarehouseEntryENTITY, string>(
                     { type: path, id: `PIPELINE${path}` },
                 ],
                 transformErrorResponse
-            })
+            }),
+            addDetail: builder.mutation<WarehouseEntryENTITY, { _id: string, data: CreateOrderDetailDTO }>({
+                query: ({ _id, data }) => ({
+                    url: `${path}/add-detail/${_id}`,
+                    method: 'PUT',
+                    body: instanceToPlain(data),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
+            deleteDetail: builder.mutation<WarehouseEntryENTITY, { _id: string, keyDetail: string }>({
+                query: ({ _id, keyDetail }) => ({
+                    url: `${path}/delete-detail/${_id}?keyDetail=${keyDetail}`,
+                    method: 'PUT'
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
+            addSerial: builder.mutation<WarehouseEntryENTITY, { _id: string, keyDetail: string, data: StockSerialDTO }>({
+                query: ({ _id, data, keyDetail }) => ({
+                    url: `${path}/add-serial/${_id}?keyDetail=${keyDetail}`,
+                    method: 'PUT',
+                    body: instanceToPlain(data),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
+            deleteSerial: builder.mutation<WarehouseEntryENTITY, { _id: string, keyDetail: string, serial: string }>({
+                query: ({ _id, keyDetail, serial }) => ({
+                    url: `${path}/delete-serial/${_id}?keyDetail=${keyDetail}&serial=${serial}`,
+                    method: 'PUT',
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
         })
     })
 
@@ -34,5 +89,9 @@ export const {
     useUpdateMutation: useUpdateWarehouseEntryMutation,
     useDeleteMutation: useDeleteWarehouseEntryMutation,
     useGetPipelineQuery: useGetWarehouseEntryPipelineQuery,
-    useValidateMutation: useValidateWarehouseEntryMutation
+    useValidateMutation: useValidateWarehouseEntryMutation,
+    useAddDetailMutation: useAddDetailWarehouseEntryMutation,
+    useDeleteDetailMutation: useDeleteDetailWarehouseEntryMutation,
+    useAddSerialMutation: useAddSerialWarehouseEntryMutation,
+    useDeleteSerialMutation: useDeleteSerialWarehouseEntryMutation,
 } = warehouseEntryApi;

@@ -62,6 +62,7 @@ interface IProps {
     newRowTemplate: Record<string, any>
     processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean } | undefined>
     isCellEditable?: ((params: GridCellParams<any, GridValidRowModel, GridValidRowModel, GridTreeNode>) => boolean) | undefined
+    loading?: boolean
 }
 
 export function CustomDataGrid(props: IProps) {
@@ -74,7 +75,8 @@ export function CustomDataGrid(props: IProps) {
         columns,
         newRowTemplate,
         processRowUpdate,
-        isCellEditable
+        isCellEditable,
+        loading
     } = props
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -118,6 +120,7 @@ export function CustomDataGrid(props: IProps) {
                 }}
                 isCellEditable={isCellEditable}
                 getRowId={row => row._id}
+                loading={loading}
             />
         </Box>
     )

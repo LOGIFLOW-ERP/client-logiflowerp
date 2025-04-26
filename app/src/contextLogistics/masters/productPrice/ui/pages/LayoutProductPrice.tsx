@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CreateProductPriceDTO, ProductPriceENTITY, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
+import { CreateProductPriceDTO, ProductPriceENTITY, State, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
 import {
 	GridCellParams,
 	GridRowId,
@@ -12,10 +12,11 @@ import {
 	useCreateProductPriceMutation,
 	useDeleteProductPriceMutation,
 	useGetCurrenciesQuery,
+	useGetProductPipelineQuery,
 	useGetProductPricesQuery,
 	useUpdateProductPriceMutation,
 } from '@shared/api'
-import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
 
 export default function LayoutProductPrice() {
@@ -29,6 +30,8 @@ export default function LayoutProductPrice() {
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductPricesQuery()
 	const { data: dataCurrency, error: errorCurrency, isLoading: isLoadingCurrency } = useGetCurrenciesQuery()
+	const pipelineProducts = [{ $match: { state: State.ACTIVO } }]
+	const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
 	const [createProductPrice, { isLoading: isLoadingCreate }] = useCreateProductPriceMutation()
 	const [updateProductPrice, { isLoading: isLoadingUpdate }] = useUpdateProductPriceMutation()
 	const [deleteProductPrice, { isLoading: isLoadingDelete }] = useDeleteProductPriceMutation()
@@ -70,15 +73,7 @@ export default function LayoutProductPrice() {
 		return !(['itemCode'] as (keyof ProductPriceENTITY)[]).includes(p.field as keyof ProductPriceENTITY) || row.isNew
 	}
 
-	if (
-		isLoading ||
-		isLoadingCreate ||
-		isLoadingUpdate ||
-		isLoadingDelete ||
-		isLoadingCurrency
-	) return <CustomViewLoading />
-
-	if (error || errorCurrency || !dataCurrency) return <CustomViewError />
+	if (error || errorCurrency || !dataCurrency || !dataProducts) return <CustomViewError />
 
 	return (
 		<CustomDataGrid
@@ -92,11 +87,20 @@ export default function LayoutProductPrice() {
 				setRowModesModel,
 				rows,
 				setRows,
-				dataCurrency
+				dataCurrency,
+				dataProducts
 			})}
 			newRowTemplate={newRowTemplate}
 			processRowUpdate={processRowUpdate}
 			isCellEditable={isCellEditable}
+			loading={
+				isLoading ||
+				isLoadingCreate ||
+				isLoadingUpdate ||
+				isLoadingDelete ||
+				isLoadingCurrency ||
+				isLoadingProducts
+			}
 		/>
 	)
 }

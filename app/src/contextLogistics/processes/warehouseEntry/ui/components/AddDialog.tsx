@@ -1,32 +1,36 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { CustomFullScreenDialog } from '@shared/ui-library'
 import { useForm } from 'react-hook-form'
-import { CreateWarehouseEntryDTO, WarehouseEntryENTITY } from 'logiflowerp-sdk'
+import { CreateWarehouseEntryDTO } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Box, Button, Chip, CircularProgress, Divider } from '@mui/material'
-import { useCreateWarehouseEntryMutation, useValidateWarehouseEntryMutation } from '@shared/api'
-import { CabeceraForm } from './CabeceraForm'
+import {
+    useCreateWarehouseEntryMutation,
+    useValidateWarehouseEntryMutation
+} from '@shared/api'
+import { CabeceraForm } from './HeaderForm'
 import { lazy } from 'react'
-const DetalleForm = lazy(() => import('./DetalleForm').then(m => ({ default: m.DetalleForm })))
+import { DetalleTable } from './DetailTable'
+import { useStore } from '@shared/ui/hooks'
+const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
 
 const resolver = classValidatorResolver(CreateWarehouseEntryDTO)
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
-    selectedRow: WarehouseEntryENTITY | undefined
-    setSelectedRow: React.Dispatch<React.SetStateAction<WarehouseEntryENTITY | undefined>>
 }
 
 export function AddDialog(props: IProps) {
 
-    const { open, setOpen, selectedRow, setSelectedRow } = props
+    const { open, setOpen } = props
+    const { state: { selectedDocument }, setState } = useStore('warehouseEntry')
     const {
         handleSubmit,
         formState: { errors },
         register,
         control,
-    } = useForm({ resolver, defaultValues: { ...selectedRow } })
+    } = useForm({ resolver, defaultValues: { ...selectedDocument } })
     const { enqueueSnackbar } = useSnackbar()
 
     const [create, { isLoading }] = useCreateWarehouseEntryMutation()
@@ -34,9 +38,9 @@ export function AddDialog(props: IProps) {
 
     const onSubmit = async (data: CreateWarehouseEntryDTO) => {
         try {
-            const newDoc = await create(data).unwrap()
+            const document = await create(data).unwrap()
             enqueueSnackbar({ message: '¡Creado correctamente!', variant: 'success' })
-            setSelectedRow(newDoc)
+            setState({ selectedDocument: document })
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -45,10 +49,10 @@ export function AddDialog(props: IProps) {
 
     const handleValidateClick = async () => {
         try {
-            if (!selectedRow) {
+            if (!selectedDocument) {
                 throw new Error('¡No hay un documento seleccionado!')
             }
-            await validate(selectedRow._id).unwrap()
+            await validate(selectedDocument._id).unwrap()
             setOpen(false)
             enqueueSnackbar({ message: '¡Validado correctamente!', variant: 'success' })
         } catch (error: any) {
@@ -63,7 +67,7 @@ export function AddDialog(props: IProps) {
             setOpen={setOpen}
             title='Nuevo ingreso de almacén'
             toolbar={
-                selectedRow ? (
+                selectedDocument ? (
                     <Button
                         variant='contained'
                         color='success'
@@ -84,17 +88,27 @@ export function AddDialog(props: IProps) {
                     control={control}
                     errors={errors}
                     isLoading={isLoading}
-                    readOnly={!!selectedRow}
+                    readOnly={!!selectedDocument}
                     register={register}
                 />
             </Box>
             {
-                selectedRow && (
+                selectedDocument && (
                     <>
                         <Divider textAlign='left'>
                             <Chip label='Agregar Detalle' size='small' />
                         </Divider>
-                        <DetalleForm selectedRow={selectedRow} />
+                        <DetalleForm />
+                        {
+                            !!selectedDocument.detail.length && (
+                                <>
+                                    <Divider textAlign='left'>
+                                        <Chip label='Detalle' size='small' />
+                                    </Divider>
+                                    <DetalleTable />
+                                </>
+                            )
+                        }
                     </>
                 )
             }

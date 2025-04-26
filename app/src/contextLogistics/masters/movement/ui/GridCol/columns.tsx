@@ -5,7 +5,7 @@ import {
     GridValidRowModel
 } from '@mui/x-data-grid'
 import { RowActions } from '@shared/ui-library'
-import { MovementENTITY } from 'logiflowerp-sdk'
+import { getDataMovementOrder, getDataStockType, MovementENTITY } from 'logiflowerp-sdk'
 
 interface IParams {
     handleDeleteClick: (id: GridRowId) => () => void
@@ -28,6 +28,22 @@ export const columns = (params: IParams): GridColDef<MovementENTITY>[] => {
             headerName: 'Nombre',
             width: 180,
             editable: true
+        },
+        {
+            field: 'movement',
+            headerName: 'Movimiento',
+            type: 'singleSelect',
+            width: 150,
+            editable: true,
+            valueOptions: getDataMovementOrder(),
+        },
+        {
+            field: 'stockType',
+            headerName: 'Tipo Stock',
+            type: 'singleSelect',
+            width: 150,
+            editable: true,
+            valueOptions: getDataStockType(),
         },
         {
             field: 'actions',
