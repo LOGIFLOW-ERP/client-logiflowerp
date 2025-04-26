@@ -2,7 +2,12 @@ import { createRepository } from '../baseRepository'
 import { ProductENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 
-export const productApi = createRepository<ProductENTITY, string>('product', getBaseApiLogistics('product'))
+const schema = 'masters'
+const resource = 'product'
+
+const path = `${schema}/${resource}`
+
+export const productApi = createRepository<ProductENTITY, string>(path, getBaseApiLogistics(path))
 
 export const {
     useGetAllQuery: useGetProductsQuery,
