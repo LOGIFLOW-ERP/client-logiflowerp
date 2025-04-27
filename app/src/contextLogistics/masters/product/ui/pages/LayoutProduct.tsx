@@ -48,7 +48,7 @@ export default function LayoutProduct() {
 		try {
 			const dto = new UpdateProductDTO()
 			dto.set(row)
-			// dto.state = dto.state === State.ACTIVO ? State.INACTIVO : State.ACTIVO
+			dto.state = dto.state === State.ACTIVO ? State.INACTIVO : State.ACTIVO
 			await updateStore({ id: row._id, data: dto }).unwrap()
 			enqueueSnackbar({ message: 'Estado actualizado con éxito', variant: 'success' })
 		} catch (error: any) {

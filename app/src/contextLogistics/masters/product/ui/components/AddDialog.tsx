@@ -27,7 +27,7 @@ export function AddDialog(props: IProps) {
 
     const { data: dataUM, isError: isErrorUM, isLoading: isLoadingUM } = useGetUnitOfMeasuresQuery()
     const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup } = useGetProductGroupsQuery()
-    const [createProduct, { isLoading, isError }] = useCreateProductMutation()
+    const [createProduct, { isLoading }] = useCreateProductMutation()
 
     const onSubmit = async (data: CreateProductDTO) => {
         try {
@@ -40,8 +40,8 @@ export function AddDialog(props: IProps) {
         }
     }
 
-    if (isError || isErrorUM || isErrorGroup) return <CustomDialogError open={open} setOpen={setOpen} />
-    if (isLoading || isLoadingUM || isLoadingGroup) return <CustomDialogLoading open={open} setOpen={setOpen} />
+    if (isErrorUM || isErrorGroup) return <CustomDialogError open={open} setOpen={setOpen} />
+    if (isLoadingUM || isLoadingGroup) return <CustomDialogLoading open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog
@@ -125,12 +125,7 @@ export function AddDialog(props: IProps) {
                     margin='normal'
                     size='small'
                     type="number"
-                    slotProps={{
-                        inputLabel: {
-                            shrink: true
-                        }
-                    }}
-                    {...register('minLevel')}
+                    {...register('minLevel', { valueAsNumber: true })}
                     error={!!errors.minLevel}
                     helperText={errors.minLevel?.message}
                 />
@@ -141,12 +136,7 @@ export function AddDialog(props: IProps) {
                     margin='normal'
                     size='small'
                     type="number"
-                    slotProps={{
-                        inputLabel: {
-                            shrink: true
-                        }
-                    }}
-                    {...register('maxLevel')}
+                    {...register('maxLevel', { valueAsNumber: true })}
                     error={!!errors.maxLevel}
                     helperText={errors.maxLevel?.message}
                 />
@@ -156,13 +146,11 @@ export function AddDialog(props: IProps) {
                     color='primary'
                     fullWidth
                     sx={{ marginTop: 2 }}
-                    disabled={isLoading}
+                    loading={isLoading}
+                    loadingIndicator={<CircularProgress size={24} color='inherit' />}
+                    loadingPosition='center'
                 >
-                    {
-                        isLoading
-                            ? <CircularProgress size={24} color='inherit' />
-                            : 'Guardar'
-                    }
+                    Guardar
                 </Button>
             </form>
         </CustomDialog>

@@ -12,6 +12,7 @@ interface CustomSelectProps<T> {
     margin?: 'dense' | 'normal' | 'none' | undefined
     error?: boolean
     helperText?: string
+    disabled?: boolean
 }
 
 export function CustomSelect<T>({
@@ -25,11 +26,12 @@ export function CustomSelect<T>({
     margin,
     error,
     helperText,
+    disabled,
 }: CustomSelectProps<T>) {
     return (
         <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
-            <Select value={value ?? ''} onChange={onChange} label={label} name={name}>
+            <Select value={value ?? ''} onChange={onChange} label={label} name={name} disabled={disabled}>
                 {options.map((option, index) => {
                     const valueOption = option[valueKey]
                     const labelOption = option[labelKey]

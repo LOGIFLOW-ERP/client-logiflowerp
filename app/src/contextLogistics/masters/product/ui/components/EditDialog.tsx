@@ -1,11 +1,11 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomSelect } from '@shared/ui-library'
+import { CustomDialog, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { UpdateProductDTO, getDataProducType, ProductENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, TextField } from '@mui/material'
-import { useUpdateStoreMutation } from '@shared/api'
+import { useGetUnitOfMeasuresQuery, useUpdateProductMutation } from '@shared/api'
 
 const resolver = classValidatorResolver(UpdateProductDTO)
 
@@ -26,7 +26,8 @@ export function EditDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: row })
     const { enqueueSnackbar } = useSnackbar()
 
-    const [updateStore, { isLoading, isError }] = useUpdateStoreMutation()
+    const { data: dataUM, isLoading: isLoadingUM } = useGetUnitOfMeasuresQuery()
+    const [updateStore, { isLoading }] = useUpdateProductMutation()
 
     const onSubmit = async (data: UpdateProductDTO) => {
         try {
@@ -38,9 +39,6 @@ export function EditDialog(props: IProps) {
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
-
-    if (isLoading) return <CustomDialogLoading open={open} setOpen={setOpen} />
-    if (isError) return <CustomDialogError open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog
@@ -59,18 +57,25 @@ export function EditDialog(props: IProps) {
                     error={!!errors.itemName}
                     helperText={errors.itemName?.message}
                 />
-                <TextField
-                    label='UM'
-                    variant='outlined'
-                    fullWidth
-                    margin='normal'
-                    size='small'
-                    {...register('uomCode')}
-                    error={!!errors.uomCode}
-                    helperText={errors.uomCode?.message}
+                <Controller
+                    name='uomCode'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomSelect
+                            label='UM'
+                            options={dataUM ?? []}
+                            {...field}
+                            labelKey='uomCode'
+                            valueKey='uomCode'
+                            margin='normal'
+                            error={!!errors.uomCode}
+                            helperText={errors.uomCode?.message}
+                            disabled={isLoadingUM}
+                        />
+                    )}
                 />
                 <Controller
-                    name='productype'
+                    name='producType'
                     control={control}
                     render={({ field }) => (
                         <CustomSelect
@@ -80,8 +85,8 @@ export function EditDialog(props: IProps) {
                             labelKey='label'
                             valueKey='value'
                             margin='normal'
-                            error={!!errors.productype}
-                            helperText={errors.productype?.message}
+                            error={!!errors.producType}
+                            helperText={errors.producType?.message}
                         />
                     )}
                 />
@@ -91,13 +96,11 @@ export function EditDialog(props: IProps) {
                     color='primary'
                     fullWidth
                     sx={{ marginTop: 2 }}
-                    disabled={isLoading}
+                    loading={isLoading}
+                    loadingIndicator={<CircularProgress size={24} color='inherit' />}
+                    loadingPosition='center'
                 >
-                    {
-                        isLoading
-                            ? <CircularProgress size={24} color='inherit' />
-                            : 'Guardar'
-                    }
+                    Guardar
                 </Button>
             </form>
         </CustomDialog>

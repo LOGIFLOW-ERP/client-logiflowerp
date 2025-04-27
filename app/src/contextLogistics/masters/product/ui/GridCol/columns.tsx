@@ -1,8 +1,9 @@
 import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
-import { getDataProducType, getDataState, State, ProductENTITY } from 'logiflowerp-sdk'
+import { getDataProducType, getDataState, State, ProductENTITY, ProducType } from 'logiflowerp-sdk'
 import { CustomStatus } from '@shared/ui-library'
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
 import EditIcon from '@mui/icons-material/Edit'
+import { Avatar } from '@mui/material'
 
 interface IParams {
     handleChangeStatusClick: (row: ProductENTITY) => void
@@ -38,12 +39,22 @@ export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
             width: 100,
         },
         {
-            field: 'productype',
+            field: 'producType',
             headerName: 'Tipo Prod',
-            renderCell: CustomStatus,
-            type: 'singleSelect',
             valueOptions: getDataProducType(),
             width: 100,
+            renderCell: ({ value }) => {
+                const mapColor: Record<ProducType, string> = {
+                    'S': '#007BFF',
+                    'B': '#FFC107',
+                    'G': '#28A745',
+                }
+                return (
+                    <Avatar style={{ backgroundColor: mapColor[value as ProducType] }}>
+                        {value}
+                    </Avatar>
+                )
+            }
         },
         {
             field: 'state',
