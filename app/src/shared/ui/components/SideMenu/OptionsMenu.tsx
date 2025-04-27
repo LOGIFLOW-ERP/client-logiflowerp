@@ -32,7 +32,7 @@ export function OptionsMenu() {
     const [signOut, { isLoading }] = useSignOutMutation()
     const { enqueueSnackbar } = useSnackbar()
     const navigate = useNavigate()
-    const { actions: { setState } } = useStore('auth')
+    const { setState } = useStore('auth')
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [openProfile, setOpenProfile] = useState(false);
     const [openSettings, setOpenSettings] = useState(false);

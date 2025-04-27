@@ -13,7 +13,7 @@ const resolver = classValidatorResolver(SignInDTO)
 export function LoginForm() {
 
     const navigate = useNavigate()
-    const { actions: { setState } } = useStore('auth')
+    const { setState } = useStore('auth')
     const companyCode = localStorage.getItem('companyCode') ?? ''
     const {
         register,

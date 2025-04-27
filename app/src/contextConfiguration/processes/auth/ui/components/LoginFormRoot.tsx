@@ -12,7 +12,7 @@ const resolver = classValidatorResolver(SignInRootDTO)
 export function LoginFormRoot() {
 
     const navigate = useNavigate()
-    const { actions: { setState } } = useStore('auth')
+    const { setState } = useStore('auth')
     const {
         register,
         handleSubmit,
