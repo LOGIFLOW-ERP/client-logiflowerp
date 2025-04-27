@@ -19,6 +19,7 @@ import { useSnackbar } from 'notistack';
 import { MenuDTO } from 'logiflowerp-sdk'
 import { useState } from 'react';
 import { AboutDialog } from './AboutDialog';
+import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -38,6 +39,7 @@ const iconMap: Record<string, React.ElementType> = {
     Profile: AdminPanelSettingsRoundedIcon,
     Personnel: EngineeringRoundedIcon,
     'Warehouse Entry': InputRoundedIcon,
+    Product: Inventory2RoundedIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null

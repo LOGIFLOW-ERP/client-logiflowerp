@@ -33,17 +33,16 @@ export const columnsSerial = (params: IParams): GridColDef<StockSerialDTO>[] => 
                 <Box
                     sx={{
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
+                        justifyContent: 'center',
+                        height: '100%'
                     }}
                 >
                     <Tooltip title='Escanear series' onClick={() => handleDeleteClick(row)}>
                         <DeleteForeverRoundedIcon
                             cursor='pointer'
                             sx={{
-                                color: '#2196f3',
+                                color: '#FF0000',
                                 alignSelf: 'center',
-                                ml: '8px'
                             }}
                         />
                     </Tooltip>

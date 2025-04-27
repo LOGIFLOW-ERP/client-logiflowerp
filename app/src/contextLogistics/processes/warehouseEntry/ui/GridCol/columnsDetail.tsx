@@ -51,6 +51,11 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
             },
             renderCell: ({ value, row }) => {
                 if (value !== ProducType.SERIE) return value
+                const colorMapping = {
+                    0: '#FF0000',
+                    [row.amount]: '#32CD32'
+                }
+                const color = colorMapping[row.serials.length] || '#FF8C00'
                 return (
                     <Box
                         sx={{
@@ -64,7 +69,7 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
                             <DocumentScannerRoundedIcon
                                 cursor='pointer'
                                 sx={{
-                                    color: '#2196f3',
+                                    color,
                                     alignSelf: 'center',
                                     ml: '8px'
                                 }}

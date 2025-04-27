@@ -83,6 +83,9 @@ export function AddDialog(props: IProps) {
                     : null
             }
         >
+            <Divider textAlign='left'>
+                <Chip label='Datos Principales' size='small' />
+            </Divider>
             <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }} padding={1}>
                 <CabeceraForm
                     control={control}

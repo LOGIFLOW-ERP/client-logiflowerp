@@ -28,7 +28,9 @@ export function SerialsDialog(props: IProps) {
     const {
         handleSubmit,
         formState: { errors },
-        register
+        register,
+        reset,
+        setFocus
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
     const [addSerial, { isLoading: isLoadingAddSerial }] = useAddSerialWarehouseEntryMutation()
@@ -47,8 +49,10 @@ export function SerialsDialog(props: IProps) {
                 keyDetail: selectedDetail.keyDetail,
                 data
             }).unwrap()
+            reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
+            setTimeout(() => setFocus('serial'), 1)
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -69,7 +73,8 @@ export function SerialsDialog(props: IProps) {
                 serial: row.serial
             }).unwrap()
             setState({ selectedDocument: document })
-            enqueueSnackbar({ message: '¡Detalle eliminado!', variant: 'success' })
+            enqueueSnackbar({ message: '¡Serie eliminado!', variant: 'success' })
+            setTimeout(() => setFocus('serial'), 1)
         } catch (error: any) {
             console.error(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -80,63 +85,69 @@ export function SerialsDialog(props: IProps) {
         <CustomDialog
             open={open}
             setOpen={setOpen}
-            title='AGREGAR'
+            title={`AGREGAR SERIES ${selectedDetail ? ` - ${selectedDetail.serials.length} de ${selectedDetail.amount}` : '¡Error!'}`.trim()}
         >
-            <Box component='form' onSubmit={handleSubmit(onSubmit)}>
-                <Grid2 container spacing={2} >
-                    <Grid2 size={{ md: 12 }} component='div'>
-                        <TextField
-                            label='Serie'
-                            variant='outlined'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            {...register('serial')}
-                            error={!!errors.serial}
-                            helperText={errors.serial?.message}
-                        />
-                    </Grid2>
-                    <Grid2 size={{ md: 6 }} component='div'>
-                        <TextField
-                            label='Marca'
-                            variant='outlined'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            {...register('brand')}
-                            error={!!errors.brand}
-                            helperText={errors.brand?.message}
-                        />
-                    </Grid2>
-                    <Grid2 size={{ md: 6 }} component='div'>
-                        <TextField
-                            label='Modelo'
-                            variant='outlined'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            {...register('model')}
-                            error={!!errors.model}
-                            helperText={errors.model?.message}
-                        />
-                    </Grid2>
-                    <Grid2 component='div'>
-                        <Button
-                            type='submit'
-                            variant='contained'
-                            color='primary'
-                            fullWidth
-                            sx={{ marginTop: 1 }}
-                            loading={isLoadingAddSerial}
-                            loadingIndicator={<CircularProgress size={24} color='warning' />}
-                            loadingPosition='center'
-                        >
-                            <AddRoundedIcon />
-                        </Button>
-                    </Grid2>
-                </Grid2>
-            </Box>
-            <Box sx={{ height: '100%' }}>
+            {
+                (!!selectedDetail && selectedDetail.amount !== selectedDetail.serials.length) && (
+                    <Box component='form' onSubmit={handleSubmit(onSubmit)} paddingBottom={2}>
+                        <Grid2 container columnSpacing={2}>
+                            <Grid2 size={{ md: 6 }} component='div'>
+                                <TextField
+                                    label='Marca'
+                                    variant='outlined'
+                                    fullWidth
+                                    margin='dense'
+                                    size='small'
+                                    {...register('brand')}
+                                    error={!!errors.brand}
+                                    helperText={errors.brand?.message}
+                                />
+                            </Grid2>
+                            <Grid2 size={{ md: 6 }} component='div'>
+                                <TextField
+                                    label='Modelo'
+                                    variant='outlined'
+                                    fullWidth
+                                    margin='dense'
+                                    size='small'
+                                    {...register('model')}
+                                    error={!!errors.model}
+                                    helperText={errors.model?.message}
+                                />
+                            </Grid2>
+                            <Grid2 size={{ md: 8 }} component='div'>
+                                <TextField
+                                    label='Serie'
+                                    variant='outlined'
+                                    fullWidth
+                                    margin='dense'
+                                    autoFocus
+                                    size='small'
+                                    {...register('serial')}
+                                    error={!!errors.serial}
+                                    helperText={errors.serial?.message}
+                                    autoComplete='off'
+                                />
+                            </Grid2>
+                            <Grid2 size={{ md: 4 }} component='div'>
+                                <Button
+                                    type='submit'
+                                    variant='contained'
+                                    color='primary'
+                                    fullWidth
+                                    sx={{ marginTop: 1 }}
+                                    loading={isLoadingAddSerial}
+                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                    loadingPosition='center'
+                                >
+                                    <AddRoundedIcon />
+                                </Button>
+                            </Grid2>
+                        </Grid2>
+                    </Box>
+                )
+            }
+            <Box sx={{ height: '50vh' }}>
                 <DataGrid<StockSerialDTO>
                     rows={selectedDetail?.serials}
                     columns={columnsSerial({ handleDeleteClick })}
