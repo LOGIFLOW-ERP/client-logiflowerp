@@ -1,21 +1,9 @@
 import {
     GridColDef,
-    GridRowId,
-    GridRowModesModel,
-    GridValidRowModel
 } from '@mui/x-data-grid'
-import { RowActions } from '@shared/ui-library'
 import { CurrencyENTITY } from 'logiflowerp-sdk'
 
-interface IParams {
-    handleDeleteClick: (id: GridRowId) => () => void
-    rowModesModel: GridRowModesModel
-    setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
-    rows: readonly GridValidRowModel[]
-    setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
-}
-
-export const columns = (params: IParams): GridColDef<CurrencyENTITY>[] => {
+export const columns = (): GridColDef<CurrencyENTITY>[] => {
     return [
         {
             field: 'code',
@@ -30,17 +18,10 @@ export const columns = (params: IParams): GridColDef<CurrencyENTITY>[] => {
             editable: true
         },
         {
-            field: 'actions',
-            type: 'actions',
-            headerName: 'Acciones',
+            field: 'symbol',
+            headerName: 'Símbolo',
             width: 100,
-            cellClassName: 'actions',
-            getActions: ({ id }) => [
-                <RowActions
-                    id={id}
-                    {...params}
-                />
-            ]
+            editable: true
         },
     ]
 }

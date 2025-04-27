@@ -1,5 +1,4 @@
 import { configureStore, Reducer } from '@reduxjs/toolkit'
-import { authReducer } from './auth'
 import {
     authApi,
     currencyApi,
@@ -15,14 +14,18 @@ import {
     profileApi,
     personnelApi,
     rootUserApi,
-    warehouseEntryApi
+    warehouseEntryApi,
+    warehouseExitApi,
 } from '@shared/api'
+import { authReducer } from './auth'
 import { warehouseEntryReducer } from './warehouseEntry'
+import { warehouseExitReducer } from './warehouseExit'
 
 export const store = configureStore({
     reducer: {
         auth: authReducer,
         warehouseEntry: warehouseEntryReducer,
+        warehouseExit: warehouseExitReducer,
         [authApi.reducerPath]: authApi.reducer as Reducer,
         [productGroupApi.reducerPath]: productGroupApi.reducer as Reducer,
         [productApi.reducerPath]: productApi.reducer as Reducer,
@@ -38,6 +41,7 @@ export const store = configureStore({
         [personnelApi.reducerPath]: personnelApi.reducer as Reducer,
         [rootUserApi.reducerPath]: rootUserApi.reducer as Reducer,
         [warehouseEntryApi.reducerPath]: warehouseEntryApi.reducer as Reducer,
+        [warehouseExitApi.reducerPath]: warehouseExitApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -56,6 +60,7 @@ export const store = configureStore({
             .concat(personnelApi.middleware)
             .concat(rootUserApi.middleware)
             .concat(warehouseEntryApi.middleware)
+            .concat(warehouseExitApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

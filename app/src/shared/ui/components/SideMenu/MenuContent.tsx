@@ -14,6 +14,7 @@ import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded'
 import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded'
 import EngineeringRoundedIcon from '@mui/icons-material/EngineeringRounded'
 import InputRoundedIcon from '@mui/icons-material/InputRounded';
+import LocalShippingRoundedIcon from '@mui/icons-material/LocalShippingRounded';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { MenuDTO } from 'logiflowerp-sdk'
@@ -40,6 +41,7 @@ const iconMap: Record<string, React.ElementType> = {
     Personnel: EngineeringRoundedIcon,
     'Warehouse Entry': InputRoundedIcon,
     Product: Inventory2RoundedIcon,
+    'Warehouse Exit': LocalShippingRoundedIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null
