@@ -1,11 +1,11 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomDialogError, CustomSelect } from '@shared/ui-library'
+import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateProductDTO, getDataProducType } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, TextField } from '@mui/material'
-import { useCreateProductMutation } from '@shared/api'
+import { useCreateProductMutation, useGetProductGroupsQuery, useGetUnitOfMeasuresQuery } from '@shared/api'
 
 const resolver = classValidatorResolver(CreateProductDTO)
 
@@ -25,7 +25,8 @@ export function AddDialog(props: IProps) {
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
 
-
+    const { data: dataUM, isError: isErrorUM, isLoading: isLoadingUM } = useGetUnitOfMeasuresQuery()
+    const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup } = useGetProductGroupsQuery()
     const [createProduct, { isLoading, isError }] = useCreateProductMutation()
 
     const onSubmit = async (data: CreateProductDTO) => {
@@ -39,7 +40,8 @@ export function AddDialog(props: IProps) {
         }
     }
 
-    if (isError) return <CustomDialogError open={open} setOpen={setOpen} />
+    if (isError || isErrorUM || isErrorGroup) return <CustomDialogError open={open} setOpen={setOpen} />
+    if (isLoading || isLoadingUM || isLoadingGroup) return <CustomDialogLoading open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog
@@ -69,7 +71,7 @@ export function AddDialog(props: IProps) {
                     helperText={errors.itemName?.message}
                 />
                 <Controller
-                    name='productype'
+                    name='producType'
                     control={control}
                     render={({ field }) => (
                         <CustomSelect
@@ -79,30 +81,42 @@ export function AddDialog(props: IProps) {
                             labelKey='label'
                             valueKey='value'
                             margin='normal'
-                            error={!!errors.productype}
-                            helperText={errors.productype?.message}
+                            error={!!errors.producType}
+                            helperText={errors.producType?.message}
                         />
                     )}
                 />
-                <TextField
-                    label='UM'
-                    variant='outlined'
-                    fullWidth
-                    margin='normal'
-                    size='small'
-                    {...register('uomCode')}
-                    error={!!errors.uomCode}
-                    helperText={errors.uomCode?.message}
+                <Controller
+                    name='uomCode'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomSelect
+                            label='UM'
+                            options={dataUM ?? []}
+                            {...field}
+                            labelKey='uomCode'
+                            valueKey='uomCode'
+                            margin='normal'
+                            error={!!errors.uomCode}
+                            helperText={errors.uomCode?.message}
+                        />
+                    )}
                 />
-                <TextField
-                    label='Grupo'
-                    variant='outlined'
-                    fullWidth
-                    margin='normal'
-                    size='small'
-                    {...register('itmsGrpCod')}
-                    error={!!errors.itmsGrpCod}
-                    helperText={errors.itmsGrpCod?.message}
+                <Controller
+                    name='itmsGrpCod'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomSelect
+                            label='Grupo'
+                            options={dataGroup ?? []}
+                            {...field}
+                            labelKey='itmsGrpCod'
+                            valueKey='itmsGrpCod'
+                            margin='normal'
+                            error={!!errors.itmsGrpCod}
+                            helperText={errors.itmsGrpCod?.message}
+                        />
+                    )}
                 />
                 <TextField
                     label='Min'
