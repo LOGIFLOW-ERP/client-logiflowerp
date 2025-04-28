@@ -1,7 +1,6 @@
 import { configureStore, Reducer } from '@reduxjs/toolkit'
 import {
     authApi,
-    currencyApi,
     movementApi,
     productApi,
     productGroupApi,
@@ -16,6 +15,7 @@ import {
     rootUserApi,
     warehouseEntryApi,
     warehouseExitApi,
+    warehouseStockApi,
 } from '@shared/api'
 import { authReducer } from './auth'
 import { warehouseEntryReducer } from './warehouseEntry'
@@ -30,7 +30,6 @@ export const store = configureStore({
         [productGroupApi.reducerPath]: productGroupApi.reducer as Reducer,
         [productApi.reducerPath]: productApi.reducer as Reducer,
         [movementApi.reducerPath]: movementApi.reducer as Reducer,
-        [currencyApi.reducerPath]: currencyApi.reducer as Reducer,
         [productPriceApi.reducerPath]: productPriceApi.reducer as Reducer,
         [unitOfMeasureApi.reducerPath]: unitOfMeasureApi.reducer as Reducer,
         [storeApi.reducerPath]: storeApi.reducer as Reducer,
@@ -42,6 +41,7 @@ export const store = configureStore({
         [rootUserApi.reducerPath]: rootUserApi.reducer as Reducer,
         [warehouseEntryApi.reducerPath]: warehouseEntryApi.reducer as Reducer,
         [warehouseExitApi.reducerPath]: warehouseExitApi.reducer as Reducer,
+        [warehouseStockApi.reducerPath]: warehouseStockApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -49,7 +49,6 @@ export const store = configureStore({
             .concat(productGroupApi.middleware)
             .concat(productApi.middleware)
             .concat(movementApi.middleware)
-            .concat(currencyApi.middleware)
             .concat(productPriceApi.middleware)
             .concat(unitOfMeasureApi.middleware)
             .concat(storeApi.middleware)
@@ -61,6 +60,7 @@ export const store = configureStore({
             .concat(rootUserApi.middleware)
             .concat(warehouseEntryApi.middleware)
             .concat(warehouseExitApi.middleware)
+            .concat(warehouseStockApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

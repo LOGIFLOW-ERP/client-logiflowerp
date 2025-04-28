@@ -1,5 +1,4 @@
 export * from './authApi';
-export * from './currencyApi';
 export * from './rootUserApi';
 export * from './companyApi';
 export * from './rootCompanyApi';

@@ -1,15 +1,15 @@
 import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
-import { getDataState, WarehouseEntryENTITY } from 'logiflowerp-sdk'
+import { getDataState, WarehouseExitENTITY } from 'logiflowerp-sdk'
 import { CustomStatusOrder } from '@shared/ui-library'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import EditIcon from '@mui/icons-material/Edit'
 
 interface IParams {
-    handleDeleteClick: (row: WarehouseEntryENTITY) => void
-    handleEditClick: (row: WarehouseEntryENTITY) => void
+    handleDeleteClick: (row: WarehouseExitENTITY) => void
+    handleEditClick: (row: WarehouseExitENTITY) => void
 }
 
-export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => {
+export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
     const { handleEditClick, handleDeleteClick } = params
     return [
         {
@@ -70,17 +70,17 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
             width: 50,
             getActions: (params) => [
                 <GridActionsCellItem
+                    icon={<EditIcon color='info' />}
+                    label='Editar'
+                    onClick={() => handleEditClick(params.row)}
+                    showInMenu
+                />,
+                <GridActionsCellItem
                     icon={<DeleteForeverRoundedIcon color='error' />}
                     label='Eliminar'
                     onClick={() => handleDeleteClick(params.row)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<EditIcon color='info' />}
-                    label='Editar'
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />
             ],
         },
     ]

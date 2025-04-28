@@ -1,5 +1,9 @@
 import { Button, CircularProgress, Grid2, TextField } from '@mui/material'
-import { useGetMovementPipelineQuery, useGetStorePipelineQuery } from '@shared/api'
+import {
+    useGetMovementPipelineQuery,
+    useGetPersonnelPipelineQuery,
+    useGetStorePipelineQuery
+} from '@shared/api'
 import { CustomSelectDto } from '@shared/ui-library'
 import { CreateWarehouseExitDTO, MovementOrder, State } from 'logiflowerp-sdk'
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
@@ -16,14 +20,12 @@ export function CabeceraForm(props: Props) {
 
     const { control, errors, readOnly, isLoading, register } = props
 
-    const pipelineMovement = [{ $match: { movement: MovementOrder.INGRESO } }]
-    const { data: dataMovements, isLoading: isLoadingMovements } = useGetMovementPipelineQuery(pipelineMovement)
+    const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA } }]
+    const { data: dataMovements, isLoading: isLoadingMovements, isError: isErrorMovements } = useGetMovementPipelineQuery(pipelineMovement)
     const pipelineStore = [{ $match: { state: State.ACTIVO } }]
-    const { data: dataStores, isLoading: isLoadingStores } = useGetStorePipelineQuery(pipelineStore)
-
-    if (isLoadingMovements || isLoadingStores) {
-        return <CircularProgress />
-    }
+    const { data: dataStores, isLoading: isLoadingStores, isError: isErrorStores } = useGetStorePipelineQuery(pipelineStore)
+    const pipelinePersonnel = [{ $match: { state: State.ACTIVO } }]
+    const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
 
     return (
         <Grid2 container spacing={2} columns={16}>
@@ -43,6 +45,8 @@ export function CabeceraForm(props: Props) {
                             helperText={errors.movement?.message}
                             readOnly={readOnly}
                             autoFocus
+                            isLoading={isLoadingMovements}
+                            isError={isErrorMovements}
                         />
                     )}
                 />
@@ -62,6 +66,30 @@ export function CabeceraForm(props: Props) {
                             error={!!errors.store}
                             helperText={errors.store?.message}
                             readOnly={readOnly}
+                            isLoading={isLoadingStores}
+                            isError={isErrorStores}
+                        />
+                    )}
+                />
+            </Grid2>
+            <Grid2 size={{ md: 2 }} component='div'>
+                <Controller
+                    name='carrier'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomSelectDto
+                            label='Personal'
+                            options={dataPersonnel ?? []}
+                            {...field}
+                            labelKey={['names', ' ', 'surnames', 'company.code']}
+                            valueKey='identity'
+                            margin='dense'
+                            error={!!errors.carrier}
+                            helperText={errors.carrier?.message}
+                            readOnly={readOnly}
+                            autoFocus
+                            isLoading={isLoadingPersonnel}
+                            isError={isErrorPersonnel}
                         />
                     )}
                 />
@@ -78,8 +106,6 @@ export function CabeceraForm(props: Props) {
                     helperText={errors.address?.message}
                     slotProps={{ input: { readOnly: readOnly } }}
                 />
-            </Grid2>
-            <Grid2 size={{ md: 2 }} component='div'>
             </Grid2>
             <Grid2 size={{ md: 1 }} component='div'>
                 {

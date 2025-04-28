@@ -10,9 +10,9 @@ import {
 } from '@shared/api'
 import { CabeceraForm } from './HeaderForm'
 import { lazy } from 'react'
-import { DetalleTable } from './DetailTable'
 import { useStore } from '@shared/ui/hooks'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
+const DetailTable = lazy(() => import('./DetailTable').then(m => ({ default: m.DetailTable })))
 
 const resolver = classValidatorResolver(CreateWarehouseExitDTO)
 
@@ -65,7 +65,7 @@ export function AddDialog(props: IProps) {
         <CustomFullScreenDialog
             open={open}
             setOpen={setOpen}
-            title='Nuevo ingreso de almacén'
+            title='Nueva salida de almacén'
             toolbar={
                 selectedDocument ? (
                     <Button
@@ -108,7 +108,7 @@ export function AddDialog(props: IProps) {
                                     <Divider textAlign='left'>
                                         <Chip label='Detalle' size='small' />
                                     </Divider>
-                                    <DetalleTable />
+                                    <DetailTable />
                                 </>
                             )
                         }

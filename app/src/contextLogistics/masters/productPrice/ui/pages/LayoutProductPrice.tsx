@@ -11,7 +11,6 @@ import { useSnackbar } from 'notistack'
 import {
 	useCreateProductPriceMutation,
 	useDeleteProductPriceMutation,
-	useGetCurrenciesQuery,
 	useGetProductPipelineQuery,
 	useGetProductPricesQuery,
 	useUpdateProductPriceMutation,
@@ -29,7 +28,6 @@ export default function LayoutProductPrice() {
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductPricesQuery()
-	const { data: dataCurrency, error: errorCurrency, isLoading: isLoadingCurrency } = useGetCurrenciesQuery()
 	const pipelineProducts = [{ $match: { state: State.ACTIVO } }]
 	const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
 	const [createProductPrice, { isLoading: isLoadingCreate }] = useCreateProductPriceMutation()
@@ -73,7 +71,7 @@ export default function LayoutProductPrice() {
 		return !(['itemCode'] as (keyof ProductPriceENTITY)[]).includes(p.field as keyof ProductPriceENTITY) || row.isNew
 	}
 
-	if (error || errorCurrency || !dataCurrency || !dataProducts) return <CustomViewError />
+	if (error || !dataProducts) return <CustomViewError />
 
 	return (
 		<CustomDataGrid
@@ -87,7 +85,6 @@ export default function LayoutProductPrice() {
 				setRowModesModel,
 				rows,
 				setRows,
-				dataCurrency,
 				dataProducts
 			})}
 			newRowTemplate={newRowTemplate}
@@ -98,7 +95,6 @@ export default function LayoutProductPrice() {
 				isLoadingCreate ||
 				isLoadingUpdate ||
 				isLoadingDelete ||
-				isLoadingCurrency ||
 				isLoadingProducts
 			}
 		/>

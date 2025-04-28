@@ -70,17 +70,17 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
             width: 50,
             getActions: (params) => [
                 <GridActionsCellItem
+                    icon={<EditIcon color='info' />}
+                    label='Editar'
+                    onClick={() => handleEditClick(params.row)}
+                    showInMenu
+                />,
+                <GridActionsCellItem
                     icon={<DeleteForeverRoundedIcon color='error' />}
                     label='Eliminar'
                     onClick={() => handleDeleteClick(params.row)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<EditIcon color='info' />}
-                    label='Editar'
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />
             ],
         },
     ]

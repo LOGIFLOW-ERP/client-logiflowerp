@@ -1,5 +1,5 @@
 import { createRepository } from '../baseRepository'
-import { CreateOrderDetailDTO, StockSerialDTO, WarehouseExitENTITY } from 'logiflowerp-sdk'
+import { CreateWarehouseExitDetail, StockSerialDTO, WarehouseExitENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
 import { instanceToPlain } from 'class-transformer';
@@ -25,7 +25,7 @@ export const warehouseExitApi = createRepository<WarehouseExitENTITY, string>(pa
                 ],
                 transformErrorResponse
             }),
-            addDetail: builder.mutation<WarehouseExitENTITY, { _id: string, data: CreateOrderDetailDTO }>({
+            addDetail: builder.mutation<WarehouseExitENTITY, { _id: string, data: CreateWarehouseExitDetail }>({
                 query: ({ _id, data }) => ({
                     url: `${path}/add-detail/${_id}`,
                     method: 'PUT',

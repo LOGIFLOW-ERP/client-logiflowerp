@@ -1,10 +1,10 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomSelect, CustomViewLoading } from '@shared/ui-library'
+import { CustomDialog, CustomSelect, CustomSelectDto, CustomViewLoading } from '@shared/ui-library'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateEmployeeDTO, State } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Alert, Avatar, Box, Button, Card, CardContent, CardHeader, CircularProgress, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { useCreatePersonnelMutation, useGetProfilesQuery, useLazyGetUserByIdQuery } from '@shared/api'
+import { useCreatePersonnelMutation, useGetCompaniesPipelineQuery, useGetProfilesQuery, useLazyGetUserByIdQuery } from '@shared/api'
 import SearchIcon from '@mui/icons-material/Search'
 import { useEffect } from 'react'
 
@@ -31,6 +31,8 @@ export function AddDialog(props: IProps) {
     const [create, { isLoading }] = useCreatePersonnelMutation()
     const [fetchUser, { data: user, isLoading: isLoadingUser, isError: isErrorUser, error: errorUser }] = useLazyGetUserByIdQuery()
     const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles, error } = useGetProfilesQuery()
+    const pipelineCompanies = [{ $match: { state: State.ACTIVO } }]
+    const { data: dataCompanies, isError: isErrorCompanies, isLoading: isLoadingCompanies } = useGetCompaniesPipelineQuery(pipelineCompanies)
 
     useEffect(() => {
         if (user?.email) {
@@ -57,9 +59,9 @@ export function AddDialog(props: IProps) {
             maxWidth='sm'
         >
             {
-                (isErrorProfiles || !dataProfiles)
+                (isErrorProfiles || !dataProfiles || isErrorCompanies)
                     ? <Alert severity='error'>{(error as Error)?.message}</Alert>
-                    : isLoadingProfiles
+                    : isLoadingProfiles || isLoadingCompanies
                         ? <CustomViewLoading />
                         : <form onSubmit={handleSubmit(onSubmit)}>
                             <TextField
@@ -120,6 +122,22 @@ export function AddDialog(props: IProps) {
                                             </Box>
                                         </CardContent>
                                     </Card>
+                                    <Controller
+                                        name='company'
+                                        control={control}
+                                        render={({ field }) => (
+                                            <CustomSelectDto
+                                                label='Empresa'
+                                                options={dataCompanies ?? []}
+                                                {...field}
+                                                labelKey='companyname'
+                                                valueKey='code'
+                                                margin='normal'
+                                                error={!!errors.company}
+                                                helperText={errors.company?.message}
+                                            />
+                                        )}
+                                    />
                                     <TextField
                                         label='Correo electrónico'
                                         variant='outlined'

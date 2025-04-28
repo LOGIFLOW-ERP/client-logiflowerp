@@ -8,7 +8,7 @@ import { lazy, useState } from 'react'
 import { useStore } from '@shared/ui/hooks'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
 
-export function DetalleTable() {
+export function DetailTable() {
 
     const { setState, state: { selectedDetail, selectedDocument } } = useStore('warehouseExit')
 
