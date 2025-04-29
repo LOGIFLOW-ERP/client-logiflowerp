@@ -5,13 +5,13 @@ import {
     useGetWarehouseStockPipelineQuery
 } from '@shared/api';
 import { CustomSelectDto } from '@shared/ui-library';
-import { CreateWarehouseExitDetail, State } from 'logiflowerp-sdk';
+import { CreateWarehouseExitDetailDTO, State } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useStore } from '@shared/ui/hooks';
 
-const resolver = classValidatorResolver(CreateWarehouseExitDetail)
+const resolver = classValidatorResolver(CreateWarehouseExitDetailDTO)
 
 export function DetalleForm() {
 
@@ -30,7 +30,7 @@ export function DetalleForm() {
     const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS } = useGetWarehouseStockPipelineQuery(pipelineWS)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseExitMutation()
 
-    const onSubmit = async (data: CreateWarehouseExitDetail) => {
+    const onSubmit = async (data: CreateWarehouseExitDetailDTO) => {
         try {
             if (!selectedDocument) {
                 throw new Error('¡No hay un documento seleccionado!')
