@@ -6,4 +6,6 @@ export * from './unitOfMeasureApi';
 export * from './storeApi';
 export * from './warehouseEntryApi';
 export * from './warehouseExitApi';
+export * from './warehouseReturnApi';
 export * from './warehouseStockApi';
+export * from './employeeStockApi';

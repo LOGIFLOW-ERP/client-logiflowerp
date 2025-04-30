@@ -1,21 +1,21 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, Button, CircularProgress, Grid2, TextField } from "@mui/material";
 import {
-    useAddDetailWarehouseExitMutation,
-    useGetWarehouseStockPipelineQuery
+    useAddDetailWarehouseReturnMutation,
+    useGetEmployeeStockPipelineQuery,
 } from '@shared/api';
 import { CustomSelectDto } from '@shared/ui-library';
-import { CreateWarehouseExitDetailDTO, State } from 'logiflowerp-sdk';
+import { CreateWarehouseReturnDetailDTO, State } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useStore } from '@shared/ui/hooks';
 
-const resolver = classValidatorResolver(CreateWarehouseExitDetailDTO)
+const resolver = classValidatorResolver(CreateWarehouseReturnDetailDTO)
 
 export function DetalleForm() {
 
-    const { setState, state: { selectedDocument } } = useStore('warehouseExit')
+    const { setState, state: { selectedDocument } } = useStore('warehouseReturn')
 
     const {
         handleSubmit,
@@ -27,10 +27,10 @@ export function DetalleForm() {
     const { enqueueSnackbar } = useSnackbar()
 
     const pipelineWS = [{ $match: { state: State.ACTIVO, 'store.code': selectedDocument?.store.code } }]
-    const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS } = useGetWarehouseStockPipelineQuery(pipelineWS)
-    const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseExitMutation()
+    const { data: dataES, isLoading: isLoadingES, isError: isErrorES } = useGetEmployeeStockPipelineQuery(pipelineWS)
+    const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseReturnMutation()
 
-    const onSubmit = async (data: CreateWarehouseExitDetailDTO) => {
+    const onSubmit = async (data: CreateWarehouseReturnDetailDTO) => {
         try {
             if (!selectedDocument) {
                 throw new Error('¡No hay un documento seleccionado!')
@@ -50,21 +50,21 @@ export function DetalleForm() {
             <Grid2 container spacing={2} columns={16}>
                 <Grid2 size={{ md: 4 }} component='div'>
                     <Controller
-                        name='warehouseStock'
+                        name='employeeStock'
                         control={control}
                         render={({ field }) => (
                             <CustomSelectDto
                                 label='Producto'
-                                options={dataWS ?? []}
+                                options={dataES ?? []}
                                 {...field}
                                 labelKey={['keyDetail', '-', 'keySearch']}
                                 valueKey='_id'
                                 margin='dense'
-                                error={!!errors.warehouseStock}
-                                helperText={errors.warehouseStock?.message}
+                                error={!!errors.employeeStock}
+                                helperText={errors.employeeStock?.message}
                                 autoFocus
-                                isLoading={isLoadingWS}
-                                isError={isErrorWS}
+                                isLoading={isLoadingES}
+                                isError={isErrorES}
                             />
                         )}
                     />
@@ -76,7 +76,7 @@ export function DetalleForm() {
                         fullWidth
                         margin='dense'
                         size='small'
-                        {...register('warehouseStock.lot')}
+                        {...register('employeeStock.lot')}
                         slotProps={{ input: { readOnly: true } }}
                     />
                 </Grid2>
