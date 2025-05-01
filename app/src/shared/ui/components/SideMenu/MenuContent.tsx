@@ -21,6 +21,7 @@ import { MenuDTO } from 'logiflowerp-sdk'
 import { useState } from 'react';
 import { AboutDialog } from './AboutDialog';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
+import Rotate90DegreesCcwRoundedIcon from '@mui/icons-material/Rotate90DegreesCcwRounded';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -42,6 +43,7 @@ const iconMap: Record<string, React.ElementType> = {
     'Warehouse Entry': InputRoundedIcon,
     Product: Inventory2RoundedIcon,
     'Warehouse Exit': LocalShippingRoundedIcon,
+    'Warehouse Return': Rotate90DegreesCcwRoundedIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null

@@ -28,8 +28,23 @@ export function LoginForm() {
     const onSubmit = async (data: SignInDTO) => {
         try {
             localStorage.setItem('companyCode', data.companyCode)
-            const { user, dataSystemOptions, company, profile, root } = await signIn(data).unwrap()
-            setState({ isAuthenticated: true, user, dataSystemOptions, company, profile, root })
+            const {
+                user,
+                dataSystemOptions,
+                company,
+                profile,
+                root,
+                tags
+            } = await signIn(data).unwrap()
+            setState({
+                isAuthenticated: true,
+                user,
+                dataSystemOptions,
+                company,
+                profile,
+                root,
+                tags
+            })
             navigate('/')
         } catch (error: any) {
             console.log(error)

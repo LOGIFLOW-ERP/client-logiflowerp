@@ -60,7 +60,7 @@ export default function LayoutWarehouseReturn() {
 		<>
 			<Paper elevation={2} sx={{ height: '89vh', width: '100%', p: 2, position: 'relative' }}>
 				<Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-					<Typography variant="h6">Documentos de Salida No Validados</Typography>
+					<Typography variant="h6">Documentos de Devolución No Validados</Typography>
 				</Box>
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseReturnENTITY>

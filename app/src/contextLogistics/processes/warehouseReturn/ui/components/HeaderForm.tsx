@@ -20,7 +20,7 @@ export function CabeceraForm(props: Props) {
 
     const { control, errors, readOnly, isLoading, register } = props
 
-    const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA } }]
+    const pipelineMovement = [{ $match: { movement: MovementOrder.DEVOLUCION } }]
     const { data: dataMovements, isLoading: isLoadingMovements, isError: isErrorMovements } = useGetMovementPipelineQuery(pipelineMovement)
     const pipelineStore = [{ $match: { state: State.ACTIVO } }]
     const { data: dataStores, isLoading: isLoadingStores, isError: isErrorStores } = useGetStorePipelineQuery(pipelineStore)

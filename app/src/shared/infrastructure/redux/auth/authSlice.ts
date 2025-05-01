@@ -8,19 +8,22 @@ let company = new CompanyDTO()
 let profile = new ProfileDTO()
 let root = false
 let dataSystemOptions: SystemOptionENTITY[] = []
+let tags: string[] = []
 if (authUser) {
     const {
         user: _user,
         dataSystemOptions: _dataSystemOptions,
         company: _company,
         profile: _profile,
-        root: _root
+        root: _root,
+        tags: _tags
     } = JSON.parse(authUser) as ResponseSignIn
     user = _user
     dataSystemOptions = _dataSystemOptions
     company = _company
     profile = _profile
     root = _root
+    tags = _tags
 }
 
 export const initialState = {
@@ -29,7 +32,8 @@ export const initialState = {
     dataSystemOptions,
     company,
     profile,
-    root
+    root,
+    tags
 }
 
 const authSlice = createSlice({

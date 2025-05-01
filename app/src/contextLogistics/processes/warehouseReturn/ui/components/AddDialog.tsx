@@ -10,7 +10,8 @@ import {
 } from '@shared/api'
 import { CabeceraForm } from './HeaderForm'
 import { lazy } from 'react'
-import { useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
 const DetailTable = lazy(() => import('./DetailTable').then(m => ({ default: m.DetailTable })))
 
@@ -32,6 +33,7 @@ export function AddDialog(props: IProps) {
         control,
     } = useForm({ resolver, defaultValues: { ...selectedDocument } })
     const { enqueueSnackbar } = useSnackbar()
+    const [canValidateByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_VALIDATE_BY_ID])
 
     const [create, { isLoading }] = useCreateWarehouseReturnMutation()
     const [validate, { isLoading: isLoadingValidate }] = useValidateWarehouseReturnMutation()
@@ -65,9 +67,9 @@ export function AddDialog(props: IProps) {
         <CustomFullScreenDialog
             open={open}
             setOpen={setOpen}
-            title='Nueva salida de almacén'
+            title='Nueva devolución de almacén'
             toolbar={
-                selectedDocument ? (
+                (!!selectedDocument && canValidateByID) ? (
                     <Button
                         variant='contained'
                         color='success'
