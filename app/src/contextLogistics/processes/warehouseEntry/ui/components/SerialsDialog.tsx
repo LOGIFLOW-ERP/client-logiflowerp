@@ -11,7 +11,8 @@ import {
 } from '@shared/api'
 import { DataGrid } from '@mui/x-data-grid'
 import { columnsSerial } from '../GridCol'
-import { useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 const resolver = classValidatorResolver(StockSerialDTO)
 
@@ -35,6 +36,7 @@ export function SerialsDialog(props: IProps) {
     const { enqueueSnackbar } = useSnackbar()
     const [addSerial, { isLoading: isLoadingAddSerial }] = useAddSerialWarehouseEntryMutation()
     const [deleteSerial, { isLoading: isLoadingDeleteSerial }] = useDeleteSerialWarehouseEntryMutation()
+    const [canWarehouseEntryDeleteSerialByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_ENTRY_DELETE_SERIAL_BY_ID])
 
     const onSubmit = async (data: StockSerialDTO) => {
         try {
@@ -155,6 +157,9 @@ export function SerialsDialog(props: IProps) {
                     getRowId={row => row.serial}
                     loading={isLoadingDeleteSerial}
                     autoPageSize
+                    columnVisibilityModel={{
+                        actions: canWarehouseEntryDeleteSerialByID
+                    }}
                 />
             </Box>
         </CustomDialog>

@@ -26,8 +26,8 @@ export const columnsSerial = (params: IParams): GridColDef<StockSerialDTO>[] => 
             width: 100,
         },
         {
-            field: 'producType',
-            headerName: 'Tipo',
+            field: 'actions',
+            type: 'actions',
             width: 60,
             renderCell: ({ row }) => (
                 <Box
@@ -37,7 +37,7 @@ export const columnsSerial = (params: IParams): GridColDef<StockSerialDTO>[] => 
                         height: '100%'
                     }}
                 >
-                    <Tooltip title='Escanear series' onClick={() => handleDeleteClick(row)}>
+                    <Tooltip title='Eliminar serie' onClick={() => handleDeleteClick(row)}>
                         <DeleteForeverRoundedIcon
                             cursor='pointer'
                             sx={{

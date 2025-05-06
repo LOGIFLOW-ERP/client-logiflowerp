@@ -7,10 +7,11 @@ import EditIcon from '@mui/icons-material/Edit'
 interface IParams {
     handleDeleteClick: (row: WarehouseEntryENTITY) => void
     handleEditClick: (row: WarehouseEntryENTITY) => void
+    canDeleteWarehouseEntryByID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => {
-    const { handleEditClick, handleDeleteClick } = params
+    const { handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID } = params
     return [
         {
             field: 'documentNumber',
@@ -75,12 +76,14 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
                     onClick={() => handleEditClick(params.row)}
                     showInMenu
                 />,
-                <GridActionsCellItem
-                    icon={<DeleteForeverRoundedIcon color='error' />}
-                    label='Eliminar'
-                    onClick={() => handleDeleteClick(params.row)}
-                    showInMenu
-                />,
+                canDeleteWarehouseEntryByID
+                    ? <GridActionsCellItem
+                        icon={<DeleteForeverRoundedIcon color='error' />}
+                        label='Eliminar'
+                        onClick={() => handleDeleteClick(params.row)}
+                        showInMenu
+                    />
+                    : <></>,
             ],
         },
     ]

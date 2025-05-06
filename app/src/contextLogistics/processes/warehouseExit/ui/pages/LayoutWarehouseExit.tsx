@@ -11,7 +11,8 @@ import { WarehouseExitENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
 import { Box, Typography } from '@mui/material'
-import { useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseExit() {
@@ -19,6 +20,7 @@ export default function LayoutWarehouseExit() {
 	const [openAdd, setOpenAdd] = useState(false)
 	const { setState } = useStore('warehouseExit')
 
+	const [canDeleteWarehouseExitByID] = usePermissions([PERMISSIONS.DELETE_WAREHOUSE_EXIT_BY_ID])
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
 	const { data, error, isLoading } = useGetWarehouseExitPipelineQuery(pipeline)
@@ -65,7 +67,7 @@ export default function LayoutWarehouseExit() {
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseExitENTITY>
 						rows={data}
-						columns={columns({ handleEditClick, handleDeleteClick })}
+						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseExitByID })}
 						disableRowSelectionOnClick
 						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 						getRowId={row => row._id}

@@ -11,7 +11,8 @@ import { WarehouseReturnENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
 import { Box, Typography } from '@mui/material'
-import { useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseReturn() {
@@ -19,6 +20,7 @@ export default function LayoutWarehouseReturn() {
 	const [openAdd, setOpenAdd] = useState(false)
 	const { setState } = useStore('warehouseReturn')
 
+	const [canDeleteWarehouseReturnByID] = usePermissions([PERMISSIONS.DELETE_WAREHOUSE_RETURN_BY_ID])
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
 	const { data, error, isLoading } = useGetWarehouseReturnPipelineQuery(pipeline)
@@ -65,7 +67,7 @@ export default function LayoutWarehouseReturn() {
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseReturnENTITY>
 						rows={data}
-						columns={columns({ handleEditClick, handleDeleteClick })}
+						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseReturnByID })}
 						disableRowSelectionOnClick
 						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 						getRowId={row => row._id}

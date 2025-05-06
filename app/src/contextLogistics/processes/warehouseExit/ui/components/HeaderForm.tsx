@@ -4,7 +4,9 @@ import {
     useGetPersonnelPipelineQuery,
     useGetStorePipelineQuery
 } from '@shared/api'
+import { PERMISSIONS } from '@shared/application'
 import { CustomSelectDto } from '@shared/ui-library'
+import { usePermissions } from '@shared/ui/hooks'
 import { CreateWarehouseExitDTO, MovementOrder, State } from 'logiflowerp-sdk'
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
 
@@ -19,6 +21,8 @@ interface Props {
 export function CabeceraForm(props: Props) {
 
     const { control, errors, readOnly, isLoading, register } = props
+
+    const [canCreateWarehouseExit] = usePermissions([PERMISSIONS.POST_WAREHOUSE_EXIT])
 
     const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA } }]
     const { data: dataMovements, isLoading: isLoadingMovements, isError: isErrorMovements } = useGetMovementPipelineQuery(pipelineMovement)
@@ -109,7 +113,7 @@ export function CabeceraForm(props: Props) {
             </Grid2>
             <Grid2 size={{ md: 1 }} component='div'>
                 {
-                    !readOnly && (
+                    (!readOnly && canCreateWarehouseExit) && (
                         <Button
                             type='submit'
                             variant='contained'

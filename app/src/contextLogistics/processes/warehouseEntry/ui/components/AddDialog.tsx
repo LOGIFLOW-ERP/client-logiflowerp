@@ -11,7 +11,8 @@ import {
 import { CabeceraForm } from './HeaderForm'
 import { lazy } from 'react'
 import { DetalleTable } from './DetailTable'
-import { useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
 
 const resolver = classValidatorResolver(CreateWarehouseEntryDTO)
@@ -32,6 +33,7 @@ export function AddDialog(props: IProps) {
         control,
     } = useForm({ resolver, defaultValues: { ...selectedDocument } })
     const { enqueueSnackbar } = useSnackbar()
+    const [canWarehouseEntryValidateByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_ENTRY_VALIDATE_BY_ID])
 
     const [create, { isLoading }] = useCreateWarehouseEntryMutation()
     const [validate, { isLoading: isLoadingValidate }] = useValidateWarehouseEntryMutation()
@@ -67,7 +69,7 @@ export function AddDialog(props: IProps) {
             setOpen={setOpen}
             title='Nuevo ingreso de almacén'
             toolbar={
-                selectedDocument ? (
+                (selectedDocument && canWarehouseEntryValidateByID) ? (
                     <Button
                         variant='contained'
                         color='success'

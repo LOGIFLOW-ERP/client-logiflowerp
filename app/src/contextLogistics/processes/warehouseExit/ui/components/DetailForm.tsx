@@ -9,7 +9,8 @@ import { CreateWarehouseExitDetailDTO, State } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import { useStore } from '@shared/ui/hooks';
+import { usePermissions, useStore } from '@shared/ui/hooks';
+import { PERMISSIONS } from '@shared/application';
 
 const resolver = classValidatorResolver(CreateWarehouseExitDetailDTO)
 
@@ -25,6 +26,7 @@ export function DetalleForm() {
         reset
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
+    const [canWarehouseExitAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_ID])
 
     const pipelineWS = [{ $match: { state: State.ACTIVO, 'store.code': selectedDocument?.store.code } }]
     const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS } = useGetWarehouseStockPipelineQuery(pipelineWS)
@@ -57,7 +59,7 @@ export function DetalleForm() {
                                 label='Producto'
                                 options={dataWS ?? []}
                                 {...field}
-                                labelKey={['keyDetail', '-', 'keySearch']}
+                                labelKey={['keyDetail', ' - ', 'keySearch']}
                                 valueKey='_id'
                                 margin='dense'
                                 error={!!errors.warehouseStock}
@@ -94,18 +96,22 @@ export function DetalleForm() {
                     />
                 </Grid2>
                 <Grid2 size={{ md: 1 }} component='div'>
-                    <Button
-                        type='submit'
-                        variant='contained'
-                        color='primary'
-                        fullWidth
-                        sx={{ marginTop: 1 }}
-                        loading={isLoadingAddDetail}
-                        loadingIndicator={<CircularProgress size={24} color='warning' />}
-                        loadingPosition='center'
-                    >
-                        <AddRoundedIcon />
-                    </Button>
+                    {
+                        canWarehouseExitAddDetailByID && (
+                            <Button
+                                type='submit'
+                                variant='contained'
+                                color='primary'
+                                fullWidth
+                                sx={{ marginTop: 1 }}
+                                loading={isLoadingAddDetail}
+                                loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                loadingPosition='center'
+                            >
+                                <AddRoundedIcon />
+                            </Button>
+                        )
+                    }
                 </Grid2>
             </Grid2>
         </Box>

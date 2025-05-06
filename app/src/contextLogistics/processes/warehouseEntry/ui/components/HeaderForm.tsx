@@ -1,6 +1,8 @@
 import { Button, CircularProgress, Grid2, TextField } from '@mui/material'
 import { useGetMovementPipelineQuery, useGetStorePipelineQuery } from '@shared/api'
+import { PERMISSIONS } from '@shared/application'
 import { CustomSelectDto } from '@shared/ui-library'
+import { usePermissions } from '@shared/ui/hooks'
 import { CreateWarehouseEntryDTO, MovementOrder, State } from 'logiflowerp-sdk'
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
 
@@ -15,6 +17,8 @@ interface Props {
 export function CabeceraForm(props: Props) {
 
     const { control, errors, readOnly, isLoading, register } = props
+
+    const [canCreateWarehouseEntry] = usePermissions([PERMISSIONS.POST_WAREHOUSE_ENTRY])
 
     const pipelineMovement = [{ $match: { movement: MovementOrder.INGRESO } }]
     const { data: dataMovements, isLoading: isLoadingMovements } = useGetMovementPipelineQuery(pipelineMovement)
@@ -36,7 +40,7 @@ export function CabeceraForm(props: Props) {
                             label='Movimiento'
                             options={dataMovements ?? []}
                             {...field}
-                            labelKey='name'
+                            labelKey={['code', ' - ', 'name']}
                             valueKey='code'
                             margin='dense'
                             error={!!errors.movement}
@@ -56,7 +60,7 @@ export function CabeceraForm(props: Props) {
                             label='Almacén'
                             options={dataStores ?? []}
                             {...field}
-                            labelKey='name'
+                            labelKey={['code', ' - ', 'name']}
                             valueKey='code'
                             margin='dense'
                             error={!!errors.store}
@@ -94,7 +98,7 @@ export function CabeceraForm(props: Props) {
             </Grid2>
             <Grid2 size={{ md: 1 }} component='div'>
                 {
-                    !readOnly && (
+                    (!readOnly && canCreateWarehouseEntry) && (
                         <Button
                             type='submit'
                             variant='contained'

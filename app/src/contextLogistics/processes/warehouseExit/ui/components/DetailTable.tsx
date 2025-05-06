@@ -5,7 +5,8 @@ import { columnsDetail } from '../GridCol'
 import { useSnackbar } from 'notistack'
 import { useDeleteDetailWarehouseExitMutation } from '@shared/api'
 import { lazy, useState } from 'react'
-import { useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
 
 export function DetailTable() {
@@ -15,6 +16,13 @@ export function DetailTable() {
     const { enqueueSnackbar } = useSnackbar()
     const [deleteDetail, { isLoading: isLoadingDeleteDetail }] = useDeleteDetailWarehouseExitMutation()
     const [open, setOpen] = useState(false)
+    const [
+        canWarehouseExitAddSerialByID,
+        canWarehouseExitDeleteDetailByID
+    ] = usePermissions([
+        PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_SERIAL_BY_ID,
+        PERMISSIONS.PUT_WAREHOUSE_EXIT_DELETE_DETAIL_BY_ID
+    ])
 
     const handleDeleteClick = async (row: OrderDetailENTITY) => {
         try {
@@ -32,6 +40,9 @@ export function DetailTable() {
 
     const handleScannClick = (row: OrderDetailENTITY) => {
         try {
+            if (!canWarehouseExitAddSerialByID) {
+                throw new Error(`¡Sin permisos para realizar esta acción!`)
+            }
             setState({ selectedDetail: row })
             setOpen(true)
         } catch (error: any) {
@@ -50,6 +61,9 @@ export function DetailTable() {
                     getRowId={row => row.keyDetail}
                     loading={isLoadingDeleteDetail}
                     autoPageSize
+                    columnVisibilityModel={{
+                        actions: canWarehouseExitDeleteDetailByID
+                    }}
                 />
             </Box>
             {

@@ -6,7 +6,8 @@ import { CreateOrderDetailDTO, State } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import { useStore } from '@shared/ui/hooks';
+import { usePermissions, useStore } from '@shared/ui/hooks';
+import { PERMISSIONS } from '@shared/application';
 
 const resolver = classValidatorResolver(CreateOrderDetailDTO)
 
@@ -22,6 +23,7 @@ export function DetalleForm() {
         reset
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
+    const [canWarehouseEntryAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_ENTRY_ADD_DETAIL_BY_ID])
 
     const pipelineProducts = [{ $match: { state: State.ACTIVO } }]
     const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
@@ -58,7 +60,7 @@ export function DetalleForm() {
                                 label='Producto'
                                 options={dataProducts ?? []}
                                 {...field}
-                                labelKey='itemName'
+                                labelKey={['itemCode', ' - ', 'producType', ' - ', 'itemName']}
                                 valueKey='itemCode'
                                 margin='dense'
                                 error={!!errors.item}
@@ -94,18 +96,22 @@ export function DetalleForm() {
                     />
                 </Grid2>
                 <Grid2 size={{ md: 1 }} component='div'>
-                    <Button
-                        type='submit'
-                        variant='contained'
-                        color='primary'
-                        fullWidth
-                        sx={{ marginTop: 1 }}
-                        loading={isLoadingAddDetail}
-                        loadingIndicator={<CircularProgress size={24} color='warning' />}
-                        loadingPosition='center'
-                    >
-                        <AddRoundedIcon />
-                    </Button>
+                    {
+                        canWarehouseEntryAddDetailByID && (
+                            <Button
+                                type='submit'
+                                variant='contained'
+                                color='primary'
+                                fullWidth
+                                sx={{ marginTop: 1 }}
+                                loading={isLoadingAddDetail}
+                                loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                loadingPosition='center'
+                            >
+                                <AddRoundedIcon />
+                            </Button>
+                        )
+                    }
                 </Grid2>
             </Grid2>
         </Box>
