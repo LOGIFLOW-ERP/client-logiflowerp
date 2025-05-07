@@ -1,8 +1,3 @@
-# Client Logiflow ERP
-
-## 🚀 Instalar dependencias (En la raíz del proyecto)
-cd "packages\shared-dependencies"
-npm i
-
-## ✅ Iniciar proyecto:
-node --run dev
+# env
+VITE_API_BASE_URL_CONFIGURATION=http://localhost:3000/api/configuration
+VITE_API_BASE_URL_LOGISTICS=http://localhost:3001/api/logistics
