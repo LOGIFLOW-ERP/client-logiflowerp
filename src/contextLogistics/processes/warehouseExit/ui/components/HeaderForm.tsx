@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid2, TextField } from '@mui/material'
+import { Button, CircularProgress, Grid, TextField } from '@mui/material'
 import {
     useGetMovementPipelineQuery,
     useGetPersonnelPipelineQuery,
@@ -32,8 +32,8 @@ export function CabeceraForm(props: Props) {
     const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
 
     return (
-        <Grid2 container spacing={2} columns={16}>
-            <Grid2 size={{ md: 2 }} component='div'>
+        <Grid container spacing={2} columns={16}>
+            <Grid size={{ md: 2 }} component='div'>
                 <Controller
                     name='movement'
                     control={control}
@@ -54,8 +54,8 @@ export function CabeceraForm(props: Props) {
                         />
                     )}
                 />
-            </Grid2>
-            <Grid2 size={{ md: 2 }} component='div'>
+            </Grid>
+            <Grid size={{ md: 2 }} component='div'>
                 <Controller
                     name='store'
                     control={control}
@@ -75,8 +75,8 @@ export function CabeceraForm(props: Props) {
                         />
                     )}
                 />
-            </Grid2>
-            <Grid2 size={{ md: 2 }} component='div'>
+            </Grid>
+            <Grid size={{ md: 2 }} component='div'>
                 <Controller
                     name='carrier'
                     control={control}
@@ -97,8 +97,8 @@ export function CabeceraForm(props: Props) {
                         />
                     )}
                 />
-            </Grid2>
-            <Grid2 size={{ md: 2.5 }} component='div'>
+            </Grid>
+            <Grid size={{ md: 2.5 }} component='div'>
                 <TextField
                     label='Dirección'
                     variant='outlined'
@@ -110,8 +110,8 @@ export function CabeceraForm(props: Props) {
                     helperText={errors.address?.message}
                     slotProps={{ input: { readOnly: readOnly } }}
                 />
-            </Grid2>
-            <Grid2 size={{ md: 1 }} component='div'>
+            </Grid>
+            <Grid size={{ md: 1 }} component='div'>
                 {
                     (!readOnly && canCreateWarehouseExit) && (
                         <Button
@@ -128,7 +128,7 @@ export function CabeceraForm(props: Props) {
                         </Button>
                     )
                 }
-            </Grid2>
-        </Grid2>
+            </Grid>
+        </Grid>
     )
 }

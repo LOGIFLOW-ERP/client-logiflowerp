@@ -1,11 +1,11 @@
 import { Alert, Box, Button, CircularProgress, TextField } from '@mui/material'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import Logo from '../../../../../assets/LogoSinMargen.webp'
 import { ResetPasswordDTO } from 'logiflowerp-sdk'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useForm } from 'react-hook-form'
 import { useResetPasswordMutation } from '@shared/api'
 import { useState } from 'react'
+import Logo from '/src/assets/logoSinMargen.webp';
 
 const resolver = classValidatorResolver(ResetPasswordDTO)
 

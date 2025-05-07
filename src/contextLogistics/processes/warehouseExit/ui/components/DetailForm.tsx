@@ -1,5 +1,5 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { Box, Button, CircularProgress, Grid2, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import {
     useAddDetailWarehouseExitMutation,
     useGetWarehouseStockPipelineQuery
@@ -49,8 +49,8 @@ export function DetalleForm() {
 
     return (
         <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }} >
-            <Grid2 container spacing={2} columns={16}>
-                <Grid2 size={{ md: 4 }} component='div'>
+            <Grid container spacing={2} columns={16}>
+                <Grid size={{ md: 4 }} component='div'>
                     <Controller
                         name='warehouseStock'
                         control={control}
@@ -70,8 +70,8 @@ export function DetalleForm() {
                             />
                         )}
                     />
-                </Grid2>
-                <Grid2 size={{ md: 2 }} component='div'>
+                </Grid>
+                <Grid size={{ md: 2 }} component='div'>
                     <TextField
                         label='Lote'
                         variant='outlined'
@@ -81,8 +81,8 @@ export function DetalleForm() {
                         {...register('warehouseStock.lot')}
                         slotProps={{ input: { readOnly: true } }}
                     />
-                </Grid2>
-                <Grid2 size={{ md: 1.5 }} component='div'>
+                </Grid>
+                <Grid size={{ md: 1.5 }} component='div'>
                     <TextField
                         label='Cantidad'
                         variant='outlined'
@@ -94,8 +94,8 @@ export function DetalleForm() {
                         error={!!errors.amount}
                         helperText={errors.amount?.message}
                     />
-                </Grid2>
-                <Grid2 size={{ md: 1 }} component='div'>
+                </Grid>
+                <Grid size={{ md: 1 }} component='div'>
                     {
                         canWarehouseExitAddDetailByID && (
                             <Button
@@ -112,8 +112,8 @@ export function DetalleForm() {
                             </Button>
                         )
                     }
-                </Grid2>
-            </Grid2>
+                </Grid>
+            </Grid>
         </Box>
     )
 

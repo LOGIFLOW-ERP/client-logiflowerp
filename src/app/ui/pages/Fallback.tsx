@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import Logo from '../../../assets/logoSinMargen.webp'
+import Logo from '/src/assets/logoSinMargen.webp'
 
 export function Fallback() {
     return (

@@ -1,6 +1,6 @@
 import { CustomDialog } from '@shared/ui-library'
 import { StockSerialDTO } from 'logiflowerp-sdk'
-import { Box, Button, CircularProgress, Grid2, TextField } from '@mui/material'
+import { Box, Button, CircularProgress, Grid, TextField } from '@mui/material'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useSnackbar } from 'notistack'
 import { useForm } from 'react-hook-form'
@@ -92,8 +92,8 @@ export function SerialsDialog(props: IProps) {
             {
                 (!!selectedDetail && selectedDetail.amount !== selectedDetail.serials.length) && (
                     <Box component='form' onSubmit={handleSubmit(onSubmit)} paddingBottom={2}>
-                        <Grid2 container columnSpacing={2}>
-                            <Grid2 size={{ md: 6 }} component='div'>
+                        <Grid container columnSpacing={2}>
+                            <Grid size={{ md: 6 }} component='div'>
                                 <TextField
                                     label='Marca'
                                     variant='outlined'
@@ -104,8 +104,8 @@ export function SerialsDialog(props: IProps) {
                                     error={!!errors.brand}
                                     helperText={errors.brand?.message}
                                 />
-                            </Grid2>
-                            <Grid2 size={{ md: 6 }} component='div'>
+                            </Grid>
+                            <Grid size={{ md: 6 }} component='div'>
                                 <TextField
                                     label='Modelo'
                                     variant='outlined'
@@ -116,8 +116,8 @@ export function SerialsDialog(props: IProps) {
                                     error={!!errors.model}
                                     helperText={errors.model?.message}
                                 />
-                            </Grid2>
-                            <Grid2 size={{ md: 8 }} component='div'>
+                            </Grid>
+                            <Grid size={{ md: 8 }} component='div'>
                                 <TextField
                                     label='Serie'
                                     variant='outlined'
@@ -130,8 +130,8 @@ export function SerialsDialog(props: IProps) {
                                     helperText={errors.serial?.message}
                                     autoComplete='off'
                                 />
-                            </Grid2>
-                            <Grid2 size={{ md: 4 }} component='div'>
+                            </Grid>
+                            <Grid size={{ md: 4 }} component='div'>
                                 <Button
                                     type='submit'
                                     variant='contained'
@@ -144,8 +144,8 @@ export function SerialsDialog(props: IProps) {
                                 >
                                     <AddRoundedIcon />
                                 </Button>
-                            </Grid2>
-                        </Grid2>
+                            </Grid>
+                        </Grid>
                     </Box>
                 )
             }

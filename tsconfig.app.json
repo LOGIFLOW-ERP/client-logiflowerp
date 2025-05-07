@@ -31,10 +31,9 @@
       ],
       "@shared/ui-library": [
         "./src/shared/ui/ui-library",
-        // "../../packages/ui-library",
       ],
       "@shared/api": [
-        "../../packages/api"
+        "./src/shared/infrastructure/redux/api",
       ]
     },
     /* Bundler mode */

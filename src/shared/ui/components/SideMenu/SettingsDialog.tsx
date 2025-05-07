@@ -8,7 +8,7 @@ import {
     Button,
     // FormControlLabel,
     // Switch,
-    Grid2,
+    // Grid2,
     CircularProgress
 } from '@mui/material';
 import { CustomDialog } from '@shared/ui-library';
@@ -23,7 +23,7 @@ const resolver = classValidatorResolver(ChangePasswordDTO)
 
 export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: React.Dispatch<React.SetStateAction<boolean>>; }) => {
 
-    const { state: { user, company, profile, root } } = useStore('auth')
+    const { state: { user } } = useStore('auth')
     const { enqueueSnackbar } = useSnackbar()
     const [changePassword, { isLoading }] = useChangePasswordMutation()
 
@@ -51,14 +51,14 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
         <CustomDialog open={open} setOpen={onClose} title="Configuración de la cuenta">
             <Paper elevation={2} sx={{ p: 2, mb: 4 }}>
                 <Typography variant="subtitle1" gutterBottom>Información personal</Typography>
-                <Grid2 container spacing={2}>
-                    <Grid xs={12} md={6}>
+                <Grid container spacing={2}>
+                    <Grid size={6}>
                         <TextField label="Nombre" fullWidth defaultValue={`${user.names} ${user.surnames}`} disabled size='small' />
                     </Grid>
-                    <Grid xs={12} md={6}>
+                    <Grid size={6}>
                         <TextField label="Correo electrónico" fullWidth defaultValue={user.email} disabled size='small' />
                     </Grid>
-                </Grid2>
+                </Grid>
                 {/* <Box mt={2}>
                     <Button variant="contained" color="primary">Guardar cambios</Button>
                 </Box> */}
@@ -70,7 +70,7 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
                     {/* Campo oculto para username (recomendado para compatibilidad con navegadores y gestores de contraseñas) */}
                     <input type='text' name='username' autoComplete='username' hidden />
                     <Grid container spacing={1}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <TextField
                                 label='Contraseña actual'
                                 type='password'
@@ -85,7 +85,7 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
                                 autoComplete='current-password'
                             />
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <Grid size={6}>
                             <TextField
                                 label='Nueva contraseña'
                                 type='password'
@@ -99,7 +99,7 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
                                 autoComplete='current-password'
                             />
                         </Grid>
-                        <Grid item xs={12} md={6}>
+                        <Grid size={6}>
                             <TextField
                                 label='Confirmar nueva contraseña'
                                 type='password'
@@ -113,7 +113,7 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
                                 autoComplete='current-password'
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <Box display="flex" justifyContent="center">
                                 <Button
                                     variant="contained"

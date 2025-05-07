@@ -1,6 +1,6 @@
 import { Box, Card, CardContent } from '@mui/material';
 import { Outlet } from 'react-router-dom';
-import Logo from '../../../../../assets/LogoSinMargen.webp'
+import Logo from '/src/assets/logoSinMargen.webp'
 
 export function LayoutAuth() {
     return (
