@@ -4,7 +4,8 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 export const getBaseQueryWithAuth = (baseUrl: string): BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> => {
     const rawBaseQuery = fetchBaseQuery({
         baseUrl,
-        credentials: 'include'
+        credentials: 'include',
+        mode: 'cors'
     })
 
     return async (args, api, extraOptions) => {
