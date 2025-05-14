@@ -6,7 +6,7 @@
 
 **/.classpath
 **/.dockerignore
-**/.env
+# **/.env
 **/.git
 **/.gitignore
 **/.project
@@ -53,9 +53,9 @@ cypress/videos/
 reports/
 
 # Ignore environment and config files (sensitive data)
-*.env*
+# *.env*
 *.log
-*.env.*
+# *.env.*
 
 # Ignore TypeScript build artifacts (if using TypeScript)
 *.tsbuildinfo
