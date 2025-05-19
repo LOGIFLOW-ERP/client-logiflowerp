@@ -3,9 +3,10 @@ import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomRichTreeVie
 import { Controller, useForm } from 'react-hook-form'
 import { CreateRootCompanyPERDTO, dataCountry, getDataSupplier, State, buildMenu } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { Button, CircularProgress, IconButton, TextField, Tooltip } from '@mui/material'
 import { useCreateRootCompanyMutation, useGetSystemOptionsPipelineQuery } from '@shared/api'
 import { useState } from 'react'
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 
 const resolver = classValidatorResolver(CreateRootCompanyPERDTO)
 
@@ -134,6 +135,11 @@ export function AddDialog(props: IProps) {
                     error={!!errors.identityManager}
                     helperText={errors.identityManager?.message}
                 />
+                <Tooltip title='Scraping targets'>
+                    <IconButton color='primary' aria-label='add scraping targets'>
+                        <DisplaySettingsIcon />
+                    </IconButton>
+                </Tooltip>
                 <CustomRichTreeView
                     selectedItems={selectedItems}
                     setSelectedItems={setSelectedItems}
