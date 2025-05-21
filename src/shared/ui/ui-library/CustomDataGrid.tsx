@@ -16,6 +16,7 @@ import {
     GridValidRowModel,
     GridCellParams,
     GridTreeNode,
+    GridRowIdGetter,
 } from '@mui/x-data-grid'
 
 declare module '@mui/x-data-grid' {
@@ -63,6 +64,7 @@ interface IProps {
     processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean } | undefined>
     isCellEditable?: ((params: GridCellParams<any, GridValidRowModel, GridValidRowModel, GridTreeNode>) => boolean) | undefined
     loading?: boolean
+    getRowId?: GridRowIdGetter | undefined
 }
 
 export function CustomDataGrid(props: IProps) {
@@ -76,7 +78,8 @@ export function CustomDataGrid(props: IProps) {
         newRowTemplate,
         processRowUpdate,
         isCellEditable,
-        loading
+        loading,
+        getRowId
     } = props
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -119,7 +122,7 @@ export function CustomDataGrid(props: IProps) {
                     console.error("Error en la actualización de fila:", error)
                 }}
                 isCellEditable={isCellEditable}
-                getRowId={row => row._id}
+                getRowId={getRowId ? getRowId : (row) => row._id}
                 loading={loading}
             />
         </Box>
