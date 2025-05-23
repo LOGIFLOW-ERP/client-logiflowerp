@@ -12,6 +12,8 @@ interface CustomSelectProps<T> {
     error?: boolean
     helperText?: string
     disabled?: boolean
+    isLoading?: boolean
+    isError?: boolean
 }
 
 export function CustomSelect<T>({
@@ -26,11 +28,13 @@ export function CustomSelect<T>({
     error,
     helperText,
     disabled,
+    isLoading,
+    isError
 }: CustomSelectProps<T>) {
     return (
         <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
-            <Select value={value ?? ''} onChange={onChange} label={label} name={name} disabled={disabled}>
+            <Select value={value ?? ''} onChange={onChange} label={label} name={name} disabled={disabled || isLoading}>
                 {options.map((option, index) => {
                     const valueOption = option[valueKey]
                     const labelOption = option[labelKey]
@@ -53,6 +57,7 @@ export function CustomSelect<T>({
                 })}
             </Select>
             {error && <FormHelperText>{helperText}</FormHelperText>}
+            {isError && <FormHelperText error>{`¡No se pudo obtener data ${label.toLowerCase()}!`}</FormHelperText>}
         </FormControl>
     )
 }
