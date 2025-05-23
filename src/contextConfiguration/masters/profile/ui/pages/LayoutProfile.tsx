@@ -57,7 +57,7 @@ export default function LayoutProfile() {
 		}
 	}
 
-	if (isLoading || isLoadingUpdate) return <CustomViewLoading />
+	if (isLoadingUpdate) return <CustomViewLoading />
 	if (error) return <CustomViewError />
 
 	return (
@@ -69,6 +69,7 @@ export default function LayoutProfile() {
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 					getRowId={row => row._id}
+					loading={isLoading}
 				/>
 			</Box>
 			{
