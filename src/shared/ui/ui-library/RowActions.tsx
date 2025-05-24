@@ -18,6 +18,8 @@ interface RowActionsProps {
     handleDeleteClick: (id: GridRowId) => () => void;
     rows: readonly GridValidRowModel[]
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
+    buttonEdit?: boolean
+    buttonDelete?: boolean
 }
 
 export const RowActions: React.FC<RowActionsProps> = ({
@@ -26,7 +28,9 @@ export const RowActions: React.FC<RowActionsProps> = ({
     setRowModesModel,
     handleDeleteClick,
     rows,
-    setRows
+    setRows,
+    buttonEdit,
+    buttonDelete
 }) => {
 
     const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit
@@ -69,19 +73,27 @@ export const RowActions: React.FC<RowActionsProps> = ({
         </>
     ) : (
         <>
-            <GridActionsCellItem
-                icon={<EditIcon />}
-                label="Edit"
-                className="textPrimary"
-                onClick={handleEditClick(id)}
-                color="inherit"
-            />
-            <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label="Delete"
-                onClick={handleDeleteClick(id)}
-                color="inherit"
-            />
+            {
+                buttonEdit && (
+                    <GridActionsCellItem
+                        icon={<EditIcon />}
+                        label="Edit"
+                        className="textPrimary"
+                        onClick={handleEditClick(id)}
+                        color="inherit"
+                    />
+                )
+            }
+            {
+                buttonDelete && (
+                    <GridActionsCellItem
+                        icon={<DeleteIcon />}
+                        label="Delete"
+                        onClick={handleDeleteClick(id)}
+                        color="inherit"
+                    />
+                )
+            }
         </>
     )
 }

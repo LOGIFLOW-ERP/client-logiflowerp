@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { CreateUnitOfMeasureDTO, UnitOfMeasureENTITY, UpdateUnitOfMeasureDTO, validateCustom } from 'logiflowerp-sdk'
+import {
+	CreateUnitOfMeasureDTO,
+	UnitOfMeasureENTITY,
+	UpdateUnitOfMeasureDTO,
+	validateCustom
+} from 'logiflowerp-sdk'
 import {
 	GridCellParams,
 	GridRowId,
@@ -14,8 +19,10 @@ import {
 	useGetUnitOfMeasuresQuery,
 	useUpdateUnitOfMeasureMutation
 } from '@shared/api'
-import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 export default function LayoutUnitOfMeasure() {
 
@@ -24,6 +31,16 @@ export default function LayoutUnitOfMeasure() {
 	const newRowTemplate: Partial<UnitOfMeasureENTITY & { fieldToFocus: keyof UnitOfMeasureENTITY }> = {
 		uomCode: '', uomName: '', fieldToFocus: 'uomCode'
 	}
+
+	const [
+		POST_UNIT_OF_MEASURE,
+		PUT_UNIT_OF_MEASURE_BY_ID,
+		DELETE_UNIT_OF_MEASURE_BY_ID
+	] = usePermissions([
+		PERMISSIONS.POST_UNIT_OF_MEASURE,
+		PERMISSIONS.PUT_UNIT_OF_MEASURE_BY_ID,
+		PERMISSIONS.DELETE_UNIT_OF_MEASURE_BY_ID,
+	])
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetUnitOfMeasuresQuery()
@@ -68,7 +85,6 @@ export default function LayoutUnitOfMeasure() {
 		return !(['uomCode'] as (keyof UnitOfMeasureENTITY)[]).includes(p.field as keyof UnitOfMeasureENTITY) || row.isNew
 	}
 
-	if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />
 	if (error) return <CustomViewError />
 
 	return (
@@ -82,11 +98,15 @@ export default function LayoutUnitOfMeasure() {
 				rowModesModel,
 				setRowModesModel,
 				rows,
-				setRows
+				setRows,
+				buttonEdit: PUT_UNIT_OF_MEASURE_BY_ID,
+				buttonDelete: DELETE_UNIT_OF_MEASURE_BY_ID,
 			})}
 			newRowTemplate={newRowTemplate}
 			processRowUpdate={processRowUpdate}
 			isCellEditable={isCellEditable}
+			loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+			buttonCreate={POST_UNIT_OF_MEASURE}
 		/>
 	)
 }

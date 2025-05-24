@@ -13,7 +13,9 @@ interface IParams {
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
     rows: readonly GridValidRowModel[]
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
-    dataProducts: ProductENTITY[]
+    dataProducts: ProductENTITY[] | undefined
+    buttonEdit?: boolean
+    buttonDelete?: boolean
 }
 
 export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
@@ -24,7 +26,7 @@ export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
             type: 'singleSelect',
             width: 350,
             editable: true,
-            valueOptions: params.dataProducts.map(e => ({ value: e.itemCode, label: e.itemName })),
+            valueOptions: params?.dataProducts?.map(e => ({ value: e.itemCode, label: e.itemName })) ?? [],
         },
         {
             field: 'currency',

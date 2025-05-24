@@ -17,6 +17,8 @@ import {
 } from '@shared/api'
 import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 export default function LayoutProductPrice() {
 
@@ -25,6 +27,16 @@ export default function LayoutProductPrice() {
 	const newRowTemplate: Partial<ProductPriceENTITY & { fieldToFocus: keyof ProductPriceENTITY, currencyCode: string }> = {
 		fieldToFocus: 'itemCode', ...new ProductPriceENTITY()
 	}
+
+	const [
+		POST_PRODUCT_PRICE,
+		PUT_PRODUCT_PRICE_BY_ID,
+		DELETE_PRODUCT_PRICE_BY_ID
+	] = usePermissions([
+		PERMISSIONS.POST_PRODUCT_PRICE,
+		PERMISSIONS.PUT_PRODUCT_PRICE_BY_ID,
+		PERMISSIONS.DELETE_PRODUCT_PRICE_BY_ID,
+	])
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductPricesQuery()
@@ -71,7 +83,7 @@ export default function LayoutProductPrice() {
 		return !(['itemCode'] as (keyof ProductPriceENTITY)[]).includes(p.field as keyof ProductPriceENTITY) || row.isNew
 	}
 
-	if (error || !dataProducts) return <CustomViewError />
+	if (error) return <CustomViewError />
 
 	return (
 		<CustomDataGrid
@@ -85,7 +97,9 @@ export default function LayoutProductPrice() {
 				setRowModesModel,
 				rows,
 				setRows,
-				dataProducts
+				dataProducts,
+				buttonEdit: PUT_PRODUCT_PRICE_BY_ID,
+				buttonDelete: DELETE_PRODUCT_PRICE_BY_ID
 			})}
 			newRowTemplate={newRowTemplate}
 			processRowUpdate={processRowUpdate}
@@ -97,6 +111,7 @@ export default function LayoutProductPrice() {
 				isLoadingDelete ||
 				isLoadingProducts
 			}
+			buttonCreate={POST_PRODUCT_PRICE}
 		/>
 	)
 }
