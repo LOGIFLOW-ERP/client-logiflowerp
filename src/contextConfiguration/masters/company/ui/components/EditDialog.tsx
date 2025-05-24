@@ -1,9 +1,9 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
 import { Controller, useForm } from 'react-hook-form'
 import { UpdateCompanyDTO, getDataSupplier, CompanyENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useUpdateCompanyMutation } from '@shared/api'
 
 const resolver = classValidatorResolver(UpdateCompanyDTO)
@@ -100,20 +100,7 @@ export function EditDialog(props: IProps) {
                     error={!!errors.identityManager}
                     helperText={errors.identityManager?.message}
                 />
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                    disabled={isLoading}
-                >
-                    {
-                        isLoading
-                            ? <CircularProgress size={24} color='inherit' />
-                            : 'Guardar'
-                    }
-                </Button>
+                <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
     )

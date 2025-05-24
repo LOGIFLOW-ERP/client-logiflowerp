@@ -10,6 +10,8 @@ import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
 import { State, ProductENTITY, UpdateProductDTO } from 'logiflowerp-sdk'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
@@ -19,6 +21,10 @@ export default function LayoutProduct() {
 	const [openAdd, setOpenAdd] = useState(false)
 	const [openEdit, setOpenEdit] = useState(false)
 	const [selectedRow, setSelectedRow] = useState<ProductENTITY>()
+
+	const [PUT_PRODUCT_BY_ID] = usePermissions([
+		PERMISSIONS.PUT_PRODUCT_BY_ID
+	])
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductsQuery()
@@ -65,7 +71,7 @@ export default function LayoutProduct() {
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<ProductENTITY>
 					rows={rows}
-					columns={columns({ handleChangeStatusClick, handleEditClick })}
+					columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID })}
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 					getRowId={row => row._id}

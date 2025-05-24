@@ -3,14 +3,17 @@ import { DataGrid } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
+	useDeletePersonnelMutation,
 	useGetPersonnelsQuery,
 	useGetProfilesQuery,
 	useUpdatePersonnelMutation,
 } from '@shared/api'
 import { EmployeeENTITY, State, UpdateEmployeeDTO } from 'logiflowerp-sdk'
-import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
@@ -21,9 +24,12 @@ export default function LayoutPersonnel() {
 	const [openEdit, setOpenEdit] = useState(false)
 	const [selectedRow, setSelectedRow] = useState<EmployeeENTITY>()
 
+	const [PUT_PERSONNEL_BY_ID, DELETE_PERSONNEL_BY_ID] = usePermissions([PERMISSIONS.PUT_PERSONNEL_BY_ID, PERMISSIONS.DELETE_PERSONNEL_BY_ID])
+
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, isError, isLoading } = useGetPersonnelsQuery()
 	const [updatePersonnel, { isLoading: isLoadingUpdate }] = useUpdatePersonnelMutation()
+	const [deletePersonnel, { isLoading: isLoadingDelete }] = useDeletePersonnelMutation()
 	const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
 	useEffect(() => data && setRows(data), [data])
 
@@ -59,7 +65,16 @@ export default function LayoutPersonnel() {
 		}
 	}
 
-	if (isLoading || isLoadingUpdate || isLoadingProfiles) return <CustomViewLoading />
+	const handleDeleteClick = async (row: EmployeeENTITY) => {
+		try {
+			await deletePersonnel(row._id).unwrap()
+			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
+		} catch (error: any) {
+			console.error(error)
+			enqueueSnackbar({ message: error.message, variant: 'error' })
+		}
+	}
+
 	if (isError || isErrorProfiles || !dataProfiles) return <CustomViewError />
 
 	return (
@@ -67,10 +82,19 @@ export default function LayoutPersonnel() {
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<EmployeeENTITY>
 					rows={rows}
-					columns={columns({ handleChangeStatusClick, handleEditClick, dataProfiles })}
+					columns={columns({
+						handleChangeStatusClick,
+						handleEditClick,
+						handleDeleteClick,
+						dataProfiles,
+						DELETE_PERSONNEL_BY_ID,
+						PUT_PERSONNEL_BY_ID
+					})}
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 					getRowId={row => row._id}
+					loading={isLoading || isLoadingUpdate || isLoadingDelete || isLoadingProfiles}
+					density='compact'
 				/>
 			</Box>
 			{

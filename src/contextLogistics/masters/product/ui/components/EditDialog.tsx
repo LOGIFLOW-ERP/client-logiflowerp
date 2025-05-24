@@ -1,10 +1,10 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { UpdateProductDTO, getDataProducType, ProductENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useGetUnitOfMeasuresQuery, useUpdateProductMutation } from '@shared/api'
 
 const resolver = classValidatorResolver(UpdateProductDTO)
@@ -26,7 +26,7 @@ export function EditDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: row })
     const { enqueueSnackbar } = useSnackbar()
 
-    const { data: dataUM, isLoading: isLoadingUM } = useGetUnitOfMeasuresQuery()
+    const { data: dataUM, isLoading: isLoadingUM, isError: isErrorUM } = useGetUnitOfMeasuresQuery()
     const [updateStore, { isLoading }] = useUpdateProductMutation()
 
     const onSubmit = async (data: UpdateProductDTO) => {
@@ -70,7 +70,8 @@ export function EditDialog(props: IProps) {
                             margin='normal'
                             error={!!errors.uomCode}
                             helperText={errors.uomCode?.message}
-                            disabled={isLoadingUM}
+                            isLoading={isLoadingUM}
+                            isError={isErrorUM}
                         />
                     )}
                 />
@@ -90,18 +91,7 @@ export function EditDialog(props: IProps) {
                         />
                     )}
                 />
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                    loading={isLoading}
-                    loadingIndicator={<CircularProgress size={24} color='inherit' />}
-                    loadingPosition='center'
-                >
-                    Guardar
-                </Button>
+                <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
     )

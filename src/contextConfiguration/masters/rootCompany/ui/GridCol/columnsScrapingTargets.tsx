@@ -5,7 +5,7 @@ import {
     GridValidRowModel
 } from '@mui/x-data-grid'
 import { RowActions } from '@shared/ui-library'
-import { UnitOfMeasureENTITY } from 'logiflowerp-sdk'
+import { getDataScrapingSystem, ScrapingCredentialDTO } from 'logiflowerp-sdk'
 
 interface IParams {
     handleDeleteClick: (id: GridRowId) => () => void
@@ -13,23 +13,35 @@ interface IParams {
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
     rows: readonly GridValidRowModel[]
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
-    buttonEdit?: boolean
-    buttonDelete?: boolean
 }
 
-export const columns = (params: IParams): GridColDef<UnitOfMeasureENTITY>[] => {
+export const columnsScrapingTargets = (params: IParams): GridColDef<ScrapingCredentialDTO>[] => {
     return [
         {
-            field: 'uomCode',
-            headerName: 'Código',
-            width: 90,
+            field: 'url',
+            headerName: 'URL',
+            width: 200,
             editable: true
         },
         {
-            field: 'uomName',
-            headerName: 'Nombre',
-            width: 180,
+            field: 'userName',
+            headerName: 'Nombre de usuario',
+            width: 150,
             editable: true
+        },
+        {
+            field: 'password',
+            headerName: 'Contraseña',
+            width: 150,
+            editable: true
+        },
+        {
+            field: 'system',
+            headerName: 'Sistema',
+            type: 'singleSelect',
+            width: 150,
+            editable: true,
+            valueOptions: getDataScrapingSystem(),
         },
         {
             field: 'actions',

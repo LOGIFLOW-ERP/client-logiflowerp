@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { CreateProductGroupDTO, ProductGroupENTITY, UpdateProductGroupDTO, validateCustom } from 'logiflowerp-sdk'
+import {
+	CreateProductGroupDTO,
+	ProductGroupENTITY,
+	UpdateProductGroupDTO,
+	validateCustom
+} from 'logiflowerp-sdk'
 import {
 	GridCellParams,
 	GridRowId,
@@ -14,14 +19,30 @@ import {
 	useGetProductGroupsQuery,
 	useUpdateProductGroupMutation
 } from '@shared/api'
-import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 export default function LayoutProductGroup() {
 
 	const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
 	const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
-	const newRowTemplate: Partial<ProductGroupENTITY & { fieldToFocus: keyof ProductGroupENTITY }> = { itmsGrpCod: '', itmsGrpNam: '', fieldToFocus: 'itmsGrpCod' }
+	const newRowTemplate: Partial<ProductGroupENTITY & { fieldToFocus: keyof ProductGroupENTITY }> = {
+		itmsGrpCod: '',
+		itmsGrpNam: '',
+		fieldToFocus: 'itmsGrpCod'
+	}
+
+	const [
+		POST_PRODUCT_GROUP,
+		PUT_PRODUCT_GROUP_BY_ID,
+		DELETE_PRODUCT_GROUP_BY_ID
+	] = usePermissions([
+		PERMISSIONS.POST_PRODUCT_GROUP,
+		PERMISSIONS.PUT_PRODUCT_GROUP_BY_ID,
+		PERMISSIONS.DELETE_PRODUCT_GROUP_BY_ID,
+	])
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductGroupsQuery()
@@ -66,7 +87,6 @@ export default function LayoutProductGroup() {
 		return !(['itmsGrpCod'] as (keyof ProductGroupENTITY)[]).includes(p.field as keyof ProductGroupENTITY) || row.isNew
 	}
 
-	if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />
 	if (error) return <CustomViewError />
 
 	return (
@@ -80,11 +100,15 @@ export default function LayoutProductGroup() {
 				rowModesModel,
 				setRowModesModel,
 				rows,
-				setRows
+				setRows,
+				buttonEdit: PUT_PRODUCT_GROUP_BY_ID,
+				buttonDelete: DELETE_PRODUCT_GROUP_BY_ID
 			})}
 			newRowTemplate={newRowTemplate}
 			processRowUpdate={processRowUpdate}
 			isCellEditable={isCellEditable}
+			loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+			buttonCreate={POST_PRODUCT_GROUP}
 		/>
 	)
 }

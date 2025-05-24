@@ -13,6 +13,7 @@ interface IParams {
     setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
     rows: readonly GridValidRowModel[]
     setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
+    buttonDelete?: boolean
 }
 
 export const columns = (params: IParams): GridColDef<MovementENTITY>[] => {

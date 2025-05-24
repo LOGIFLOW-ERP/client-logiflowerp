@@ -1,10 +1,10 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomSelect, CustomSelectDto } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomSelect, CustomSelectDto } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateStoreDTO, getDataStoreType, State } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useCreateStoreMutation, useGetCompaniesPipelineQuery } from '@shared/api'
 
 const resolver = classValidatorResolver(CreateStoreDTO)
@@ -28,7 +28,7 @@ export function AddDialog(props: IProps) {
     const pipelineCompanies = [{ $match: { state: State.ACTIVO } }]
     const { data: dataCompanies, isError: isErrorCompanies, isLoading: isLoadingCompanies } = useGetCompaniesPipelineQuery(pipelineCompanies)
 
-    const [createStore, { isLoading, isError }] = useCreateStoreMutation()
+    const [createStore, { isLoading }] = useCreateStoreMutation()
 
     const onSubmit = async (data: CreateStoreDTO) => {
         try {
@@ -40,9 +40,6 @@ export function AddDialog(props: IProps) {
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
-
-    if (isLoading || isLoadingCompanies) return <CustomDialogLoading open={open} setOpen={setOpen} />
-    if (isError || isErrorCompanies) return <CustomDialogError open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog
@@ -64,6 +61,8 @@ export function AddDialog(props: IProps) {
                             margin='normal'
                             error={!!errors.company}
                             helperText={errors.company?.message}
+                            isLoading={isLoadingCompanies}
+                            isError={isErrorCompanies}
                         />
                     )}
                 />
@@ -139,20 +138,7 @@ export function AddDialog(props: IProps) {
                         />
                     )}
                 />
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                    disabled={isLoading}
-                >
-                    {
-                        isLoading
-                            ? <CircularProgress size={24} color='inherit' />
-                            : 'Guardar'
-                    }
-                </Button>
+                <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
     )
