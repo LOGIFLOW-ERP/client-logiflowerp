@@ -1,17 +1,15 @@
 import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
-import { getDataState, IWarehouseStockENTITY } from 'logiflowerp-sdk'
-import { CustomStatusOrder } from '@shared/ui-library'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import { IWarehouseStockENTITY } from 'logiflowerp-sdk'
 import EditIcon from '@mui/icons-material/Edit'
 
 interface IParams {
-    handleDeleteClick: (row: IWarehouseStockENTITY) => void
+    // handleDeleteClick: (row: IWarehouseStockENTITY) => void
     handleEditClick: (row: IWarehouseStockENTITY) => void
-    canDeleteWarehouseExitByID: boolean
+    // canDeleteWarehouseExitByID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<IWarehouseStockENTITY>[] => {
-    const { handleEditClick, handleDeleteClick, canDeleteWarehouseExitByID } = params
+    const { handleEditClick } = params
     return [
         {
             field: 'stockType',
@@ -24,42 +22,18 @@ export const columns = (params: IParams): GridColDef<IWarehouseStockENTITY>[] =>
             width: 105
         },
         {
-            field: 'storeName',
+            field: 'store_code',
+            headerName: 'Codigo Almacén',
+            width: 100,
+        },
+        {
+            field: 'store_name',
             headerName: 'Nombre Almacén',
             width: 200,
-            valueGetter: (_value, row) => {
-                return row.store_name
-            }
-        },
-        {
-            field: 'companyCode',
-            headerName: 'Cód Empresa',
-            width: 105,
-            valueGetter: (_value, row) => {
-                return row.store.company.code
-            }
-        },
-        {
-            field: 'companyName',
-            headerName: 'Nombre Empresa',
-            width: 300,
-            valueGetter: (_value, row) => {
-                return row.store.company.companyname
-            }
-        },
-        {
-            field: 'creation_date',
-            headerName: 'Fecha Registro',
-            width: 190,
-            type: 'dateTime',
-            valueGetter: (_value, row) => new Date(row.workflow.register.date)
         },
         {
             field: 'state',
-            headerName: 'Status',
-            renderCell: CustomStatusOrder,
-            type: 'singleSelect',
-            valueOptions: getDataState(),
+            headerName: 'state',
             width: 116,
         },
         {
@@ -73,15 +47,6 @@ export const columns = (params: IParams): GridColDef<IWarehouseStockENTITY>[] =>
                     onClick={() => handleEditClick(params.row)}
                     showInMenu
                 />,
-                canDeleteWarehouseExitByID
-                    ?
-                    <GridActionsCellItem
-                        icon={<DeleteForeverRoundedIcon color='error' />}
-                        label='Eliminar'
-                        onClick={() => handleDeleteClick(params.row)}
-                        showInMenu
-                    />
-                    : <></>,
             ],
         },
     ]

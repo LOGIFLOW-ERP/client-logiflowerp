@@ -11,6 +11,7 @@ const LayoutStore = lazy(() => import('@masters-logistics/store/ui/pages/LayoutS
 const LayoutWarehouseEntry = lazy(() => import('@processes-logistics/warehouseEntry/ui/pages/LayoutWarehouseEntry'))
 const LayoutWarehouseExit = lazy(() => import('@processes-logistics/warehouseExit/ui/pages/LayoutWarehouseExit'))
 const LayoutWarehouseReturn = lazy(() => import('@processes-logistics/warehouseReturn/ui/pages/LayoutWarehouseReturn'))
+const LayoutWarehouseStock = lazy(() => import('@reports-logistics/warehouseStock/ui/pages/LayoutWarehouseStockt'))
 
 export const childrenLogistics: RouteObject[] = [
     {
@@ -70,7 +71,7 @@ export const childrenLogistics: RouteObject[] = [
         children: [
             {
                 path: 'warehouse stock',
-                Component: LayoutWarehouseEntry,
+                Component: LayoutWarehouseStock,
             }
         ]
     }

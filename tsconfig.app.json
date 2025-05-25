@@ -26,6 +26,9 @@
       "@processes-logistics/*": [
         "./src/contextLogistics/processes/*"
       ],
+      "@reports-logistics/*": [
+        "./src/contextLogistics/reports/*"
+      ],
       "@shared/*": [
         "./src/shared/*"
       ],
