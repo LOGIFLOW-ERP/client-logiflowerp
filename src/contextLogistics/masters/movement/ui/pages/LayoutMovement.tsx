@@ -9,19 +9,29 @@ import {
 import { columns } from '../GridCol'
 import { CreateMovementDTO, MovementENTITY, UpdateMovementDTO, validateCustom } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { CustomDataGrid, CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
 import {
     useCreateMovementMutation,
     useDeleteMovementMutation,
     useGetMovementsQuery,
     useUpdateMovementMutation
 } from '@shared/api'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 export default function LayoutMovement() {
 
     const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
     const newRowTemplate: Partial<MovementENTITY & { fieldToFocus: keyof MovementENTITY }> = { ...new MovementENTITY(), fieldToFocus: 'code' }
+
+    const [
+        POST_MOVEMENT,
+        DELETE_MOVEMENT_BY_ID
+    ] = usePermissions([
+        PERMISSIONS.POST_MOVEMENT,
+        PERMISSIONS.DELETE_MOVEMENT_BY_ID,
+    ])
 
     const { enqueueSnackbar } = useSnackbar()
     const { data: movements, error, isLoading } = useGetMovementsQuery()
@@ -66,7 +76,6 @@ export default function LayoutMovement() {
         return !(['code'] as (keyof MovementENTITY)[]).includes(p.field as keyof MovementENTITY) || row.isNew
     }
 
-    if (isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete) return <CustomViewLoading />
     if (error) return <CustomViewError />
 
     return (
@@ -80,11 +89,14 @@ export default function LayoutMovement() {
                 rowModesModel,
                 setRowModesModel,
                 rows,
-                setRows
+                setRows,
+                buttonDelete: DELETE_MOVEMENT_BY_ID
             })}
             newRowTemplate={newRowTemplate}
             processRowUpdate={processRowUpdate}
             isCellEditable={isCellEditable}
+            loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+            buttonCreate={POST_MOVEMENT}
         />
     )
 }

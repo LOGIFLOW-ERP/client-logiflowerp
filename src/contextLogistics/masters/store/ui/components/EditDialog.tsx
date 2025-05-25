@@ -1,10 +1,10 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomSelect } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { UpdateStoreDTO, getDataStoreType, StoreENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useUpdateStoreMutation } from '@shared/api'
 
 const resolver = classValidatorResolver(UpdateStoreDTO)
@@ -26,7 +26,7 @@ export function EditDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: row })
     const { enqueueSnackbar } = useSnackbar()
 
-    const [updateStore, { isLoading, isError }] = useUpdateStoreMutation()
+    const [updateStore, { isLoading }] = useUpdateStoreMutation()
 
     const onSubmit = async (data: UpdateStoreDTO) => {
         try {
@@ -38,9 +38,6 @@ export function EditDialog(props: IProps) {
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
-
-    if (isLoading) return <CustomDialogLoading open={open} setOpen={setOpen} />
-    if (isError) return <CustomDialogError open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog
@@ -111,20 +108,7 @@ export function EditDialog(props: IProps) {
                         />
                     )}
                 />
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                    disabled={isLoading}
-                >
-                    {
-                        isLoading
-                            ? <CircularProgress size={24} color='inherit' />
-                            : 'Guardar'
-                    }
-                </Button>
+                <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
     )

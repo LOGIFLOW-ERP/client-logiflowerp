@@ -1,10 +1,10 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomSelect } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateProductDTO, getDataProducType } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useCreateProductMutation, useGetProductGroupsQuery, useGetUnitOfMeasuresQuery } from '@shared/api'
 
 const resolver = classValidatorResolver(CreateProductDTO)
@@ -39,9 +39,6 @@ export function AddDialog(props: IProps) {
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
     }
-
-    if (isErrorUM || isErrorGroup) return <CustomDialogError open={open} setOpen={setOpen} />
-    if (isLoadingUM || isLoadingGroup) return <CustomDialogLoading open={open} setOpen={setOpen} />
 
     return (
         <CustomDialog
@@ -99,6 +96,8 @@ export function AddDialog(props: IProps) {
                             margin='normal'
                             error={!!errors.uomCode}
                             helperText={errors.uomCode?.message}
+                            isLoading={isLoadingUM}
+                            isError={isErrorUM}
                         />
                     )}
                 />
@@ -115,6 +114,8 @@ export function AddDialog(props: IProps) {
                             margin='normal'
                             error={!!errors.itmsGrpCod}
                             helperText={errors.itmsGrpCod?.message}
+                            isLoading={isLoadingGroup}
+                            isError={isErrorGroup}
                         />
                     )}
                 />
@@ -140,18 +141,7 @@ export function AddDialog(props: IProps) {
                     error={!!errors.maxLevel}
                     helperText={errors.maxLevel?.message}
                 />
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                    loading={isLoading}
-                    loadingIndicator={<CircularProgress size={24} color='inherit' />}
-                    loadingPosition='center'
-                >
-                    Guardar
-                </Button>
+                <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
     )

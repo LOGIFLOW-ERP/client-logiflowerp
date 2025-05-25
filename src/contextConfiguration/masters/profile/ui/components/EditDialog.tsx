@@ -1,9 +1,9 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomRichTreeView } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomRichTreeView } from '@shared/ui-library'
 import { useForm } from 'react-hook-form'
 import { buildMenu, UpdateProfileDTO, ProfileENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Button, CircularProgress, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useUpdateProfileMutation } from '@shared/api'
 import { useEffect, useState } from 'react'
 import { useStore } from '@shared/ui/hooks'
@@ -74,20 +74,7 @@ export function EditDialog(props: IProps) {
                     setSelectedItems={setSelectedItems}
                     items={buildMenu(dataSystemOptions ?? [])}
                 />
-                <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    fullWidth
-                    sx={{ marginTop: 2 }}
-                    disabled={isLoading}
-                >
-                    {
-                        isLoading
-                            ? <CircularProgress size={24} color='inherit' />
-                            : 'Guardar'
-                    }
-                </Button>
+                <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
     )

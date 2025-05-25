@@ -4,14 +4,17 @@ import { CustomStatus } from '@shared/ui-library'
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
 import EditIcon from '@mui/icons-material/Edit'
 import { Avatar } from '@mui/material'
+import { ReactElement } from 'react'
+import { GridActionsCellItemProps } from '@mui/x-data-grid'
 
 interface IParams {
     handleChangeStatusClick: (row: ProductENTITY) => void
     handleEditClick: (row: ProductENTITY) => void
+    PUT_PRODUCT_BY_ID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
-    const { handleChangeStatusClick, handleEditClick } = params
+    const { handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID } = params
     return [
         {
             field: 'itemCode',
@@ -68,20 +71,30 @@ export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
             field: 'actions',
             type: 'actions',
             width: 50,
-            getActions: (params) => [
-                <GridActionsCellItem
-                    icon={<ChangeCircleIcon />}
-                    label={params.row.state === State.ACTIVO ? 'Desactivar' : 'Activar'}
-                    onClick={() => handleChangeStatusClick(params.row)}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    icon={<EditIcon />}
-                    label='Editar'
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />
-            ],
+            getActions: (params) => {
+                const actions: ReactElement<GridActionsCellItemProps>[] = []
+                if (PUT_PRODUCT_BY_ID) {
+                    actions.push(
+                        <GridActionsCellItem
+                            key='changeStatus'
+                            icon={<ChangeCircleIcon />}
+                            label={params.row.state === State.ACTIVO ? 'Desactivar' : 'Activar'}
+                            onClick={() => handleChangeStatusClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                    actions.push(
+                        <GridActionsCellItem
+                            key='edit'
+                            icon={<EditIcon />}
+                            label='Editar'
+                            onClick={() => handleEditClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                return actions
+            },
         },
     ]
 }

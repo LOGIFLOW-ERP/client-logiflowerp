@@ -1,6 +1,6 @@
 import { GridToolbarColumnsButton, GridToolbarContainer } from '@mui/x-data-grid'
 import { Box, Button } from '@mui/material'
-import { Add } from '@mui/icons-material'
+import Add from '@mui/icons-material/Add'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 

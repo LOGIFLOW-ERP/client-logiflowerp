@@ -1,9 +1,9 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomSelect, CustomSelectDto, CustomViewLoading } from '@shared/ui-library'
+import { CustomButtonSave, CustomDialog, CustomSelect, CustomSelectDto } from '@shared/ui-library'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateEmployeeDTO, State } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { Alert, Avatar, Box, Button, Card, CardContent, CardHeader, CircularProgress, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Card, CardContent, CardHeader, CircularProgress, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
 import { useCreatePersonnelMutation, useGetCompaniesPipelineQuery, useGetProfilesQuery, useLazyGetUserByIdQuery } from '@shared/api'
 import SearchIcon from '@mui/icons-material/Search'
 import { useEffect } from 'react'
@@ -30,7 +30,7 @@ export function AddDialog(props: IProps) {
     const { enqueueSnackbar } = useSnackbar()
     const [create, { isLoading }] = useCreatePersonnelMutation()
     const [fetchUser, { data: user, isLoading: isLoadingUser, isError: isErrorUser, error: errorUser }] = useLazyGetUserByIdQuery()
-    const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles, error } = useGetProfilesQuery()
+    const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
     const pipelineCompanies = [{ $match: { state: State.ACTIVO } }]
     const { data: dataCompanies, isError: isErrorCompanies, isLoading: isLoadingCompanies } = useGetCompaniesPipelineQuery(pipelineCompanies)
 
@@ -58,131 +58,116 @@ export function AddDialog(props: IProps) {
             title='AGREGAR'
             maxWidth='sm'
         >
-            {
-                (isErrorProfiles || !dataProfiles || isErrorCompanies)
-                    ? <Alert severity='error'>{(error as Error)?.message}</Alert>
-                    : isLoadingProfiles || isLoadingCompanies
-                        ? <CustomViewLoading />
-                        : <form onSubmit={handleSubmit(onSubmit)}>
-                            <TextField
-                                label='Identificación'
-                                autoFocus
-                                variant='outlined'
-                                fullWidth
-                                margin='normal'
-                                size='small'
-                                {...register('identity')}
-                                error={!!errors.identity}
-                                helperText={errors.identity?.message}
-                                slotProps={{
-                                    input: {
-                                        endAdornment: (
-                                            <InputAdornment position='end'>
-                                                <IconButton onClick={async () => {
-                                                    const isValid = await trigger('identity') // 🔥 Valida solo 'identity'
-                                                    if (isValid) {
-                                                        await fetchUser(getValues('identity')).unwrap()
-                                                    }
-                                                }}
-                                                >
-                                                    {
-                                                        isLoadingUser
-                                                            ? <CircularProgress color='inherit' />
-                                                            : <SearchIcon />
-                                                    }
-                                                </IconButton>
-                                            </InputAdornment>
-                                        )
-                                    }
-                                }}
-                            />
-                            {
-                                isErrorUser && <Alert severity='error'>{(errorUser as Error)?.message}</Alert>
-                            }
-                            {
-                                user && <>
-                                    <Card variant='outlined'>
-                                        <CardHeader
-                                            avatar={<Avatar>{user.names[0]}{user.surnames[0]}</Avatar>}
-                                            title={user.names}
-                                            subheader={user.email}
-                                        />
-                                        <CardContent>
-                                            <Box sx={{ display: 'flex' }}>
-                                                <Typography variant='body2' fontWeight={410} marginRight={1}>Nombres:</Typography>
-                                                <Typography variant='body2'>{user.names}</Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex' }}>
-                                                <Typography variant='body2' fontWeight={410} marginRight={1}>Apellidos:</Typography>
-                                                <Typography variant='body2'>{user.surnames}</Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex' }}>
-                                                <Typography variant='body2' fontWeight={410} marginRight={1}>País:</Typography>
-                                                <Typography variant='body2'>{user.country}</Typography>
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                    <Controller
-                                        name='company'
-                                        control={control}
-                                        render={({ field }) => (
-                                            <CustomSelectDto
-                                                label='Empresa'
-                                                options={dataCompanies ?? []}
-                                                {...field}
-                                                labelKey='companyname'
-                                                valueKey='code'
-                                                margin='normal'
-                                                error={!!errors.company}
-                                                helperText={errors.company?.message}
-                                            />
-                                        )}
-                                    />
-                                    <TextField
-                                        label='Correo electrónico'
-                                        variant='outlined'
-                                        fullWidth
-                                        margin='normal'
-                                        size='small'
-                                        {...register('email')}
-                                        autoComplete='email'
-                                        error={!!errors.email}
-                                        helperText={errors.email?.message}
-                                    />
-                                    <Controller
-                                        name='_idprofile'
-                                        control={control}
-                                        render={({ field }) => (
-                                            <CustomSelect
-                                                label='Perfil'
-                                                options={dataProfiles.filter(e => e.state === State.ACTIVO)}
-                                                {...field}
-                                                labelKey='name'
-                                                valueKey='_id'
-                                                margin='normal'
-                                                error={!!errors._idprofile}
-                                                helperText={errors._idprofile?.message}
-                                            />
-                                        )}
-                                    />
-                                    <Button
-                                        type='submit'
-                                        variant='contained'
-                                        color='primary'
-                                        fullWidth
-                                        sx={{ marginTop: 2 }}
-                                        disabled={isLoading}
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <TextField
+                    label='Identificación'
+                    autoFocus
+                    variant='outlined'
+                    fullWidth
+                    margin='normal'
+                    size='small'
+                    {...register('identity')}
+                    error={!!errors.identity}
+                    helperText={errors.identity?.message}
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position='end'>
+                                    <IconButton onClick={async () => {
+                                        const isValid = await trigger('identity') // 🔥 Valida solo 'identity'
+                                        if (isValid) {
+                                            await fetchUser(getValues('identity')).unwrap()
+                                        }
+                                    }}
                                     >
                                         {
-                                            isLoading
-                                                ? <CircularProgress size={24} color='inherit' />
-                                                : 'Guardar'
+                                            isLoadingUser
+                                                ? <CircularProgress color='inherit' />
+                                                : <SearchIcon />
                                         }
-                                    </Button>
-                                </>
-                            }
-                        </form>
-            }
+                                    </IconButton>
+                                </InputAdornment>
+                            )
+                        }
+                    }}
+                />
+                {
+                    isErrorUser && <Alert severity='error'>{(errorUser as Error)?.message}</Alert>
+                }
+                {
+                    user && <>
+                        <Card variant='outlined'>
+                            <CardHeader
+                                avatar={<Avatar>{user.names[0]}{user.surnames[0]}</Avatar>}
+                                title={user.names}
+                                subheader={user.email}
+                            />
+                            <CardContent>
+                                <Box sx={{ display: 'flex' }}>
+                                    <Typography variant='body2' fontWeight={410} marginRight={1}>Nombres:</Typography>
+                                    <Typography variant='body2'>{user.names}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex' }}>
+                                    <Typography variant='body2' fontWeight={410} marginRight={1}>Apellidos:</Typography>
+                                    <Typography variant='body2'>{user.surnames}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex' }}>
+                                    <Typography variant='body2' fontWeight={410} marginRight={1}>País:</Typography>
+                                    <Typography variant='body2'>{user.country}</Typography>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                        <Controller
+                            name='company'
+                            control={control}
+                            render={({ field }) => (
+                                <CustomSelectDto
+                                    label='Empresa'
+                                    options={dataCompanies ?? []}
+                                    {...field}
+                                    labelKey='companyname'
+                                    valueKey='code'
+                                    margin='normal'
+                                    error={!!errors.company}
+                                    helperText={errors.company?.message}
+                                    isLoading={isLoadingCompanies}
+                                    isError={isErrorCompanies}
+                                />
+                            )}
+                        />
+                        <TextField
+                            label='Correo electrónico'
+                            variant='outlined'
+                            fullWidth
+                            margin='normal'
+                            size='small'
+                            {...register('email')}
+                            autoComplete='email'
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
+                        />
+                        <Controller
+                            name='_idprofile'
+                            control={control}
+                            render={({ field }) => (
+                                <CustomSelect
+                                    label='Perfil'
+                                    options={dataProfiles?.filter(e => e.state === State.ACTIVO) ?? []}
+                                    {...field}
+                                    labelKey='name'
+                                    valueKey='_id'
+                                    margin='normal'
+                                    error={!!errors._idprofile}
+                                    helperText={errors._idprofile?.message}
+                                    isLoading={isLoadingProfiles}
+                                    isError={isErrorProfiles}
+                                />
+                            )}
+                        />
+                        <CustomButtonSave isLoading={isLoading} />
+                    </>
+                }
+            </form>
         </CustomDialog>
     )
 }

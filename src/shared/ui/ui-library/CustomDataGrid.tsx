@@ -16,6 +16,7 @@ import {
     GridValidRowModel,
     GridCellParams,
     GridTreeNode,
+    GridRowIdGetter,
 } from '@mui/x-data-grid'
 
 declare module '@mui/x-data-grid' {
@@ -25,11 +26,13 @@ declare module '@mui/x-data-grid' {
             newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
         ) => void;
         newRowTemplate: Record<string, any>
+        buttonCreate?: boolean
     }
 }
 
 function EditToolbar(props: GridSlotProps['toolbar']) {
-    const { setRows, setRowModesModel, newRowTemplate } = props;
+
+    const { setRows, setRowModesModel, newRowTemplate, buttonCreate } = props;
 
     const handleClick = () => {
         const _id = crypto.randomUUID()
@@ -46,9 +49,13 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
 
     return (
         <GridToolbarContainer>
-            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Agregar registro
-            </Button>
+            {
+                buttonCreate && (
+                    <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+                        Crear
+                    </Button>
+                )
+            }
         </GridToolbarContainer>
     );
 }
@@ -63,6 +70,8 @@ interface IProps {
     processRowUpdate: (newRow: GridRowModel) => Promise<{ isNew: boolean } | undefined>
     isCellEditable?: ((params: GridCellParams<any, GridValidRowModel, GridValidRowModel, GridTreeNode>) => boolean) | undefined
     loading?: boolean
+    getRowId?: GridRowIdGetter | undefined
+    buttonCreate?: boolean
 }
 
 export function CustomDataGrid(props: IProps) {
@@ -76,7 +85,9 @@ export function CustomDataGrid(props: IProps) {
         newRowTemplate,
         processRowUpdate,
         isCellEditable,
-        loading
+        loading,
+        getRowId,
+        buttonCreate
     } = props
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
@@ -112,14 +123,14 @@ export function CustomDataGrid(props: IProps) {
                 processRowUpdate={processRowUpdate}
                 slots={{ toolbar: EditToolbar }}
                 slotProps={{
-                    toolbar: { setRows, setRowModesModel, newRowTemplate }
+                    toolbar: { setRows, setRowModesModel, newRowTemplate, buttonCreate }
                 }}
                 density='compact'
                 onProcessRowUpdateError={(error) => {
                     console.error("Error en la actualización de fila:", error)
                 }}
                 isCellEditable={isCellEditable}
-                getRowId={row => row._id}
+                getRowId={getRowId ? getRowId : (row) => row._id}
                 loading={loading}
             />
         </Box>
