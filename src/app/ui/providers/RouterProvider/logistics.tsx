@@ -62,5 +62,16 @@ export const childrenLogistics: RouteObject[] = [
                 Component: LayoutWarehouseReturn,
             },
         ]
+    },
+    {
+        path: 'reports',
+        errorElement: <ErrorElement />,
+        Component: null,
+        children: [
+            {
+                path: 'warehouse stock',
+                Component: LayoutWarehouseEntry,
+            }
+        ]
     }
 ]
