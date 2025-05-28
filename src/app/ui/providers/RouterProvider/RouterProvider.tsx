@@ -2,8 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { ErrorPage } from '../../pages'
 import { lazy } from 'react'
 import { protectedLoader, publicLoader } from '@app/application'
-import { childrenConfiguration } from './configuration'
-import { childrenLogistics } from './logistics'
+import { buildRoutes } from './index'
 
 const LayoutAuth = lazy(() => import('@processes-configuration/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
 const VerifyEmail = lazy(() => import('@processes-configuration/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
@@ -14,6 +13,8 @@ const SignUpForm = lazy(() => import('@processes-configuration/auth/ui/component
 const RequestPasswordResetForm = lazy(() => import('@processes-configuration/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
 const LayoutHome = lazy(() => import('@shared/ui/pages/LayoutHome').then(mo => ({ default: mo.LayoutHome })))
 const Dashboard = lazy(() => import('@shared/ui/pages/DashBoard').then(mo => ({ default: mo.Dashboard })))
+
+const routes = buildRoutes()
 
 const router = createBrowserRouter([
     {
@@ -66,14 +67,7 @@ const router = createBrowserRouter([
                                 index: true,
                                 Component: Dashboard
                             },
-                            {
-                                path: 'configuration',
-                                children: childrenConfiguration
-                            },
-                            {
-                                path: 'logistics',
-                                children: childrenLogistics
-                            }
+                            ...routes
                         ]
                     }
                 ]

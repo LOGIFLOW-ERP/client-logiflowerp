@@ -60,7 +60,7 @@ export function MenuContent({ selectedNode }: IProps) {
 
     const clickSelectedPage = (item: MenuDTO, selectedNode: MenuDTO) => {
         try {
-            navigate(`/${item.systemOption.prefix}/${selectedNode.systemOption.name}/${item.systemOption.name}`)
+            navigate(`/${item.systemOption.prefix}/${selectedNode.systemOption.name}/${item.systemOption.name.replaceAll(' ', '')}`)
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
@@ -83,7 +83,7 @@ export function MenuContent({ selectedNode }: IProps) {
                                         onClick={() => clickSelectedPage(item, selectedNode)}
                                     >
                                         <ListItemButton selected={
-                                            `/${item.systemOption.prefix}/${selectedNode.systemOption.name}/${item.systemOption.name}` === location.pathname.replaceAll('%20', ' ')}>
+                                            `/${item.systemOption.prefix}/${selectedNode.systemOption.name}/${item.systemOption.name.replaceAll(' ', '')}` === location.pathname.replaceAll('%20', '')}>
                                             {
                                                 IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>
                                             }
