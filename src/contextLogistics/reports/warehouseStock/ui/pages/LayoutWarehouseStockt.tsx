@@ -3,8 +3,8 @@ import { DataGrid } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
-	useUpdateIWarehouseStockMutation,
-	useGetIWarehouseStocksQuery,
+	useUpdateWarehouseStockMutation,
+	useLazyReportWarehouseStockQuery,
 } from '@shared/api'
 import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { columns } from '../GridCol'
@@ -18,9 +18,8 @@ export default function LayoutWarehouseStock() {
 	const [selectedRow, setSelectedRow] = useState<IWarehouseStockENTITY>()
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetIWarehouseStocksQuery()
-	const [updateIStore, { isLoading: isLoadingUpdate }] = useUpdateIWarehouseStockMutation()
-	useEffect(() => data && setRows(data), [data])
+	const [reportWarehouseStockQuery, { isLoading, isError }] = useLazyReportWarehouseStockQuery()
+	const [updateIStore, { isLoading: isLoadingUpdate }] = useUpdateWarehouseStockMutation()
 
 
 	const handleEditClick = (row: IWarehouseStockENTITY) => {
@@ -34,7 +33,7 @@ export default function LayoutWarehouseStock() {
 	}
 
 	if (isLoading || isLoadingUpdate) return <CustomViewLoading />
-	if (error) return <CustomViewError />
+	if (isError) return <CustomViewError />
 
 	return (
 		<>

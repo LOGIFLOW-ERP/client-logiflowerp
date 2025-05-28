@@ -69,6 +69,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                     { type: resource, id: `PIPELINE${resource}` },
+                    { type: resource, id: `REPORT${resource}` },
                 ],
                 transformErrorResponse
             }),
@@ -83,6 +84,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                     { type: resource, id: `PIPELINE${resource}` },
+                    { type: resource, id: `REPORT${resource}` },
                 ],
                 transformErrorResponse
             }),
@@ -96,6 +98,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `LIST1${resource}` },
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                     { type: resource, id: `PIPELINE${resource}` },
+                    { type: resource, id: `REPORT${resource}` },
                 ],
                 transformErrorResponse
             }),
