@@ -32,7 +32,7 @@ export function SerialsDialog(props: IProps) {
         register,
         reset,
         setFocus
-    } = useForm({ resolver })
+    } = useForm({ resolver, defaultValues: new StockSerialDTO() })
     const { enqueueSnackbar } = useSnackbar()
     const [addSerial, { isLoading: isLoadingAddSerial }] = useAddSerialWarehouseEntryMutation()
     const [deleteSerial, { isLoading: isLoadingDeleteSerial }] = useDeleteSerialWarehouseEntryMutation()

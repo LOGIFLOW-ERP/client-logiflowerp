@@ -37,8 +37,6 @@ export function buildRoutes() {
 
     const ___children: RouteObject[] = []
 
-    console.log(contextGroups)
-
     for (const [key, value] of contextGroups.entries()) {
 
         const children: RouteObject = {

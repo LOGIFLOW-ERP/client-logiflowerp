@@ -42,7 +42,7 @@ export function CabeceraForm(props: Props) {
                             label='Movimiento'
                             options={dataMovements ?? []}
                             {...field}
-                            labelKey='name'
+                            labelKey={['code', ' - ', 'name']}
                             valueKey='code'
                             margin='dense'
                             error={!!errors.movement}
