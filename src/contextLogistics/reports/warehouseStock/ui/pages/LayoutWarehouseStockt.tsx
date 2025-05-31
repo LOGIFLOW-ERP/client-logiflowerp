@@ -9,20 +9,21 @@ import {
 import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 import { columns } from '../GridCol'
 // import { CustomToolbar } from '../components'
-import { IWarehouseStockENTITY } from 'logiflowerp-sdk'
+import { IWarehouseStockENTITY, WarehouseStockENTITY } from 'logiflowerp-sdk'
+import { _columns } from '../GridCol/_columns'
 
 export default function LayoutWarehouseStock() {
 
-	const [rows, setRows] = useState<readonly IWarehouseStockENTITY[]>([])
+	const [rows, setRows] = useState<readonly WarehouseStockENTITY[]>([])
 	const [openEdit, setOpenEdit] = useState(false)
-	const [selectedRow, setSelectedRow] = useState<IWarehouseStockENTITY>()
+	const [selectedRow, setSelectedRow] = useState<WarehouseStockENTITY>()
 
 	const { enqueueSnackbar } = useSnackbar()
 	const [reportWarehouseStockQuery, { isLoading, isError }] = useLazyReportWarehouseStockQuery()
 	const [updateIStore, { isLoading: isLoadingUpdate }] = useUpdateWarehouseStockMutation()
 
 
-	const handleEditClick = (row: IWarehouseStockENTITY) => {
+	const handleEditClick = (row: WarehouseStockENTITY) => {
 		try {
 			setSelectedRow(row)
 			setOpenEdit(true)
@@ -38,9 +39,9 @@ export default function LayoutWarehouseStock() {
 	return (
 		<>
 			<Box sx={{ height: 400, width: '100%' }}>
-				<DataGrid<IWarehouseStockENTITY>
+				<DataGrid<WarehouseStockENTITY>
 					rows={rows}
-					columns={columns({ handleEditClick })}
+					columns={_columns}
 					disableRowSelectionOnClick
 					getRowId={row => row._id}
 				/>

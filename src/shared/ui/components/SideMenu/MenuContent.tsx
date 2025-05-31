@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { AboutDialog } from './AboutDialog';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import Rotate90DegreesCcwRoundedIcon from '@mui/icons-material/Rotate90DegreesCcwRounded';
+import WidgetsRoundedIcon from '@mui/icons-material/WidgetsRounded';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -41,9 +42,10 @@ const iconMap: Record<string, React.ElementType> = {
     Profile: AdminPanelSettingsRoundedIcon,
     Personnel: EngineeringRoundedIcon,
     'Warehouse Entry': InputRoundedIcon,
-    Product: Inventory2RoundedIcon,
+    Product: WidgetsRoundedIcon,
     'Warehouse Exit': LocalShippingRoundedIcon,
     'Warehouse Return': Rotate90DegreesCcwRoundedIcon,
+    'Warehouse Stock': Inventory2RoundedIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null
