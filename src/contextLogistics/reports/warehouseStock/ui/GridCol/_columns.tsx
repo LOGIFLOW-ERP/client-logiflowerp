@@ -1,6 +1,6 @@
 import EditIcon from '@mui/icons-material/Edit'
 import { GridColDef, GridActionsCellItem } from '@mui/x-data-grid'
-import { IWarehouseStockENTITY, WarehouseStockENTITY } from 'logiflowerp-sdk'
+import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
 
 interface IParams<T> {
     handleEditClick: (row: T) => void
@@ -60,7 +60,7 @@ export function generateColumnsFromEntity<T extends Record<string, any>>(
     return cols
 }
 
-export const _columns = generateColumnsFromEntity(new WarehouseStockENTITY(), {
+export const _columns = generateColumnsFromEntity(new WarehouseStockENTITYFlat(), {
 	handleEditClick: (row) => console.log('Edit:', row),
 	includeActions: true,
 })
