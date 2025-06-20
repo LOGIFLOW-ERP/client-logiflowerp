@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CreateProductPriceDTO, ProductPriceENTITY, State, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
+import { CreateProductPriceDTO, ProductPriceENTITY, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
 import {
 	GridCellParams,
 	GridRowId,
@@ -40,7 +40,7 @@ export default function LayoutProductPrice() {
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductPricesQuery()
-	const pipelineProducts = [{ $match: { state: State.ACTIVO } }]
+	const pipelineProducts = [{ $match: { isDeleted: false } }]
 	const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
 	const [createProductPrice, { isLoading: isLoadingCreate }] = useCreateProductPriceMutation()
 	const [updateProductPrice, { isLoading: isLoadingUpdate }] = useUpdateProductPriceMutation()
