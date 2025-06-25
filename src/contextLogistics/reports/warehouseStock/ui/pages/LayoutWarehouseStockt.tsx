@@ -8,17 +8,17 @@ import {
 } from '@shared/api'
 import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
 // import { CustomToolbar } from '../components'
-import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
-import { _columns } from '../GridCol/_columns'
+import { StateOrder, WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
+import { getcolumns } from '../GridCol/_columns'
 
 export default function LayoutWarehouseStock() {
 
-	const [rows, setRows] = useState<readonly WarehouseStockENTITYFlat[]>([])
+	const [rows] = useState<WarehouseStockENTITYFlat[]>([])
 	const [openEdit, setOpenEdit] = useState(false)
 	const [selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
 
 	const { enqueueSnackbar } = useSnackbar()
-	const [reportWarehouseStockQuery, { isLoading, isError }] = useLazyReportWarehouseStockQuery()
+	const [data, isError, isLoading] = useLazyReportWarehouseStockQuery()
 	const [updateIStore, { isLoading: isLoadingUpdate }] = useUpdateWarehouseStockMutation()
 
 
@@ -39,8 +39,8 @@ export default function LayoutWarehouseStock() {
 		<>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<WarehouseStockENTITYFlat>
-					rows={rows}
-					columns={_columns}
+					rows={data}
+					columns={getcolumns({ handleEditClick })}
 					disableRowSelectionOnClick
 					getRowId={row => row._id}
 				/>

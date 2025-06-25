@@ -1,14 +1,14 @@
 import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
-import { IWarehouseStockENTITY } from 'logiflowerp-sdk'
+import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
 import EditIcon from '@mui/icons-material/Edit'
 
 interface IParams {
     // handleDeleteClick: (row: IWarehouseStockENTITY) => void
-    handleEditClick: (row: IWarehouseStockENTITY) => void
+    handleEditClick: (row: WarehouseStockENTITYFlat) => void
     // canDeleteWarehouseExitByID: boolean
 }
 
-export const columns = (params: IParams): GridColDef<IWarehouseStockENTITY>[] => {
+export const columns = (params: IParams): GridColDef<WarehouseStockENTITYFlat>[] => {
     const { handleEditClick } = params
     return [
         {

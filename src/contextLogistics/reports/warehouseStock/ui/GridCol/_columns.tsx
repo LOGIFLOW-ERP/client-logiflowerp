@@ -2,13 +2,13 @@ import EditIcon from '@mui/icons-material/Edit'
 import { GridColDef, GridActionsCellItem } from '@mui/x-data-grid'
 import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
 
-interface IParams<T> {
-    handleEditClick: (row: T) => void
+interface IParams {
+    handleEditClick: (row: WarehouseStockENTITYFlat) => void
 }
 
-export function generateColumnsFromEntity<T extends Record<string, any>>(
+export function generateColumnsFromEntity__<T extends WarehouseStockENTITYFlat>(
     exampleEntity: T,
-    options?: IParams<T> & { includeActions?: boolean }
+    params: IParams
 ): GridColDef<T>[] {
     const cols: GridColDef<T>[] = Object.entries(exampleEntity).map(([key, value]) => {
         const lowerKey = key.toLowerCase()
@@ -40,8 +40,8 @@ export function generateColumnsFromEntity<T extends Record<string, any>>(
 
         return column
     })
-
-    if (options?.handleEditClick && options?.includeActions) {
+    const { handleEditClick } = params
+    if (handleEditClick) {
         cols.push({
             field: 'actions',
             type: 'actions',
@@ -50,7 +50,7 @@ export function generateColumnsFromEntity<T extends Record<string, any>>(
                 <GridActionsCellItem
                     icon={<EditIcon color="info" />}
                     label="Editar"
-                    onClick={() => options.handleEditClick(params.row)}
+                    onClick={() => handleEditClick(params.row)}
                     showInMenu
                 />,
             ],
@@ -60,7 +60,66 @@ export function generateColumnsFromEntity<T extends Record<string, any>>(
     return cols
 }
 
-export const _columns = generateColumnsFromEntity(new WarehouseStockENTITYFlat(), {
-	handleEditClick: (row) => console.log('Edit:', row),
-	includeActions: true,
-})
+// export function getcolumns(params: IParams): GridColDef<WarehouseStockENTITYFlat>[] {
+//     return generateColumnsFromEntity(new WarehouseStockENTITYFlat(), params)
+
+// }
+export function getcolumns(params: IParams): GridColDef<WarehouseStockENTITYFlat>[] {
+    const columnsBase = generateColumnsFromEntity(new WarehouseStockENTITYFlat());
+    const { handleEditClick } = params;
+    const finalColumns = [
+        ...columnsBase,
+        {
+            field: 'actions',
+            type: 'actions',
+            width: 50,
+            getActions: (params: { row: WarehouseStockENTITYFlat }) => [
+                <GridActionsCellItem
+                    icon={<EditIcon color="info" />}
+                    label="Editar"
+                    onClick={() => handleEditClick(params.row)}
+                    showInMenu
+                />,
+            ],
+        } as GridColDef<WarehouseStockENTITYFlat>,
+    ];
+    return finalColumns;
+}
+
+export const generateColumnsFromEntity = (entityInstance: WarehouseStockENTITYFlat): GridColDef[] => {
+    const flatObject = flattenObject(entityInstance);
+
+    return Object.entries(flatObject).map(([key, value]) => ({
+        field: key,
+        headerName: toTitleCase(key),
+        width: 150,
+        type: inferType(value),
+    }));
+};
+
+// Utilidad para aplanar objetos anidados
+const flattenObject = (obj: any, prefix = ''): Record<string, any> => {
+    return Object.entries(obj).reduce((acc, [k, v]) => {
+        const fullKey = prefix ? `${prefix}.${k}` : k;
+        if (typeof v === 'object' && v !== null && !(v instanceof Date)) {
+            Object.assign(acc, flattenObject(v, fullKey));
+        } else {
+            acc[fullKey] = v;
+        }
+        return acc;
+    }, {} as Record<string, any>);
+};
+
+const toTitleCase = (str: string) =>
+    str
+        .replace(/\./g, ' ')
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (l) => l.toUpperCase());
+
+const inferType = (value: any): GridColDef['type'] => {
+    if (typeof value === 'number') return 'number';
+    if (typeof value === 'boolean') return 'boolean';
+    if (value instanceof Date) return 'dateTime';
+    return 'string';
+};
+

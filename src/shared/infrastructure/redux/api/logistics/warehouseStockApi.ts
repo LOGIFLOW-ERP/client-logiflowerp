@@ -1,5 +1,5 @@
 import { createRepository } from '../baseRepository'
-import { IWarehouseStockENTITY, WarehouseStockENTITY } from 'logiflowerp-sdk'
+import { WarehouseStockENTITYFlat, WarehouseStockENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
 
@@ -11,7 +11,7 @@ const path = `${schema}/${resource}`
 export const warehouseStockApi = createRepository<WarehouseStockENTITY, string>(path, getBaseApiLogistics(path))
     .injectEndpoints({
         endpoints: (builder) => ({
-            report: builder.query<IWarehouseStockENTITY[], any[]>({
+            report: builder.query<WarehouseStockENTITYFlat[], any[]>({
                 query: (pipeline) => ({
                     url: `${resource}/report`,
                     method: 'POST',
