@@ -25,7 +25,7 @@ export function DetalleForm() {
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseEntryAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_ENTRY_ADD_DETAIL_BY_ID])
 
-    const pipelineProducts = [{ $match: { state: State.ACTIVO } }]
+    const pipelineProducts = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataProducts, isLoading: isLoadingProducts, isError: isErrorProducts } = useGetProductPipelineQuery(pipelineProducts)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseEntryMutation()
 

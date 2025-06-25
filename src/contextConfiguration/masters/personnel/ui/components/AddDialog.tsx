@@ -31,7 +31,7 @@ export function AddDialog(props: IProps) {
     const [create, { isLoading }] = useCreatePersonnelMutation()
     const [fetchUser, { data: user, isLoading: isLoadingUser, isError: isErrorUser, error: errorUser }] = useLazyGetUserByIdQuery()
     const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
-    const pipelineCompanies = [{ $match: { state: State.ACTIVO } }]
+    const pipelineCompanies = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataCompanies, isError: isErrorCompanies, isLoading: isLoadingCompanies } = useGetCompaniesPipelineQuery(pipelineCompanies)
 
     useEffect(() => {
