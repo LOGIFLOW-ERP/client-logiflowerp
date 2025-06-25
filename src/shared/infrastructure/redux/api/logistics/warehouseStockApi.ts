@@ -13,12 +13,12 @@ export const warehouseStockApi = createRepository<WarehouseStockENTITY, string>(
         endpoints: (builder) => ({
             report: builder.query<WarehouseStockENTITYFlat[], any[]>({
                 query: (pipeline) => ({
-                    url: `${resource}/report`,
+                    url: `${path}/report`,
                     method: 'POST',
                     body: pipeline
                 }),
                 providesTags: (result) =>
-                    result ? [{ type: resource, id: `REPORT${resource}` }] : [],
+                    result ? [{ type: path, id: `REPORT${path}` }] : [],
                 transformErrorResponse
             }),
         })
@@ -31,5 +31,6 @@ export const {
     useUpdateMutation: useUpdateWarehouseStockMutation,
     useDeleteMutation: useDeleteWarehouseStockMutation,
     useGetPipelineQuery: useGetWarehouseStockPipelineQuery,
-    useLazyReportQuery: useLazyReportWarehouseStockQuery
+    useLazyReportQuery: useLazyReportWarehouseStockQuery,
+    useReportQuery: useReportWarehouseStockQuery
 } = warehouseStockApi;

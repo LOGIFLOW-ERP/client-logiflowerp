@@ -1,15 +1,14 @@
-import { lazy, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
 	useUpdateWarehouseStockMutation,
-	useLazyReportWarehouseStockQuery,
+	useReportWarehouseStockQuery,
 } from '@shared/api'
-import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
-// import { CustomToolbar } from '../components'
-import { StateOrder, WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
-import { getcolumns } from '../GridCol/_columns'
+import { CustomViewError } from '@shared/ui-library'
+import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
+import { getcolumns } from '../GridCol/columns'
 
 export default function LayoutWarehouseStock() {
 
@@ -18,9 +17,10 @@ export default function LayoutWarehouseStock() {
 	const [selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
 
 	const { enqueueSnackbar } = useSnackbar()
-	const [data, isError, isLoading] = useLazyReportWarehouseStockQuery()
+	// const [fetchReport, { data, isLoading, isError }] = useLazyReportWarehouseStockQuery()
+	const pipeline = [{ $match: {} }]
+	const { data, isLoading, isError } = useReportWarehouseStockQuery(pipeline)
 	const [updateIStore, { isLoading: isLoadingUpdate }] = useUpdateWarehouseStockMutation()
-
 
 	const handleEditClick = (row: WarehouseStockENTITYFlat) => {
 		try {
@@ -32,20 +32,17 @@ export default function LayoutWarehouseStock() {
 		}
 	}
 
-	if (isLoading || isLoadingUpdate) return <CustomViewLoading />
 	if (isError) return <CustomViewError />
 
 	return (
-		<>
-			<Box sx={{ height: 400, width: '100%' }}>
-				<DataGrid<WarehouseStockENTITYFlat>
-					rows={data}
-					columns={getcolumns({ handleEditClick })}
-					disableRowSelectionOnClick
-					getRowId={row => row._id}
-				/>
-			</Box>
-
-		</>
+		<Box sx={{ height: 400, width: '100%' }}>
+			<DataGrid<WarehouseStockENTITYFlat>
+				rows={data}
+				columns={getcolumns({ handleEditClick })}
+				disableRowSelectionOnClick
+				getRowId={row => row._id}
+				loading={isLoading || isLoadingUpdate}
+			/>
+		</Box>
 	)
 }
