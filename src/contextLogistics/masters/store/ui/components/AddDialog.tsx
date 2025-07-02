@@ -25,7 +25,7 @@ export function AddDialog(props: IProps) {
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
 
-    const pipelineCompanies = [{ $match: { state: State.ACTIVO } }]
+    const pipelineCompanies = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataCompanies, isError: isErrorCompanies, isLoading: isLoadingCompanies } = useGetCompaniesPipelineQuery(pipelineCompanies)
 
     const [createStore, { isLoading }] = useCreateStoreMutation()

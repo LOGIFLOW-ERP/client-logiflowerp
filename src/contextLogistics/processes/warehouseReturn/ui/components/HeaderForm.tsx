@@ -24,11 +24,11 @@ export function CabeceraForm(props: Props) {
 
     const [canCreateWarehouseReturn] = usePermissions([PERMISSIONS.POST_WAREHOUSE_RETURN])
 
-    const pipelineMovement = [{ $match: { movement: MovementOrder.DEVOLUCION } }]
+    const pipelineMovement = [{ $match: { movement: MovementOrder.DEVOLUCION, isDeleted: false } }]
     const { data: dataMovements, isLoading: isLoadingMovements, isError: isErrorMovements } = useGetMovementPipelineQuery(pipelineMovement)
-    const pipelineStore = [{ $match: { state: State.ACTIVO } }]
+    const pipelineStore = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataStores, isLoading: isLoadingStores, isError: isErrorStores } = useGetStorePipelineQuery(pipelineStore)
-    const pipelinePersonnel = [{ $match: { state: State.ACTIVO } }]
+    const pipelinePersonnel = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
 
     return (

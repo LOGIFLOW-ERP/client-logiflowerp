@@ -73,7 +73,7 @@ export function CustomSelectDto<T>({
         <FormControl fullWidth size='small' margin={margin} error={error}>
             <InputLabel>{label}</InputLabel>
             <Select
-                value={resolvedValue}
+                value={options.length ? resolvedValue : ''}
                 onChange={handleChange}
                 label={label}
                 name={name}

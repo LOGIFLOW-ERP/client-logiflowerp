@@ -25,8 +25,8 @@ export function DetalleForm() {
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseEntryAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_ENTRY_ADD_DETAIL_BY_ID])
 
-    const pipelineProducts = [{ $match: { state: State.ACTIVO } }]
-    const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
+    const pipelineProducts = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
+    const { data: dataProducts, isLoading: isLoadingProducts, isError: isErrorProducts } = useGetProductPipelineQuery(pipelineProducts)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseEntryMutation()
 
     const onSubmit = async (data: CreateOrderDetailDTO) => {
@@ -42,10 +42,6 @@ export function DetalleForm() {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
-    }
-
-    if (isLoadingProducts) {
-        return <CircularProgress />
     }
 
     return (
@@ -66,6 +62,8 @@ export function DetalleForm() {
                                 error={!!errors.item}
                                 helperText={errors.item?.message}
                                 autoFocus
+                                isLoading={isLoadingProducts}
+                                isError={isErrorProducts}
                             />
                         )}
                     />

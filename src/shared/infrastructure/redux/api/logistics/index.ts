@@ -9,3 +9,4 @@ export * from './warehouseExitApi';
 export * from './warehouseReturnApi';
 export * from './warehouseStockApi';
 export * from './employeeStockApi';
+// export * from './iwarehouseStockapi';

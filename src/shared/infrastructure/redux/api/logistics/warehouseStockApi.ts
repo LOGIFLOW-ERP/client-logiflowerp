@@ -1,6 +1,7 @@
 import { createRepository } from '../baseRepository'
-import { WarehouseStockENTITY } from 'logiflowerp-sdk'
+import { WarehouseStockENTITYFlat, WarehouseStockENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
+import { transformErrorResponse } from '../transformErrorResponse';
 
 const schema = 'reports'
 const resource = 'warehouseStock'
@@ -8,6 +9,20 @@ const resource = 'warehouseStock'
 const path = `${schema}/${resource}`
 
 export const warehouseStockApi = createRepository<WarehouseStockENTITY, string>(path, getBaseApiLogistics(path))
+    .injectEndpoints({
+        endpoints: (builder) => ({
+            report: builder.query<WarehouseStockENTITYFlat[], any[]>({
+                query: (pipeline) => ({
+                    url: `${path}/report`,
+                    method: 'POST',
+                    body: pipeline
+                }),
+                providesTags: (result) =>
+                    result ? [{ type: path, id: `REPORT${path}` }] : [],
+                transformErrorResponse
+            }),
+        })
+    })
 
 export const {
     useGetAllQuery: useGetWarehouseStocksQuery,
@@ -16,4 +31,6 @@ export const {
     useUpdateMutation: useUpdateWarehouseStockMutation,
     useDeleteMutation: useDeleteWarehouseStockMutation,
     useGetPipelineQuery: useGetWarehouseStockPipelineQuery,
+    useLazyReportQuery: useLazyReportWarehouseStockQuery,
+    useReportQuery: useReportWarehouseStockQuery
 } = warehouseStockApi;

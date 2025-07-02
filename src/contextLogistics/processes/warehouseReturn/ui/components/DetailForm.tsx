@@ -23,7 +23,8 @@ export function DetalleForm() {
         formState: { errors },
         register,
         control,
-        reset
+        reset,
+        watch
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseReturnAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_ADD_DETAIL_BY_ID])
@@ -78,8 +79,8 @@ export function DetalleForm() {
                         fullWidth
                         margin='dense'
                         size='small'
-                        {...register('employeeStock.lot')}
                         slotProps={{ input: { readOnly: true } }}
+                        value={watch('employeeStock')?.lot ?? ''}
                     />
                 </Grid>
                 <Grid size={{ md: 1.5 }} component='div'>

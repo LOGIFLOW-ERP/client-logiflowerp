@@ -24,11 +24,11 @@ export function CabeceraForm(props: Props) {
 
     const [canCreateWarehouseExit] = usePermissions([PERMISSIONS.POST_WAREHOUSE_EXIT])
 
-    const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA } }]
+    const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA, isDeleted: false } }]
     const { data: dataMovements, isLoading: isLoadingMovements, isError: isErrorMovements } = useGetMovementPipelineQuery(pipelineMovement)
-    const pipelineStore = [{ $match: { state: State.ACTIVO } }]
+    const pipelineStore = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataStores, isLoading: isLoadingStores, isError: isErrorStores } = useGetStorePipelineQuery(pipelineStore)
-    const pipelinePersonnel = [{ $match: { state: State.ACTIVO } }]
+    const pipelinePersonnel = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
     const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
 
     return (
@@ -42,7 +42,7 @@ export function CabeceraForm(props: Props) {
                             label='Movimiento'
                             options={dataMovements ?? []}
                             {...field}
-                            labelKey='name'
+                            labelKey={['code', ' - ', 'name']}
                             valueKey='code'
                             margin='dense'
                             error={!!errors.movement}

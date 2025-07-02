@@ -21,6 +21,7 @@ export function DetalleForm() {
     const {
         handleSubmit,
         formState: { errors },
+        watch,
         register,
         control,
         reset
@@ -78,8 +79,8 @@ export function DetalleForm() {
                         fullWidth
                         margin='dense'
                         size='small'
-                        {...register('warehouseStock.lot')}
                         slotProps={{ input: { readOnly: true } }}
+                        value={watch('warehouseStock')?.lot ?? ''}
                     />
                 </Grid>
                 <Grid size={{ md: 1.5 }} component='div'>
