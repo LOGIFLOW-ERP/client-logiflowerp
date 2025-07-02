@@ -32,7 +32,7 @@ export function SerialsDialog(props: IProps) {
         register,
         reset,
         setFocus
-    } = useForm({ resolver })
+    } = useForm({ resolver, defaultValues: new StockSerialDTO() })
     const { enqueueSnackbar } = useSnackbar()
     const [addSerial, { isLoading: isLoadingAddSerial }] = useAddSerialWarehouseExitMutation()
     const [deleteSerial, { isLoading: isLoadingDeleteSerial }] = useDeleteSerialWarehouseExitMutation()
@@ -51,7 +51,7 @@ export function SerialsDialog(props: IProps) {
                 keyDetail: selectedDetail.keyDetail,
                 data
             }).unwrap()
-            reset()
+            reset(new StockSerialDTO())
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
             setTimeout(() => setFocus('serial'), 1)

@@ -51,7 +51,7 @@ export function SerialsDialog(props: IProps) {
                 keyDetail: selectedDetail.keyDetail,
                 data
             }).unwrap()
-            reset()
+            reset(new StockSerialDTO())
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
             setTimeout(() => setFocus('serial'), 1)
