@@ -1,5 +1,5 @@
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import { GridColDef, GridActionsCellItem, GridValidRowModel, GridRowParams } from '@mui/x-data-grid'
 
@@ -58,7 +58,7 @@ export function getColumns<T extends GridValidRowModel>({
 
     const actionDescriptors = [
         { handler: actions?.onEdit, label: 'Editar', icon: <EditIcon color="info" /> },
-        { handler: actions?.onDelete, label: 'Eliminar', icon: <DeleteIcon color="error" /> },
+        { handler: actions?.onDelete, label: 'Eliminar', icon: <DeleteForeverRoundedIcon color="error" /> },
         { handler: actions?.onView, label: 'Ver', icon: <VisibilityIcon color="primary" /> }
     ]
 
