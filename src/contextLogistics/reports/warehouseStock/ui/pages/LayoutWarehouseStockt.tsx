@@ -12,12 +12,10 @@ import { getcolumns } from '../GridCol/columns'
 
 export default function LayoutWarehouseStock() {
 
-	// const [rows] = useState<WarehouseStockENTITYFlat[]>([])
 	const [_openEdit, setOpenEdit] = useState(false)
 	const [_selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
 
 	const { enqueueSnackbar } = useSnackbar()
-	// const [fetchReport, { data, isLoading, isError }] = useLazyReportWarehouseStockQuery()
 	const pipeline = [{ $match: {} }]
 	const { data, isLoading, isError } = useReportWarehouseStockQuery(pipeline)
 	const [_updateIStore, { isLoading: isLoadingUpdate }] = useUpdateWarehouseStockMutation()
