@@ -11,6 +11,8 @@ interface GetColumnsParams<T> {
         onView?: (row: T) => void
     }
     entityInstance: T
+    excludeFields?: string[]
+    renameHeaders?: Record<string, string>
 }
 
 const flattenObject = (obj: any, prefix = ''): Record<string, any> => {
@@ -51,10 +53,23 @@ export function generateColumnsFromEntity<T extends GridValidRowModel>(entityIns
 
 export function getColumns<T extends GridValidRowModel>({
     actions,
-    entityInstance
+    entityInstance,
+    excludeFields = [],
+    renameHeaders = {}
 }: GetColumnsParams<T>): GridColDef<T>[] {
 
-    const columnsBase = generateColumnsFromEntity(entityInstance)
+    // const columnsBase = generateColumnsFromEntity(entityInstance)
+
+    const flatObject = flattenObject(entityInstance);
+
+    const columnsBase: GridColDef<T>[] = Object.entries(flatObject)
+        .filter(([key]) => !excludeFields.includes(key))
+        .map(([key, value]) => ({
+            field: key,
+            headerName: renameHeaders[key] ?? toTitleCase(key),
+            width: 150,
+            type: inferType(value),
+        }));
 
     const actionDescriptors = [
         { handler: actions?.onEdit, label: 'Editar', icon: <EditIcon color="info" /> },

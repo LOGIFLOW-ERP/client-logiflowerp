@@ -11,6 +11,8 @@ interface GenericDataGridProps<T> {
         onDelete?: (row: T) => void
         onView?: (row: T) => void
     }
+    excludeFields?: string[]
+    renameHeaders?: Record<string, string>
     loading?: boolean
     height?: number
 }
@@ -19,6 +21,8 @@ export function GenericDataGrid<T extends GridValidRowModel>({
     rows,
     getRowId,
     actions,
+    excludeFields = [],
+    renameHeaders = {},
     loading = false,
     height = 400
 }: GenericDataGridProps<T>) {
@@ -26,7 +30,7 @@ export function GenericDataGrid<T extends GridValidRowModel>({
         <Box sx={{ height, width: '100%' }}>
             <DataGrid<T>
                 rows={rows}
-                columns={getColumns({ actions, entityInstance: rows[0] })}
+                columns={getColumns({ actions, entityInstance: rows[0], excludeFields, renameHeaders })}
                 getRowId={getRowId}
                 loading={loading}
                 disableRowSelectionOnClick

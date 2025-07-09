@@ -35,6 +35,12 @@ export default function LayoutEmployeeStock() {
             actions={{
                 onEdit: handleEditClick
             }}
+            excludeFields={['employee_identity', 'employee_company_ruc']}
+            renameHeaders={{
+                '_id': 'ID',
+                'employee_names': 'Nombres',
+                'employee_surnames': 'Apellidos'
+            }}
             loading={isLoading}
             height={500}
         />
