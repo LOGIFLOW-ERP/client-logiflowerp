@@ -1,7 +1,7 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomRichTreeView, CustomSelect } from '@shared/ui-library'
-import { Controller, useForm } from 'react-hook-form'
-import { buildMenu, UpdateRootCompanyDTO, getDataSupplier, RootCompanyENTITY, ScrapingCredentialDTO } from 'logiflowerp-sdk'
+import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomRichTreeView } from '@shared/ui-library'
+import { useForm } from 'react-hook-form'
+import { buildMenu, UpdateRootCompanyDTO, RootCompanyENTITY, ScrapingCredentialDTO } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, IconButton, TextField, Tooltip } from '@mui/material'
 import { useGetSystemOptionsPipelineQuery, useUpdateRootCompanyMutation } from '@shared/api'
@@ -24,7 +24,7 @@ export function EditDialog(props: IProps) {
     const {
         handleSubmit,
         formState: { errors },
-        register, control
+        register
     } = useForm({ resolver, defaultValues: { ...row } })
     const { enqueueSnackbar } = useSnackbar()
     const [selectedItems, setSelectedItems] = useState<string[]>([])
@@ -63,22 +63,6 @@ export function EditDialog(props: IProps) {
                 title={`EDITAR (${row.companyname})`}
             >
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <Controller
-                        name='suppliertype'
-                        control={control}
-                        render={({ field }) => (
-                            <CustomSelect
-                                label='Tipo'
-                                options={getDataSupplier()}
-                                {...field}
-                                labelKey='label'
-                                valueKey='value'
-                                margin='normal'
-                                error={!!errors.suppliertype}
-                                helperText={errors.suppliertype?.message}
-                            />
-                        )}
-                    />
                     <TextField
                         label='Correo electrónico'
                         variant='outlined'

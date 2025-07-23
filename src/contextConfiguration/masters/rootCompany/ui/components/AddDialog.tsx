@@ -1,7 +1,7 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { CustomDialog, CustomDialogError, CustomDialogLoading, CustomRichTreeView, CustomSelect } from '@shared/ui-library'
 import { Controller, useForm } from 'react-hook-form'
-import { CreateRootCompanyPERDTO, dataCountry, getDataSupplier, State, buildMenu, ScrapingCredentialDTO } from 'logiflowerp-sdk'
+import { CreateRootCompanyPERDTO, dataCountry, State, buildMenu, ScrapingCredentialDTO } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Button, CircularProgress, IconButton, TextField, Tooltip } from '@mui/material'
 import { useCreateRootCompanyMutation, useGetSystemOptionsPipelineQuery } from '@shared/api'
@@ -83,22 +83,6 @@ export function AddDialog(props: IProps) {
                         {...register('ruc')}
                         error={!!errors.ruc}
                         helperText={errors.ruc?.message}
-                    />
-                    <Controller
-                        name='suppliertype'
-                        control={control}
-                        render={({ field }) => (
-                            <CustomSelect
-                                label='Tipo'
-                                options={getDataSupplier()}
-                                {...field}
-                                labelKey='label'
-                                valueKey='value'
-                                margin='normal'
-                                error={!!errors.suppliertype}
-                                helperText={errors.suppliertype?.message}
-                            />
-                        )}
                     />
                     <TextField
                         label='Correo electrónico'

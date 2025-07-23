@@ -90,16 +90,6 @@ export function EditDialog(props: IProps) {
                     error={!!errors.website}
                     helperText={errors.website?.message}
                 />
-                <TextField
-                    label='ID Gerente'
-                    variant='outlined'
-                    fullWidth
-                    margin='normal'
-                    size='small'
-                    {...register('identityManager')}
-                    error={!!errors.identityManager}
-                    helperText={errors.identityManager?.message}
-                />
                 <CustomButtonSave isLoading={isLoading} />
             </form>
         </CustomDialog>
