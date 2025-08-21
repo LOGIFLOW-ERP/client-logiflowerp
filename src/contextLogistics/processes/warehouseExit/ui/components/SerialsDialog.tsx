@@ -54,10 +54,11 @@ export function SerialsDialog(props: IProps) {
             reset(new StockSerialDTO())
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
-            setTimeout(() => setFocus('serial'), 1)
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
+        } finally {
+            setTimeout(() => setFocus('serial'), 1)
         }
     }
 
