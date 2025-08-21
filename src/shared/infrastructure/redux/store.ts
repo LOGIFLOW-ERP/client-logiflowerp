@@ -8,11 +8,10 @@ import {
     storeApi,
     unitOfMeasureApi,
     companyApi,
-    rootCompanyApi,
     systemOptionApi,
     profileApi,
     personnelApi,
-    rootUserApi,
+    userApi,
     warehouseEntryApi,
     warehouseExitApi,
     warehouseStockApi,
@@ -39,11 +38,10 @@ export const store = configureStore({
         [unitOfMeasureApi.reducerPath]: unitOfMeasureApi.reducer as Reducer,
         [storeApi.reducerPath]: storeApi.reducer as Reducer,
         [companyApi.reducerPath]: companyApi.reducer as Reducer,
-        [rootCompanyApi.reducerPath]: rootCompanyApi.reducer as Reducer,
         [systemOptionApi.reducerPath]: systemOptionApi.reducer as Reducer,
         [profileApi.reducerPath]: profileApi.reducer as Reducer,
         [personnelApi.reducerPath]: personnelApi.reducer as Reducer,
-        [rootUserApi.reducerPath]: rootUserApi.reducer as Reducer,
+        [userApi.reducerPath]: userApi.reducer as Reducer,
         [warehouseEntryApi.reducerPath]: warehouseEntryApi.reducer as Reducer,
         [warehouseExitApi.reducerPath]: warehouseExitApi.reducer as Reducer,
         [warehouseReturnApi.reducerPath]: warehouseReturnApi.reducer as Reducer,
@@ -61,11 +59,10 @@ export const store = configureStore({
             .concat(unitOfMeasureApi.middleware)
             .concat(storeApi.middleware)
             .concat(companyApi.middleware)
-            .concat(rootCompanyApi.middleware)
             .concat(systemOptionApi.middleware)
             .concat(profileApi.middleware)
             .concat(personnelApi.middleware)
-            .concat(rootUserApi.middleware)
+            .concat(userApi.middleware)
             .concat(warehouseEntryApi.middleware)
             .concat(warehouseExitApi.middleware)
             .concat(warehouseReturnApi.middleware)
