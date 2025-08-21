@@ -18,7 +18,7 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 export const ProfileDialog = ({ open, onClose, }: { open: boolean; onClose: React.Dispatch<React.SetStateAction<boolean>>; }) => {
 
-    const { state: { user, company, profile, root } } = useStore('auth')
+    const { state: { user, company, profile } } = useStore('auth')
 
     return (
         <CustomDialog open={open} setOpen={onClose} title="Mi Perfil">
@@ -30,8 +30,8 @@ export const ProfileDialog = ({ open, onClose, }: { open: boolean; onClose: Reac
 
                 <Typography variant="h6" display="flex" alignItems="center" gap={1}>
                     {user.names} {user.surnames}
-                    <Tooltip title={root ? 'Superadministrador' : user.root ? 'Administrador' : 'Usuario'}>
-                        <VerifiedIcon sx={{ color: root ? 'goldenrod' : user.root ? 'dodgerblue' : 'gray' }} fontSize="small" />
+                    <Tooltip title={user.root ? 'Administrador' : 'Usuario'}>
+                        <VerifiedIcon sx={{ color: user.root ? 'dodgerblue' : 'gray' }} fontSize="small" />
                     </Tooltip>
                 </Typography>
 

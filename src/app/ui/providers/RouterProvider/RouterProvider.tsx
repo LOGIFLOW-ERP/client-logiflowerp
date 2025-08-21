@@ -8,7 +8,6 @@ const LayoutAuth = lazy(() => import('@processes-configuration/auth/ui/pages/Lay
 const VerifyEmail = lazy(() => import('@processes-configuration/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
 const ResetPassword = lazy(() => import('@processes-configuration/auth/ui/pages/ResetPassword').then(mo => ({ default: mo.ResetPassword })))
 const LoginForm = lazy(() => import('@processes-configuration/auth/ui/components/LoginForm').then(mo => ({ default: mo.LoginForm })))
-const LoginFormRoot = lazy(() => import('@processes-configuration/auth/ui/components/LoginFormRoot').then(mo => ({ default: mo.LoginFormRoot })))
 const SignUpForm = lazy(() => import('@processes-configuration/auth/ui/components/SignUpForm').then(mo => ({ default: mo.SignUpForm })))
 const RequestPasswordResetForm = lazy(() => import('@processes-configuration/auth/ui/components/RequestPasswordResetForm').then(mo => ({ default: mo.RequestPasswordResetForm })))
 const LayoutHome = lazy(() => import('@shared/ui/pages/LayoutHome').then(mo => ({ default: mo.LayoutHome })))
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
                             {
                                 path: 'sign-in',
                                 Component: LoginForm
-                            },
-                            {
-                                path: 'sign-in-root',
-                                Component: LoginFormRoot
                             },
                             {
                                 path: 'sign-up',

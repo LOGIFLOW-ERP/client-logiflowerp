@@ -33,7 +33,7 @@ export function SignUpForm() {
     const onSubmit = async (data: CreateUserDTO) => {
         try {
             await signUp(data).unwrap()
-            enqueueSnackbar({ message: '¡Registrado correctamente!', variant: 'success' })
+            enqueueSnackbar({ message: '¡Registrado correctamente. Revisa tu correo para verificar tu cuenta!', variant: 'success' })
             navigate('/sign-in')
         } catch (error: any) {
             console.log(error)

@@ -25,7 +25,7 @@ export function DetalleForm() {
         control,
         reset,
         watch
-    } = useForm({ resolver })
+    } = useForm({ resolver, defaultValues: new CreateWarehouseReturnDetailDTO() })
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseReturnAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_ADD_DETAIL_BY_ID])
 
@@ -39,7 +39,7 @@ export function DetalleForm() {
                 throw new Error('¡No hay un documento seleccionado!')
             }
             const document = await addDetail({ _id: selectedDocument._id, data }).unwrap()
-            reset()
+            reset(new CreateWarehouseReturnDetailDTO())
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
         } catch (error: any) {

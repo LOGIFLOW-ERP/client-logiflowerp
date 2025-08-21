@@ -37,7 +37,7 @@ interface IProps {
 
 export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
 
-    const { state: { user, root } } = useStore('auth')
+    const { state: { user } } = useStore('auth')
 
     return (
         <CustomDrawer
@@ -99,9 +99,9 @@ export function SideMenu({ setSelectedNode, selectedNode }: IProps) {
                             gap: 0.2
                         }}
                     >
-                        <Tooltip title={root ? 'Superadministrador' : user.root ? 'Administrador' : 'Usuario'}>
+                        <Tooltip title={user.root ? 'Administrador' : 'Usuario'}>
                             <VerifiedIcon
-                                sx={{ color: root ? 'goldenrod' : user.root ? 'dodgerblue' : 'gray', }}
+                                sx={{ color: user.root ? 'dodgerblue' : 'gray', }}
                                 fontSize="inherit"
                             />
                         </Tooltip>

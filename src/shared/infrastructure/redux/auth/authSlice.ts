@@ -6,7 +6,6 @@ const authUser = localStorage.getItem('authUser')
 let user = new AuthUserDTO()
 let company = new CompanyDTO()
 let profile = new ProfileDTO()
-let root = false
 let dataSystemOptions: SystemOptionENTITY[] = []
 let tags: string[] = []
 if (authUser) {
@@ -15,14 +14,12 @@ if (authUser) {
         dataSystemOptions: _dataSystemOptions,
         company: _company,
         profile: _profile,
-        root: _root,
         tags: _tags
     } = JSON.parse(authUser) as ResponseSignIn
     user = _user
     dataSystemOptions = _dataSystemOptions
     company = _company
     profile = _profile
-    root = _root
     tags = _tags
 }
 
@@ -32,7 +29,6 @@ export const initialState = {
     dataSystemOptions,
     company,
     profile,
-    root,
     tags
 }
 

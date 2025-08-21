@@ -7,7 +7,6 @@ import {
     ResetPasswordDTO,
     ResponseSignIn,
     SignInDTO,
-    SignInRootDTO,
 } from 'logiflowerp-sdk'
 import { instanceToPlain } from 'class-transformer'
 
@@ -72,18 +71,6 @@ export const authApi = baseApi.injectEndpoints({
             },
             transformErrorResponse
         }),
-        signInRoot: builder.mutation<ResponseSignIn, SignInRootDTO>({
-            query: (body) => ({
-                url: `/${schema}/${resource}/sign-in-root`,
-                method: 'POST',
-                body: instanceToPlain(body),
-            }),
-            transformResponse: (res: ResponseSignIn) => {
-                localStorage.setItem('authUser', JSON.stringify(res))
-                return res
-            },
-            transformErrorResponse
-        }),
         signOut: builder.mutation<void, void>({
             query: () => ({
                 url: `/${schema}/${resource}/sign-out`,
@@ -104,7 +91,6 @@ export const {
     useRequestPasswordResetMutation,
     useResetPasswordMutation,
     useSignInMutation,
-    useSignInRootMutation,
     useSignOutMutation,
     useChangePasswordMutation
 } = authApi
