@@ -60,7 +60,7 @@ export function DetalleForm() {
                                 label='Producto'
                                 options={dataWS ?? []}
                                 {...field}
-                                labelKey={['keyDetail', ' - ', 'keySearch']}
+                                labelKey={['item.itemCode', ' - ', 'item.itemName', ' ', 'lot', ' ']}
                                 valueKey='_id'
                                 margin='dense'
                                 error={!!errors.warehouseStock}

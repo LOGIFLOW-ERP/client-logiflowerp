@@ -47,7 +47,7 @@ export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
             field: 'price',
             headerName: 'Precio',
             type: 'number',
-            width: 80,
+            width: 100,
             align: 'left',
             headerAlign: 'left',
             editable: true

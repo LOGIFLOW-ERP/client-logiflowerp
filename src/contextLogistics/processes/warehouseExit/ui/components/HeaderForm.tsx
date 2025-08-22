@@ -85,7 +85,7 @@ export function CabeceraForm(props: Props) {
                             label='Personal'
                             options={dataPersonnel ?? []}
                             {...field}
-                            labelKey={['names', ' ', 'surnames', 'company.code']}
+                            labelKey={['names', ' ', 'surnames', ' ', 'company.code']}
                             valueKey='identity'
                             margin='dense'
                             error={!!errors.carrier}

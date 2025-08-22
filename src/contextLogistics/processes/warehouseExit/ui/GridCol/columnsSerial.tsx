@@ -13,7 +13,7 @@ export const columnsSerial = (params: IParams): GridColDef<StockSerialDTO>[] => 
         {
             field: 'serial',
             headerName: 'Serie',
-            width: 100,
+            width: 200,
         },
         {
             field: 'brand',

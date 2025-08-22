@@ -31,7 +31,7 @@ interface CustomSelectProps<T> {
     onChange: (...event: any[]) => void
     options: T[]
     valueKey: keyof T
-    labelKey: keyof T | (LabelKey<T> | ' - ' | ' ')[];
+    labelKey: keyof T | (LabelKey<T> | ' - ' | ' ' | ' (' | ') ')[];
     margin?: 'dense' | 'normal' | 'none' | undefined
     error?: boolean
     helperText?: string
