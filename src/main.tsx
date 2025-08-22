@@ -7,6 +7,7 @@ import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
 import { App, theme } from '@app/ui'
 import { CssBaseline, ThemeProvider } from '@mui/material'
+import './i18n'
 
 createRoot(document.getElementById('root')!).render(
     <ThemeProvider theme={theme}>
