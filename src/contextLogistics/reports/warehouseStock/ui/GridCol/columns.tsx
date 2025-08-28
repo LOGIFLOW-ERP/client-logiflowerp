@@ -59,7 +59,7 @@ export const generateColumnsFromEntity = (
     fieldsToInclude?: string[],
     renameMap: Record<string, string> = {},
     minWidth: number = 80,
-    maxWidth: number = 300
+    maxWidth: number = 600
 ): GridColDef[] => {
     const flatObject = flattenObject(entityInstance);
 
