@@ -1,8 +1,8 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomAutocomplete, CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { UpdateProductDTO, getDataProducType, ProductENTITY } from 'logiflowerp-sdk'
+import { UpdateProductDTO, getDataProducType, ProductENTITY, UnitOfMeasureENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { TextField } from '@mui/material'
 import { useGetUnitOfMeasuresQuery, useUpdateProductMutation } from '@shared/api'
@@ -26,7 +26,7 @@ export function EditDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: row })
     const { enqueueSnackbar } = useSnackbar()
 
-    const { data: dataUM, isLoading: isLoadingUM, isError: isErrorUM } = useGetUnitOfMeasuresQuery()
+    const { data: dataUM, isLoading: isLoadingUM, isError: isErrorUM, error: errorUM } = useGetUnitOfMeasuresQuery()
     const [updateStore, { isLoading }] = useUpdateProductMutation()
 
     const onSubmit = async (data: UpdateProductDTO) => {
@@ -61,17 +61,16 @@ export function EditDialog(props: IProps) {
                     name='uomCode'
                     control={control}
                     render={({ field }) => (
-                        <CustomSelect
+                        <CustomAutocomplete<UnitOfMeasureENTITY>
+                            loading={isLoadingUM}
+                            options={dataUM}
+                            error={!!errors.uomCode || isErrorUM}
+                            helperText={errors.uomCode?.message || (errorUM as Error)?.message}
+                            value={dataUM?.find((opt) => opt.uomCode === field.value) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue.uomCode : undefined)}
                             label='UM'
-                            options={dataUM ?? []}
-                            {...field}
-                            labelKey='uomCode'
-                            valueKey='uomCode'
-                            margin='normal'
-                            error={!!errors.uomCode}
-                            helperText={errors.uomCode?.message}
-                            isLoading={isLoadingUM}
-                            isError={isErrorUM}
+                            getOptionLabel={(option) => `${option.uomCode} - ${option.uomName}`}
+                            isOptionEqualToValue={(option, value) => option.uomCode === value.uomCode}
                         />
                     )}
                 />

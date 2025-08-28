@@ -7,12 +7,14 @@ interface CustomAutocompleteProps<T> {
     options: T[] | undefined
     loading: boolean
     error?: boolean | undefined
-    label?: React.ReactNode
+    // label?: React.ReactNode
+    label?: string
     helperText?: React.ReactNode
     isOptionEqualToValue?: ((option: T, value: T) => boolean) | undefined
     getOptionLabel?: ((option: T) => string) | undefined
     value?: T | null | undefined
     onChange?: ((event: React.SyntheticEvent<Element, Event>, value: T | null, reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<T> | undefined) => void) | undefined
+    margin?: "normal" | "dense" | "none" | undefined
 }
 
 export function CustomAutocomplete<T>(
@@ -25,7 +27,8 @@ export function CustomAutocomplete<T>(
         onChange,
         label,
         error,
-        helperText
+        helperText,
+        margin = 'normal'
     }: CustomAutocompleteProps<T>
 ) {
     const [open, setOpen] = React.useState(false)
@@ -58,7 +61,7 @@ export function CustomAutocomplete<T>(
                     label={label}
                     error={error}
                     helperText={helperText}
-                    margin='normal'
+                    margin={margin}
                     fullWidth
                     slotProps={{
                         input: {

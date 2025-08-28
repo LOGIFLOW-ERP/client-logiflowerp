@@ -4,8 +4,8 @@ import {
     useAddDetailWarehouseReturnMutation,
     useGetEmployeeStockPipelineQuery,
 } from '@shared/api';
-import { CustomSelectDto } from '@shared/ui-library';
-import { CreateWarehouseReturnDetailDTO, State } from 'logiflowerp-sdk';
+import { CustomAutocomplete } from '@shared/ui-library';
+import { CreateWarehouseReturnDetailDTO, EmployeeStockENTITY, State } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -25,12 +25,12 @@ export function DetalleForm() {
         control,
         reset,
         watch
-    } = useForm({ resolver, defaultValues: new CreateWarehouseReturnDetailDTO() })
+    } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseReturnAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_ADD_DETAIL_BY_ID])
 
     const pipelineWS = [{ $match: { state: State.ACTIVO, 'store.code': selectedDocument?.store.code } }]
-    const { data: dataES, isLoading: isLoadingES, isError: isErrorES } = useGetEmployeeStockPipelineQuery(pipelineWS)
+    const { data: dataES, isLoading: isLoadingES, isError: isErrorES, error: errorES } = useGetEmployeeStockPipelineQuery(pipelineWS)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseReturnMutation()
 
     const onSubmit = async (data: CreateWarehouseReturnDetailDTO) => {
@@ -39,7 +39,7 @@ export function DetalleForm() {
                 throw new Error('¡No hay un documento seleccionado!')
             }
             const document = await addDetail({ _id: selectedDocument._id, data }).unwrap()
-            reset(new CreateWarehouseReturnDetailDTO())
+            reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
         } catch (error: any) {
@@ -56,18 +56,30 @@ export function DetalleForm() {
                         name='employeeStock'
                         control={control}
                         render={({ field }) => (
-                            <CustomSelectDto
+                            // <CustomSelectDto
+                            //     label='Producto'
+                            //     options={dataES ?? []}
+                            //     {...field}
+                            //     labelKey={['item.itemCode', ' - ', 'item.itemName', ' ', 'lot', ' ']}
+                            //     valueKey='_id'
+                            //     margin='dense'
+                            //     error={!!errors.employeeStock}
+                            //     helperText={errors.employeeStock?.message}
+                            //     autoFocus
+                            //     isLoading={isLoadingES}
+                            //     isError={isErrorES}
+                            // />
+                            <CustomAutocomplete<EmployeeStockENTITY>
+                                loading={isLoadingES}
+                                options={dataES}
+                                error={!!errors.employeeStock || isErrorES}
+                                helperText={errors.employeeStock?.message || (errorES as Error)?.message}
+                                value={dataES?.find((opt) => opt._id === field.value?._id) || null}
+                                onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
                                 label='Producto'
-                                options={dataES ?? []}
-                                {...field}
-                                labelKey={['item.itemCode', ' - ', 'item.itemName', ' ', 'lot', ' ']}
-                                valueKey='_id'
+                                getOptionLabel={(option) => `${option.item.itemCode} - ${option.item.itemName} ${option.lot ? `- Lt. ${option.lot}` : ''}`.trim()}
+                                isOptionEqualToValue={(option, value) => option._id === value._id}
                                 margin='dense'
-                                error={!!errors.employeeStock}
-                                helperText={errors.employeeStock?.message}
-                                autoFocus
-                                isLoading={isLoadingES}
-                                isError={isErrorES}
                             />
                         )}
                     />
