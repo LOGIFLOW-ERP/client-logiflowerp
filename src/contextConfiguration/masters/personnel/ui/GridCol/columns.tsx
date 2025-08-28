@@ -14,7 +14,7 @@ interface IParams {
     handleChangeStatusClick: (row: EmployeeENTITY) => void
     handleEditClick: (row: EmployeeENTITY) => void
     handleDeleteClick: (row: EmployeeENTITY) => Promise<void>
-    dataProfiles: ProfileENTITY[]
+    dataProfiles: ProfileENTITY[] | undefined
     DELETE_PERSONNEL_BY_ID: boolean
     PUT_PERSONNEL_BY_ID: boolean
 }
@@ -24,7 +24,7 @@ export const columns = (params: IParams): GridColDef<EmployeeENTITY>[] => {
         handleChangeStatusClick,
         handleEditClick,
         handleDeleteClick,
-        dataProfiles,
+        dataProfiles = [],
         DELETE_PERSONNEL_BY_ID,
         PUT_PERSONNEL_BY_ID
     } = params

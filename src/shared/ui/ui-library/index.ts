@@ -12,3 +12,4 @@ export * from './CustomStatusOrder';
 export * from './CustomViewError';
 export * from './CustomViewLoading';
 export * from './RowActions';
+export * from './CustomAutocomplete';

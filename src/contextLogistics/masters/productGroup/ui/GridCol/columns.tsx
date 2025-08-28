@@ -28,7 +28,7 @@ export const columns = (params: IParams): GridColDef<ProductGroupENTITY>[] => {
         {
             field: 'itmsGrpNam',
             headerName: 'Nombre',
-            width: 180,
+            width: 350,
             editable: true
         },
         {

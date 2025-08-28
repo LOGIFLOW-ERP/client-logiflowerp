@@ -23,7 +23,7 @@
 		"@reduxjs/toolkit": "^2.5.1",
 		"class-transformer": "^0.5.1",
 		"i18next": "^25.4.0",
-		"logiflowerp-sdk": "^1.0.200",
+		"logiflowerp-sdk": "^1.0.201",
 		"notistack": "^3.0.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",

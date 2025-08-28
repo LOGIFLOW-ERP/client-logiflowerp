@@ -75,7 +75,7 @@ export default function LayoutPersonnel() {
 		}
 	}
 
-	if (isError || isErrorProfiles || !dataProfiles) return <CustomViewError />
+	if (isError || isErrorProfiles) return <CustomViewError />
 
 	return (
 		<>

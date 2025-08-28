@@ -3,7 +3,7 @@ import { getDataProducType, getDataState, State, ProductENTITY, ProducType } fro
 import { CustomStatus } from '@shared/ui-library'
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
 import EditIcon from '@mui/icons-material/Edit'
-import { Avatar } from '@mui/material'
+import { Chip } from '@mui/material'
 import { ReactElement } from 'react'
 import { GridActionsCellItemProps } from '@mui/x-data-grid'
 
@@ -19,45 +19,44 @@ export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
         {
             field: 'itemCode',
             headerName: 'Código',
-            width: 90,
         },
         {
             field: 'itemName',
             headerName: 'Nombre',
-            width: 180,
+            maxWidth: 500,
         },
         {
             field: 'uomCode',
             headerName: 'UM',
-            width: 180,
         },
         {
             field: 'minLevel',
             headerName: 'Min',
-            width: 180,
         },
         {
             field: 'maxLevel',
             headerName: 'Max',
-            width: 100,
         },
         {
             field: 'producType',
             headerName: 'Tipo Prod',
             valueOptions: getDataProducType(),
-            width: 100,
+            align: 'center',
             renderCell: ({ value }) => {
-                const mapColor: Record<ProducType, string> = {
-                    'S': '#007BFF',
-                    'B': '#FFC107',
-                    'G': '#28A745',
+                const mapColor: Record<ProducType, 'success' | 'warning' | 'primary'> = {
+                    'S': 'primary',
+                    'B': 'warning',
+                    'G': 'success',
                 }
                 return (
-                    <Avatar style={{ backgroundColor: mapColor[value as ProducType] }}>
-                        {value}
-                    </Avatar>
+                    <Chip
+                        label={value}
+                        color={mapColor[value as ProducType]}
+                        size='small'
+                    />
                 )
-            }
+            },
+            display: 'flex' as const,
         },
         {
             field: 'state',
@@ -65,12 +64,11 @@ export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
             renderCell: CustomStatus,
             type: 'singleSelect',
             valueOptions: getDataState(),
-            width: 100,
+            display: 'flex' as const,
         },
         {
             field: 'actions',
             type: 'actions',
-            width: 50,
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []
                 if (PUT_PRODUCT_BY_ID) {

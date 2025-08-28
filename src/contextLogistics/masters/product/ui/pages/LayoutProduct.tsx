@@ -1,12 +1,12 @@
 import { lazy, useEffect, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
 	useGetProductsQuery,
 	useUpdateProductMutation,
 } from '@shared/api'
-import { CustomViewError, CustomViewLoading } from '@shared/ui-library'
+import { CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { CustomToolbar } from '../components'
 import { State, ProductENTITY, UpdateProductDTO } from 'logiflowerp-sdk'
@@ -17,10 +17,10 @@ const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ de
 
 export default function LayoutProduct() {
 
-	const [rows, setRows] = useState<readonly ProductENTITY[]>([])
 	const [openAdd, setOpenAdd] = useState(false)
 	const [openEdit, setOpenEdit] = useState(false)
 	const [selectedRow, setSelectedRow] = useState<ProductENTITY>()
+	const apiRef = useGridApiRef()
 
 	const [PUT_PRODUCT_BY_ID] = usePermissions([
 		PERMISSIONS.PUT_PRODUCT_BY_ID
@@ -29,7 +29,12 @@ export default function LayoutProduct() {
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductsQuery()
 	const [updateStore, { isLoading: isLoadingUpdate }] = useUpdateProductMutation()
-	useEffect(() => data && setRows(data), [data])
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data])
 
 	const handleAddClick = () => {
 		try {
@@ -63,18 +68,20 @@ export default function LayoutProduct() {
 		}
 	}
 
-	if (isLoading || isLoadingUpdate) return <CustomViewLoading />
 	if (error) return <CustomViewError />
 
 	return (
 		<>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<ProductENTITY>
-					rows={rows}
+					rows={data}
 					columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID })}
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
 					getRowId={row => row._id}
+					density='compact'
+					apiRef={apiRef}
+					loading={isLoading || isLoadingUpdate}
 				/>
 			</Box>
 			{
