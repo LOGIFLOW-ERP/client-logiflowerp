@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { useEffect, useState } from 'react'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
@@ -14,11 +14,18 @@ export default function LayoutWarehouseStock() {
 
 	const [_openEdit, setOpenEdit] = useState(false)
 	const [_selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
+	const apiRef = useGridApiRef()
 
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: {} }]
 	const { data, isLoading, isError } = useReportWarehouseStockQuery(pipeline)
 	const [_updateIStore, { isLoading: isLoadingUpdate }] = useUpdateWarehouseStockMutation()
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data])
 
 	const handleEditClick = (row: WarehouseStockENTITYFlat) => {
 		try {
@@ -64,6 +71,8 @@ export default function LayoutWarehouseStock() {
 				})}
 				disableRowSelectionOnClick
 				getRowId={row => row._id}
+				density='compact'
+				// apiRef={apiRef}
 				loading={isLoading || isLoadingUpdate}
 			/>
 		</Box>
