@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { DataGrid } from '@mui/x-data-grid'
+import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
     useReportEmployeeStockQuery,
+    useUpdateEmployeeStockMutation
 } from '@shared/api'
 import { CustomViewError } from '@shared/ui-library'
 import { EmployeeStockENTITYFlat } from 'logiflowerp-sdk'
-import { GenericDataGrid } from '../GridCol'
+import { getcolumns } from '../GridCol'
 
 export default function LayoutEmployeeStock() {
 
@@ -14,7 +17,8 @@ export default function LayoutEmployeeStock() {
 
     const { enqueueSnackbar } = useSnackbar()
     const pipeline = [{ $match: {} }]
-    const { data: rows = [], isLoading, isError } = useReportEmployeeStockQuery(pipeline)
+    const { data, isLoading, isError } = useReportEmployeeStockQuery(pipeline)
+    const [_updateIStore, { isLoading: isLoadingUpdate }] = useUpdateEmployeeStockMutation()
 
     const handleEditClick = (row: EmployeeStockENTITYFlat) => {
         try {
@@ -29,20 +33,39 @@ export default function LayoutEmployeeStock() {
     if (isError) return <CustomViewError />
 
     return (
-        <GenericDataGrid<EmployeeStockENTITYFlat>
-            rows={rows}
-            getRowId={(row) => row._id}
-            actions={{
-                onEdit: handleEditClick
-            }}
-            excludeFields={['employee_identity', 'employee_company_ruc']}
-            renameHeaders={{
-                '_id': 'ID',
-                'employee_names': 'Nombres',
-                'employee_surnames': 'Apellidos'
-            }}
-            loading={isLoading}
-            height={500}
-        />
+        <Box sx={{ height: 400, width: '100%' }}>
+            <DataGrid<EmployeeStockENTITYFlat>
+                rows={data}
+                columns={getcolumns({
+                    handleEditClick,
+                    rows: data ?? [],
+                    fieldsToInclude: [
+                        'stockType',
+                        'store_company_code',
+                        'store_code',
+                        "item_itemCode",
+                        "item_itemName",
+                        "item_uomCode",
+                        "incomeAmount",
+                        "amountReturned",
+                        "ouputQuantity"
+                    ], // solo estos campos
+                    renameMap: {
+                        stockType: 'Tipo',
+                        store_company_code: 'Empresa',
+                        store_code: 'Almacen',
+                        item_itemCode: 'Código',
+                        item_itemName: 'Nombre',
+                        item_uomCode: 'UM',
+                        incomeAmount: 'Ingreso',
+                        amountReturned: 'Devolucion',
+                        ouputQuantity: 'Despacho'
+                    }
+                })}
+                disableRowSelectionOnClick
+                getRowId={row => row._id}
+                loading={isLoading || isLoadingUpdate}
+            />
+        </Box>
     )
 }

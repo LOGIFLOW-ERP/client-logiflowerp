@@ -1,20 +1,101 @@
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import { GridColDef, GridActionsCellItem, GridValidRowModel, GridRowParams } from '@mui/x-data-grid'
+import EditIcon from '@mui/icons-material/Edit';
+import { GridColDef, GridActionsCellItem } from '@mui/x-data-grid';
+import { EmployeeStockPEXENTITYFlat } from 'logiflowerp-sdk';
 
-
-interface GetColumnsParams<T> {
-    actions?: {
-        onEdit?: (row: T) => void
-        onDelete?: (row: T) => void
-        onView?: (row: T) => void
-    }
-    entityInstance: T
-    excludeFields?: string[]
-    renameHeaders?: Record<string, string>
+interface IParams {
+    handleEditClick: (row: EmployeeStockPEXENTITYFlat) => void;
+    rows: EmployeeStockPEXENTITYFlat[];
+    fieldsToInclude?: string[];
+    renameMap?: Record<string, string>;
+    minWidth?: number;
+    maxWidth?: number;
+    extraColumns?: GridColDef[];   // 👈 aquí agregamos columnas extra por parámetro
 }
 
+export function getcolumns(params: IParams): GridColDef<EmployeeStockPEXENTITYFlat>[] {
+    const {
+        handleEditClick,
+        rows,
+        fieldsToInclude,
+        renameMap,
+        minWidth,
+        maxWidth,
+        extraColumns = []          // 👈 valor por defecto vacío
+    } = params;
+
+    const columnsBase = generateColumnsFromEntity(
+        new EmployeeStockPEXENTITYFlat(),
+        rows,
+        fieldsToInclude,
+        renameMap,
+        minWidth,
+        maxWidth
+    );
+
+    const finalColumns: GridColDef<EmployeeStockPEXENTITYFlat>[] = [
+        ...columnsBase,
+        ...extraColumns,
+        {
+            field: 'actions',
+            type: 'actions',
+            width: 50,
+            getActions: (params: { row: EmployeeStockPEXENTITYFlat }) => [
+                <GridActionsCellItem
+                    icon={<EditIcon color="info" />}
+                    label="Editar"
+                    onClick={() => handleEditClick(params.row)}
+                    showInMenu
+                />,
+            ],
+        },
+    ];
+
+    return finalColumns;
+}
+
+export const generateColumnsFromEntity = (
+    entityInstance: EmployeeStockPEXENTITYFlat,
+    rows: Record<string, any>[],
+    fieldsToInclude?: string[],
+    renameMap: Record<string, string> = {},
+    minWidth: number = 80,
+    maxWidth: number = 300
+): GridColDef[] => {
+    const flatObject = flattenObject(entityInstance);
+
+    return Object.entries(flatObject)
+        .filter(([key]) => {
+            if (!fieldsToInclude || fieldsToInclude.length === 0) return true;
+            return fieldsToInclude.includes(key);
+        })
+        .map(([key, value]) => {
+            const header = renameMap[key] ?? toTitleCase(key);
+
+            // Calcular longitudes: header + valores en filas
+            const headerLength = header.length;
+            const maxRowLength = Math.max(
+                ...rows.map((row) =>
+                    row[key] !== null && row[key] !== undefined ? row[key].toString().length : 0
+                ),
+                0
+            );
+
+            // Calcular ancho con factor px por caracter
+            let width = Math.max(headerLength, maxRowLength) * 8 + 40;
+
+            // Clamp entre min y max
+            width = Math.min(Math.max(width, minWidth), maxWidth);
+
+            return {
+                field: key,
+                headerName: header,
+                width,
+                type: inferType(value),
+            };
+        });
+};
+
+// Utilidad para aplanar objetos anidados
 const flattenObject = (obj: any, prefix = ''): Record<string, any> => {
     return Object.entries(obj).reduce((acc, [k, v]) => {
         const fullKey = prefix ? `${prefix}.${k}` : k;
@@ -39,65 +120,3 @@ const inferType = (value: any): GridColDef['type'] => {
     if (value instanceof Date) return 'dateTime';
     return 'string';
 };
-
-export function generateColumnsFromEntity<T extends GridValidRowModel>(entityInstance: T): GridColDef<T>[] {
-    const flatObject = flattenObject(entityInstance)
-
-    return Object.entries(flatObject).map(([key, value]) => ({
-        field: key,
-        headerName: toTitleCase(key),
-        width: 150,
-        type: inferType(value),
-    })) as GridColDef<T>[]
-}
-
-export function getColumns<T extends GridValidRowModel>({
-    actions,
-    entityInstance,
-    excludeFields = [],
-    renameHeaders = {}
-}: GetColumnsParams<T>): GridColDef<T>[] {
-
-    // const columnsBase = generateColumnsFromEntity(entityInstance)
-
-    const flatObject = flattenObject(entityInstance);
-
-    const columnsBase: GridColDef<T>[] = Object.entries(flatObject)
-        .filter(([key]) => !excludeFields.includes(key))
-        .map(([key, value]) => ({
-            field: key,
-            headerName: renameHeaders[key] ?? toTitleCase(key),
-            width: 150,
-            type: inferType(value),
-        }));
-
-    const actionDescriptors = [
-        { handler: actions?.onEdit, label: 'Editar', icon: <EditIcon color="info" /> },
-        { handler: actions?.onDelete, label: 'Eliminar', icon: <DeleteForeverRoundedIcon color="error" /> },
-        { handler: actions?.onView, label: 'Ver', icon: <VisibilityIcon color="primary" /> }
-    ]
-
-    const actionItems = actionDescriptors
-        .filter(desc => desc.handler)
-        .map(desc => (row: T) =>
-            <GridActionsCellItem
-                icon={desc.icon}
-                label={desc.label}
-                onClick={() => desc.handler!(row)}
-                showInMenu
-            />
-        )
-
-    const finalColumns: GridColDef<T>[] = [
-        ...columnsBase,
-        ...(actionItems.length > 0 ? [{
-            field: 'actions',
-            type: 'actions' as const,
-            width: 80,
-            getActions: (params: GridRowParams<T>) =>
-                actionItems.map(fn => fn(params.row))
-        }] : [])
-    ]
-
-    return finalColumns
-}

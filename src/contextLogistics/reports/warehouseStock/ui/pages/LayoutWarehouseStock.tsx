@@ -36,7 +36,32 @@ export default function LayoutWarehouseStock() {
 		<Box sx={{ height: 400, width: '100%' }}>
 			<DataGrid<WarehouseStockENTITYFlat>
 				rows={data}
-				columns={getcolumns({ handleEditClick })}
+				columns={getcolumns({
+					handleEditClick,
+					rows: data ?? [],
+					fieldsToInclude: [
+						'stockType',
+						'store_company_code',
+						'store_code',
+						"item_itemCode",
+						"item_itemName",
+						"item_uomCode",
+						"incomeAmount",
+						"amountReturned",
+						"ouputQuantity"
+					], // solo estos campos
+					renameMap: {
+						stockType: 'Tipo',
+						store_company_code: 'Empresa',
+						store_code: 'Almacen',
+						item_itemCode: 'Código',
+						item_itemName: 'Nombre',
+						item_uomCode: 'UM',
+						incomeAmount: 'Ingreso',
+						amountReturned: 'Devolucion',
+						ouputQuantity: 'Despacho'
+					}
+				})}
 				disableRowSelectionOnClick
 				getRowId={row => row._id}
 				loading={isLoading || isLoadingUpdate}
