@@ -23,6 +23,7 @@ import { AboutDialog } from './AboutDialog';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import Rotate90DegreesCcwRoundedIcon from '@mui/icons-material/Rotate90DegreesCcwRounded';
 import WidgetsRoundedIcon from '@mui/icons-material/WidgetsRounded';
+import { useTranslation } from 'react-i18next'
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -59,6 +60,7 @@ export function MenuContent({ selectedNode }: IProps) {
     const { enqueueSnackbar } = useSnackbar()
     const location = useLocation()
     const [aboutOpen, setAboutOpen] = useState(false)
+    const { t } = useTranslation()
 
     const clickSelectedPage = (item: MenuDTO, selectedNode: MenuDTO) => {
         try {
@@ -89,7 +91,7 @@ export function MenuContent({ selectedNode }: IProps) {
                                             {
                                                 IconComponent && <ListItemIcon><IconComponent /></ListItemIcon>
                                             }
-                                            <ListItemText primary={item.systemOption.name} />
+                                            <ListItemText primary={t(item.systemOption.name)} />
                                         </ListItemButton>
                                     </ListItem>
                                 )

@@ -4,8 +4,8 @@ import {
     useAddDetailWarehouseExitMutation,
     useGetWarehouseStockPipelineQuery
 } from '@shared/api';
-import { CustomSelectDto } from '@shared/ui-library';
-import { CreateWarehouseExitDetailDTO, State } from 'logiflowerp-sdk';
+import { CustomAutocomplete } from '@shared/ui-library';
+import { CreateWarehouseExitDetailDTO, State, WarehouseStockENTITY } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -25,12 +25,12 @@ export function DetalleForm() {
         register,
         control,
         reset
-    } = useForm({ resolver, defaultValues: new CreateWarehouseExitDetailDTO() })
+    } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseExitAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_ID])
 
     const pipelineWS = [{ $match: { state: State.ACTIVO, 'store.code': selectedDocument?.store.code } }]
-    const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS } = useGetWarehouseStockPipelineQuery(pipelineWS)
+    const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS, error: errorWS } = useGetWarehouseStockPipelineQuery(pipelineWS)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseExitMutation()
 
     const onSubmit = async (data: CreateWarehouseExitDetailDTO) => {
@@ -39,7 +39,7 @@ export function DetalleForm() {
                 throw new Error('¡No hay un documento seleccionado!')
             }
             const document = await addDetail({ _id: selectedDocument._id, data }).unwrap()
-            reset(new CreateWarehouseExitDetailDTO())
+            reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
         } catch (error: any) {
@@ -56,18 +56,17 @@ export function DetalleForm() {
                         name='warehouseStock'
                         control={control}
                         render={({ field }) => (
-                            <CustomSelectDto
+                            <CustomAutocomplete<WarehouseStockENTITY>
+                                loading={isLoadingWS}
+                                options={dataWS}
+                                error={!!errors.warehouseStock || isErrorWS}
+                                helperText={errors.warehouseStock?.message || (errorWS as Error)?.message}
+                                value={dataWS?.find((opt) => opt._id === field.value?._id) || null}
+                                onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
                                 label='Producto'
-                                options={dataWS ?? []}
-                                {...field}
-                                labelKey={['keyDetail', ' - ', 'keySearch']}
-                                valueKey='_id'
+                                getOptionLabel={(option) => `${option.item.itemCode} - ${option.item.itemName} ${option.lot ? `- Lt. ${option.lot}` : ''}`.trim()}
+                                isOptionEqualToValue={(option, value) => option._id === value._id}
                                 margin='dense'
-                                error={!!errors.warehouseStock}
-                                helperText={errors.warehouseStock?.message}
-                                autoFocus
-                                isLoading={isLoadingWS}
-                                isError={isErrorWS}
                             />
                         )}
                     />

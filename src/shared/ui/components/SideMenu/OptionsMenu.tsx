@@ -87,7 +87,7 @@ export function OptionsMenu() {
                 }}
             >
                 <CustomMenuItem onClick={() => { setOpenProfile(true); handleClose() }}>Perfil</CustomMenuItem>
-                <CustomMenuItem onClick={handleClose}>My account</CustomMenuItem>
+                {/* <CustomMenuItem onClick={handleClose}>My account</CustomMenuItem> */}
                 <Divider />
                 {/* <CustomMenuItem onClick={handleClose}>Add another account</CustomMenuItem> */}
                 <CustomMenuItem onClick={() => { setOpenSettings(true); handleClose() }}>Configuración</CustomMenuItem>

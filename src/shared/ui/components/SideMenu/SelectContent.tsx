@@ -18,6 +18,7 @@ import EngineeringRounded from '@mui/icons-material/EngineeringRounded'
 import AssessmentRounded from '@mui/icons-material/AssessmentRounded'
 import HelpOutline from '@mui/icons-material/HelpOutline'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const iconMap: Record<string, React.ElementType> = {
     Masters: DatasetRounded,
@@ -54,6 +55,7 @@ export function SelectContent(props: IProps) {
     const selectedNode = localStorage.getItem('selectedNode')
     const _selectedNode = selectedNode ? JSON.parse(selectedNode) as MenuDTO : null
     const [isOpen, setIsOpen] = useState(false)
+    const { t } = useTranslation()
 
     useEffect(() => {
         try {
@@ -125,7 +127,7 @@ export function SelectContent(props: IProps) {
             {
                 menu.flatMap(e => [
                     <ListSubheader key={`header-${e.systemOption._id}`} sx={{ pt: 0 }}>
-                        {e.systemOption.name}
+                        {t(e.systemOption.name)}
                     </ListSubheader>,
                     ...e.children.map((c) => {
                         const IconComponent = getIcon(c.systemOption.name);
@@ -136,7 +138,7 @@ export function SelectContent(props: IProps) {
                                         <IconComponent sx={{ fontSize: '1rem' }} />
                                     </CustomAvatar>
                                 </CustomListItemAvatar>
-                                <ListItemText primary={isOpen ? '' : e.systemOption.name} secondary={c.systemOption.name} />
+                                <ListItemText primary={isOpen ? '' : t(e.systemOption.name)} secondary={t(c.systemOption.name)} />
                             </MenuItem>
                         )
                     })

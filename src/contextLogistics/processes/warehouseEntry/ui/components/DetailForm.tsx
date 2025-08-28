@@ -1,8 +1,8 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import { useAddDetailWarehouseEntryMutation, useGetProductPipelineQuery } from '@shared/api';
-import { CustomSelectDto } from '@shared/ui-library';
-import { CreateOrderDetailDTO, State } from 'logiflowerp-sdk';
+import { CustomAutocomplete } from '@shared/ui-library';
+import { CreateOrderDetailDTO, ProductENTITY, State } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -21,12 +21,12 @@ export function DetalleForm() {
         register,
         control,
         reset
-    } = useForm({ resolver, defaultValues: new CreateOrderDetailDTO() })
+    } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseEntryAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_ENTRY_ADD_DETAIL_BY_ID])
 
     const pipelineProducts = [{ $match: { state: State.ACTIVO, isDeleted: false } }]
-    const { data: dataProducts, isLoading: isLoadingProducts, isError: isErrorProducts } = useGetProductPipelineQuery(pipelineProducts)
+    const { data: dataProducts, isLoading: isLoadingProducts, isError: isErrorProducts, error: errorProducts } = useGetProductPipelineQuery(pipelineProducts)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseEntryMutation()
 
     const onSubmit = async (data: CreateOrderDetailDTO) => {
@@ -35,7 +35,7 @@ export function DetalleForm() {
                 throw new Error('¡No hay un documento seleccionado!')
             }
             const document = await addDetail({ _id: selectedDocument._id, data }).unwrap()
-            reset(new CreateOrderDetailDTO())
+            reset({ lot: '' })
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
         } catch (error: any) {
@@ -52,18 +52,17 @@ export function DetalleForm() {
                         name='item'
                         control={control}
                         render={({ field }) => (
-                            <CustomSelectDto
+                            <CustomAutocomplete<ProductENTITY>
+                                loading={isLoadingProducts}
+                                options={dataProducts}
+                                error={!!errors.item || isErrorProducts}
+                                helperText={errors.item?.message || (errorProducts as Error)?.message}
+                                value={dataProducts?.find((opt) => opt.itemCode === field.value?.itemCode) || null}
+                                onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
                                 label='Producto'
-                                options={dataProducts ?? []}
-                                {...field}
-                                labelKey={['itemCode', ' - ', 'producType', ' - ', 'itemName']}
-                                valueKey='itemCode'
+                                getOptionLabel={(option) => `${option.itemCode} - ${option.itemName}`}
+                                isOptionEqualToValue={(option, value) => option.itemCode === value.itemCode}
                                 margin='dense'
-                                error={!!errors.item}
-                                helperText={errors.item?.message}
-                                autoFocus
-                                isLoading={isLoadingProducts}
-                                isError={isErrorProducts}
                             />
                         )}
                     />

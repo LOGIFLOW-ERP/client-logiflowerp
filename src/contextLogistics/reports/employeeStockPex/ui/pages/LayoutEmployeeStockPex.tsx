@@ -1,11 +1,14 @@
 import { useState } from 'react'
+import { DataGrid } from '@mui/x-data-grid'
+import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
     useReportEmployeeStockPexQuery,
+    useUpdateEmployeeStockPexMutation
 } from '@shared/api'
 import { CustomViewError } from '@shared/ui-library'
 import { EmployeeStockPEXENTITYFlat } from 'logiflowerp-sdk'
-import { GenericDataGrid } from '../GridCol'
+import { getcolumns } from '../GridCol'
 
 export default function LayoutEmployeeStock() {
 
@@ -14,7 +17,9 @@ export default function LayoutEmployeeStock() {
 
     const { enqueueSnackbar } = useSnackbar()
     const pipeline = [{ $match: {} }]
-    const { data: rows = [], isLoading, isError } = useReportEmployeeStockPexQuery(pipeline)
+    const { data, isLoading, isError } = useReportEmployeeStockPexQuery(pipeline)
+    const [_updateIStore, { isLoading: isLoadingUpdate }] = useUpdateEmployeeStockPexMutation()
+
 
     const handleEditClick = (row: EmployeeStockPEXENTITYFlat) => {
         try {
@@ -29,14 +34,39 @@ export default function LayoutEmployeeStock() {
     if (isError) return <CustomViewError />
 
     return (
-        <GenericDataGrid<EmployeeStockPEXENTITYFlat>
-            rows={rows}
-            getRowId={(row) => row._id}
-            actions={{
-                onEdit: handleEditClick
-            }}
-            loading={isLoading}
-            height={500}
-        />
+        <Box sx={{ height: 400, width: '100%' }}>
+            <DataGrid<EmployeeStockPEXENTITYFlat>
+                rows={data}
+                columns={getcolumns({
+                    handleEditClick,
+                    rows: data ?? [],
+                    fieldsToInclude: [
+                        'stockType',
+                        'store_company_code',
+                        'store_code',
+                        "item_itemCode",
+                        "item_itemName",
+                        "item_uomCode",
+                        "incomeAmount",
+                        "amountReturned",
+                        "ouputQuantity"
+                    ], // solo estos campos
+                    renameMap: {
+                        stockType: 'Tipo',
+                        store_company_code: 'Empresa',
+                        store_code: 'Almacen',
+                        item_itemCode: 'Código',
+                        item_itemName: 'Nombre',
+                        item_uomCode: 'UM',
+                        incomeAmount: 'Ingreso',
+                        amountReturned: 'Devolucion',
+                        ouputQuantity: 'Despacho'
+                    }
+                })}
+                disableRowSelectionOnClick
+                getRowId={row => row._id}
+                loading={isLoading || isLoadingUpdate}
+            />
+        </Box>
     )
 }

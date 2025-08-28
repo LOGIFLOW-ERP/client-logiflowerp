@@ -1,74 +1,40 @@
-import EditIcon from '@mui/icons-material/Edit'
-import { GridColDef, GridActionsCellItem } from '@mui/x-data-grid'
-import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
+import EditIcon from '@mui/icons-material/Edit';
+import { GridColDef, GridActionsCellItem } from '@mui/x-data-grid';
+import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk';
 
 interface IParams {
-    handleEditClick: (row: WarehouseStockENTITYFlat) => void
+    handleEditClick: (row: WarehouseStockENTITYFlat) => void;
+    rows: WarehouseStockENTITYFlat[];
+    fieldsToInclude?: string[];
+    renameMap?: Record<string, string>;
+    minWidth?: number;
+    maxWidth?: number;
+    extraColumns?: GridColDef[];   // 👈 aquí agregamos columnas extra por parámetro
 }
 
-export function generateColumnsFromEntity__<T extends WarehouseStockENTITYFlat>(
-    exampleEntity: T,
-    params: IParams
-): GridColDef<T>[] {
-    const cols: GridColDef<T>[] = Object.entries(exampleEntity).map(([key, value]) => {
-        const lowerKey = key.toLowerCase()
-        const isId = lowerKey.includes('id') || lowerKey.startsWith('_')
-        const isNumber = typeof value === 'number'
-        const isCode = lowerKey.includes('code') || lowerKey.includes('ruc') || lowerKey.includes('uom')
-        const isEnum = typeof value === 'string' && /^[A-Z0-9_]+$/.test(value) && value.length < 30
-
-        const column: GridColDef<T> = {
-            field: key,
-            headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        }
-
-        if (isNumber) {
-            column.type = 'number'
-            column.width = 120
-        } else if (isId || isCode) {
-            column.width = 140
-        } else {
-            column.flex = 1
-            column.minWidth = 120
-            column.maxWidth = 300
-        }
-
-        if (isEnum) {
-            column.renderCell = (params) =>
-                params.value?.toString().toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
-        }
-
-        return column
-    })
-    const { handleEditClick } = params
-    if (handleEditClick) {
-        cols.push({
-            field: 'actions',
-            type: 'actions',
-            width: 50,
-            getActions: (params) => [
-                <GridActionsCellItem
-                    icon={<EditIcon color="info" />}
-                    label="Editar"
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />,
-            ],
-        } as GridColDef<T>)
-    }
-
-    return cols
-}
-
-// export function getcolumns(params: IParams): GridColDef<WarehouseStockENTITYFlat>[] {
-//     return generateColumnsFromEntity(new WarehouseStockENTITYFlat(), params)
-
-// }
 export function getcolumns(params: IParams): GridColDef<WarehouseStockENTITYFlat>[] {
-    const columnsBase = generateColumnsFromEntity(new WarehouseStockENTITYFlat());
-    const { handleEditClick } = params;
-    const finalColumns = [
+    const {
+        handleEditClick,
+        rows,
+        fieldsToInclude,
+        renameMap,
+        minWidth,
+        maxWidth,
+        extraColumns = []          // 👈 valor por defecto vacío
+    } = params;
+
+    const columnsBase = generateColumnsFromEntity(
+        new WarehouseStockENTITYFlat(),
+        rows,
+        fieldsToInclude,
+        renameMap,
+        minWidth,
+        maxWidth
+    );
+
+    const finalColumns: GridColDef<WarehouseStockENTITYFlat>[] = [
         ...columnsBase,
+        ...extraColumns,
         {
             field: 'actions',
             type: 'actions',
@@ -81,20 +47,52 @@ export function getcolumns(params: IParams): GridColDef<WarehouseStockENTITYFlat
                     showInMenu
                 />,
             ],
-        } as GridColDef<WarehouseStockENTITYFlat>,
+        },
     ];
+
     return finalColumns;
 }
 
-export const generateColumnsFromEntity = (entityInstance: WarehouseStockENTITYFlat): GridColDef[] => {
+export const generateColumnsFromEntity = (
+    entityInstance: WarehouseStockENTITYFlat,
+    rows: Record<string, any>[],
+    fieldsToInclude?: string[],
+    renameMap: Record<string, string> = {},
+    minWidth: number = 80,
+    maxWidth: number = 600
+): GridColDef[] => {
     const flatObject = flattenObject(entityInstance);
 
-    return Object.entries(flatObject).map(([key, value]) => ({
-        field: key,
-        headerName: toTitleCase(key),
-        width: 150,
-        type: inferType(value),
-    }));
+    return Object.entries(flatObject)
+        .filter(([key]) => {
+            if (!fieldsToInclude || fieldsToInclude.length === 0) return true;
+            return fieldsToInclude.includes(key);
+        })
+        .map(([key, value]) => {
+            const header = renameMap[key] ?? toTitleCase(key);
+
+            // Calcular longitudes: header + valores en filas
+            const headerLength = header.length;
+            const maxRowLength = Math.max(
+                ...rows.map((row) =>
+                    row[key] !== null && row[key] !== undefined ? row[key].toString().length : 0
+                ),
+                0
+            );
+
+            // Calcular ancho con factor px por caracter
+            let width = Math.max(headerLength, maxRowLength) * 8 + 40;
+
+            // Clamp entre min y max
+            width = Math.min(Math.max(width, minWidth), maxWidth);
+
+            return {
+                field: key,
+                headerName: header,
+                width,
+                type: inferType(value),
+            };
+        });
 };
 
 // Utilidad para aplanar objetos anidados
@@ -122,4 +120,3 @@ const inferType = (value: any): GridColDef['type'] => {
     if (value instanceof Date) return 'dateTime';
     return 'string';
 };
-

@@ -1,8 +1,8 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomAutocomplete, CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { CreateProductDTO, getDataProducType } from 'logiflowerp-sdk'
+import { CreateProductDTO, getDataProducType, ProductGroupENTITY, UnitOfMeasureENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { TextField } from '@mui/material'
 import { useCreateProductMutation, useGetProductGroupsQuery, useGetUnitOfMeasuresQuery } from '@shared/api'
@@ -25,8 +25,8 @@ export function AddDialog(props: IProps) {
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
 
-    const { data: dataUM, isError: isErrorUM, isLoading: isLoadingUM } = useGetUnitOfMeasuresQuery()
-    const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup } = useGetProductGroupsQuery()
+    const { data: dataUM, isError: isErrorUM, isLoading: isLoadingUM, error: errorUM } = useGetUnitOfMeasuresQuery()
+    const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup, error: errorGroup } = useGetProductGroupsQuery()
     const [createProduct, { isLoading }] = useCreateProductMutation()
 
     const onSubmit = async (data: CreateProductDTO) => {
@@ -87,17 +87,16 @@ export function AddDialog(props: IProps) {
                     name='uomCode'
                     control={control}
                     render={({ field }) => (
-                        <CustomSelect
+                        <CustomAutocomplete<UnitOfMeasureENTITY>
+                            loading={isLoadingUM}
+                            options={dataUM}
+                            error={!!errors.uomCode || isErrorUM}
+                            helperText={errors.uomCode?.message || (errorUM as Error)?.message}
+                            value={dataUM?.find((opt) => opt.uomCode === field.value) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue.uomCode : undefined)}
                             label='UM'
-                            options={dataUM ?? []}
-                            {...field}
-                            labelKey='uomCode'
-                            valueKey='uomCode'
-                            margin='normal'
-                            error={!!errors.uomCode}
-                            helperText={errors.uomCode?.message}
-                            isLoading={isLoadingUM}
-                            isError={isErrorUM}
+                            getOptionLabel={(option) => `${option.uomCode} - ${option.uomName}`}
+                            isOptionEqualToValue={(option, value) => option.uomCode === value.uomCode}
                         />
                     )}
                 />
@@ -105,17 +104,16 @@ export function AddDialog(props: IProps) {
                     name='itmsGrpCod'
                     control={control}
                     render={({ field }) => (
-                        <CustomSelect
+                        <CustomAutocomplete<ProductGroupENTITY>
+                            loading={isLoadingGroup}
+                            options={dataGroup}
+                            error={!!errors.itmsGrpCod || isErrorGroup}
+                            helperText={errors.itmsGrpCod?.message || (errorGroup as Error)?.message}
+                            value={dataGroup?.find((opt) => opt.itmsGrpCod === field.value) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue.itmsGrpCod : undefined)}
                             label='Grupo'
-                            options={dataGroup ?? []}
-                            {...field}
-                            labelKey='itmsGrpCod'
-                            valueKey='itmsGrpCod'
-                            margin='normal'
-                            error={!!errors.itmsGrpCod}
-                            helperText={errors.itmsGrpCod?.message}
-                            isLoading={isLoadingGroup}
-                            isError={isErrorGroup}
+                            getOptionLabel={(option) => `${option.itmsGrpCod} - ${option.itmsGrpNam}`}
+                            isOptionEqualToValue={(option, value) => option.itmsGrpCod === value.itmsGrpCod}
                         />
                     )}
                 />

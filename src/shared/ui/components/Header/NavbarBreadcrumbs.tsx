@@ -3,6 +3,7 @@ import Breadcrumbs, { breadcrumbsClasses } from '@mui/material/Breadcrumbs'
 import NavigateNextRoundedIcon from '@mui/icons-material/NavigateNextRounded'
 import { useLocation } from 'react-router-dom'
 import { Children } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
     margin: theme.spacing(1, 0),
@@ -16,6 +17,7 @@ const StyledBreadcrumbs = styled(Breadcrumbs)(({ theme }) => ({
 export function NavbarBreadcrumbs() {
 
     const location = useLocation()
+    const { t } = useTranslation()
     const pathnames = location.pathname.split("/").filter((x) => x)
 
     return (
@@ -30,7 +32,7 @@ export function NavbarBreadcrumbs() {
                             variant='body1'
                             sx={pathnames.length - 1 === i ? { color: 'text.primary', fontWeight: 600 } : {}}
                         >
-                            {el.replaceAll('%20', ' ')}
+                            {t(el.replaceAll('%20', ' ').replace(/([a-z])([A-Z])/g, '$1 $2'))}
                         </Typography>
                     ))
                 )
