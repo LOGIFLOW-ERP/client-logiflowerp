@@ -1,15 +1,11 @@
-import { Box, Typography } from '@mui/material'
+import { Backdrop, Box, CircularProgress } from '@mui/material'
 import Logo from '/src/assets/logoSinMargen.webp'
 
 export function Fallback() {
     return (
-        <Box
-            sx={{
-                display: 'grid',
-                height: '100vh',
-                alignContent: 'center',
-                justifyItems: 'center'
-            }}
+        <Backdrop
+            sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1, display: 'grid', alignContent: 'center', justifyItems: 'center' })}
+            open={true}
         >
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: 2 }}>
                 <img
@@ -18,7 +14,7 @@ export function Fallback() {
                     style={{ width: 125, height: 'auto' }}
                 />
             </Box>
-            <Typography variant='body1'>Cargando ...</Typography>
-        </Box>
+            <CircularProgress color="inherit" />
+        </Backdrop>
     )
 }

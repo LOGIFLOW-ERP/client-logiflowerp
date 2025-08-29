@@ -5,7 +5,7 @@ import { Fallback } from './pages'
 
 export function App() {
     return (
-        <Suspense fallback={<Fallback/>}>
+        <Suspense fallback={<Fallback />}>
             <StoreProvider>
                 <SnackbarProviderCustom>
                     <AppRouterProvider />

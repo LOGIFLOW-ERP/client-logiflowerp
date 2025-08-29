@@ -86,6 +86,7 @@ export default function LayoutStore() {
 					columns={columns({ handleChangeStatusClick, handleEditClick, handleDeleteClick, DELETE_STORE_BY_ID, PUT_STORE_BY_ID })}
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
+					showToolbar
 					getRowId={row => row._id}
 					loading={isLoading || isLoadingUpdate || isLoadingDelete}
 					density='compact'
