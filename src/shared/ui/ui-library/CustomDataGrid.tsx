@@ -125,6 +125,7 @@ export function CustomDataGrid(props: IProps) {
                 slotProps={{
                     toolbar: { setRows, setRowModesModel, newRowTemplate, buttonCreate }
                 }}
+                showToolbar
                 density='compact'
                 onProcessRowUpdateError={(error) => {
                     console.error("Error en la actualización de fila:", error)

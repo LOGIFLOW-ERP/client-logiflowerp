@@ -1,5 +1,5 @@
 import { ColumnsPanelTrigger, FilterPanelTrigger, Toolbar, ToolbarButton } from '@mui/x-data-grid'
-import { Badge, Box, CircularProgress, ClickAwayListener, Paper, Popper, Tooltip } from '@mui/material'
+import { Badge, Box, Button, CircularProgress, ClickAwayListener, Paper, Popper, Stack, Tooltip } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -9,6 +9,7 @@ import { Dispatch, SetStateAction, Suspense, useRef, useState } from 'react'
 interface IProps {
     setOpenAdd: Dispatch<SetStateAction<boolean>>
     AGREGAR_NUEVO_REGISTRO: boolean
+    // onSubmit?: React.FormEventHandler<HTMLFormElement>;
     children?: React.ReactNode;
 }
 
@@ -16,6 +17,13 @@ export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children }: 
 
     const [filtersPanelOpen, setFiltersPanelOpen] = useState(false)
     const newPanelTriggerRef = useRef<HTMLButtonElement>(null)
+
+    // const handleFormSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    //     setFiltersPanelOpen(false)
+    //     if (onSubmit) {
+    //         onSubmit(e)
+    //     }
+    // }
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Escape') {
@@ -87,17 +95,24 @@ export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children }: 
                                     }}
                                     elevation={8}
                                 >
-                                    <Suspense
-                                        fallback={
-                                            <CircularProgress
-                                                size='30px'
-                                                sx={{ alignSelf: 'center' }}
-                                                color='secondary'
-                                            />
-                                        }
-                                    >
-                                        {children}
-                                    </Suspense>
+                                    {/* <Box component='form' onSubmit={handleFormSubmit}> */}
+                                    <Stack spacing={2}>
+                                        <Suspense
+                                            fallback={
+                                                <CircularProgress
+                                                    size='30px'
+                                                    sx={{ alignSelf: 'center' }}
+                                                    color='secondary'
+                                                />
+                                            }
+                                        >
+                                            {children}
+                                        </Suspense>
+                                        {/* <Button type='submit' variant='contained' fullWidth>
+                                                Buscar
+                                            </Button> */}
+                                    </Stack>
+                                    {/* </Box> */}
                                 </Paper>
                             </ClickAwayListener>
                         </Popper>

@@ -51,7 +51,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "experimentalDecorators": true, /* Enable experimental support for legacy experimental decorators. */
+    "emitDecoratorMetadata": true,
   },
   "include": [
     "src"

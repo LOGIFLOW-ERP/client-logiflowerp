@@ -5,6 +5,7 @@ import { useSnackbar } from 'notistack'
 import {
 	useGetProductGroupsQuery,
 	useGetProductsQuery,
+	useLazyGetProductPipelineQuery,
 	useUpdateProductMutation,
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
@@ -30,7 +31,8 @@ export default function LayoutProduct() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetProductsQuery()
+	const { data, isError, isLoading } = useGetProductsQuery()
+	const [fetchProducts, { data: pipelineData, isLoading: isLoadingPipeline, isError: isErrorPipeline }] = useLazyGetProductPipelineQuery()
 	const { data: dataProductGroups, error: errorProductGroups, isLoading: isLoadingProductGroups } = useGetProductGroupsQuery()
 	const [updateStore, { isLoading: isLoadingUpdate }] = useUpdateProductMutation()
 	useEffect(() => {
@@ -38,7 +40,7 @@ export default function LayoutProduct() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, dataProductGroups, openAdd, openEdit])
+	}, [data, pipelineData, dataProductGroups, openAdd, openEdit])
 
 	const handleEditClick = (row: ProductENTITY) => {
 		try {
@@ -63,13 +65,15 @@ export default function LayoutProduct() {
 		}
 	}
 
-	if (error || errorProductGroups) return <CustomViewError />
+	if (isError || errorProductGroups || isErrorPipeline) return <CustomViewError />
+
+	const rows = pipelineData ?? data ?? []
 
 	return (
 		<>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<ProductENTITY>
-					rows={data}
+					rows={rows}
 					columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID, dataProductGroups })}
 					disableRowSelectionOnClick
 					slots={{
@@ -77,7 +81,7 @@ export default function LayoutProduct() {
 							<CustomToolbar
 								setOpenAdd={setOpenAdd}
 								AGREGAR_NUEVO_REGISTRO={POST_PRODUCT}
-								children={<CustomFilters />}
+								children={<CustomFilters fetchProducts={fetchProducts} />}
 							/>
 						),
 					}}
@@ -85,7 +89,7 @@ export default function LayoutProduct() {
 					getRowId={row => row._id}
 					density='compact'
 					apiRef={apiRef}
-					loading={isLoading || isLoadingUpdate || isLoadingProductGroups}
+					loading={isLoading || isLoadingUpdate || isLoadingProductGroups || isLoadingPipeline}
 				/>
 			</Box>
 			<Suspense fallback={<Fallback />}>
