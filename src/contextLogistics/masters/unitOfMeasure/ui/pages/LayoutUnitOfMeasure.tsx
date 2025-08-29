@@ -7,7 +7,7 @@ import {
 } from 'logiflowerp-sdk'
 import {
 	GridCellParams,
-	GridRowId,
+	// GridRowId,
 	GridRowModel,
 	GridRowModesModel,
 	GridValidRowModel,
@@ -15,14 +15,14 @@ import {
 import { useSnackbar } from 'notistack'
 import {
 	useCreateUnitOfMeasureMutation,
-	useDeleteUnitOfMeasureMutation,
+	// useDeleteUnitOfMeasureMutation,
 	useGetUnitOfMeasuresQuery,
 	useUpdateUnitOfMeasureMutation
 } from '@shared/api'
 import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
-import { usePermissions } from '@shared/ui/hooks'
-import { PERMISSIONS } from '@shared/application'
+// import { usePermissions } from '@shared/ui/hooks'
+// import { PERMISSIONS } from '@shared/application'
 
 export default function LayoutUnitOfMeasure() {
 
@@ -32,21 +32,21 @@ export default function LayoutUnitOfMeasure() {
 		uomCode: '', uomName: '', fieldToFocus: 'uomCode'
 	}
 
-	const [
-		POST_UNIT_OF_MEASURE,
-		PUT_UNIT_OF_MEASURE_BY_ID,
-		DELETE_UNIT_OF_MEASURE_BY_ID
-	] = usePermissions([
-		PERMISSIONS.POST_UNIT_OF_MEASURE,
-		PERMISSIONS.PUT_UNIT_OF_MEASURE_BY_ID,
-		PERMISSIONS.DELETE_UNIT_OF_MEASURE_BY_ID,
-	])
+	// const [
+	// 	POST_UNIT_OF_MEASURE,
+	// 	PUT_UNIT_OF_MEASURE_BY_ID,
+	// 	DELETE_UNIT_OF_MEASURE_BY_ID
+	// ] = usePermissions([
+	// 	PERMISSIONS.POST_UNIT_OF_MEASURE,
+	// 	PERMISSIONS.PUT_UNIT_OF_MEASURE_BY_ID,
+	// 	PERMISSIONS.DELETE_UNIT_OF_MEASURE_BY_ID,
+	// ])
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetUnitOfMeasuresQuery()
 	const [createUnitOfMeasure, { isLoading: isLoadingCreate }] = useCreateUnitOfMeasureMutation()
 	const [updateUnitOfMeasure, { isLoading: isLoadingUpdate }] = useUpdateUnitOfMeasureMutation()
-	const [deleteUnitOfMeasure, { isLoading: isLoadingDelete }] = useDeleteUnitOfMeasureMutation()
+	// const [deleteUnitOfMeasure, { isLoading: isLoadingDelete }] = useDeleteUnitOfMeasureMutation()
 	useEffect(() => data && setRows(data), [data])
 
 	const processRowUpdate = async (newRow: GridRowModel) => {
@@ -69,16 +69,16 @@ export default function LayoutUnitOfMeasure() {
 		}
 	}
 
-	const handleDeleteClick = (id: GridRowId) => async () => {
-		try {
-			await deleteUnitOfMeasure(id as string).unwrap()
-			// setRows(rows.filter((row) => row.id !== id))
-			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
-		} catch (error: any) {
-			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
-		}
-	}
+	// const handleDeleteClick = (id: GridRowId) => async () => {
+	// 	try {
+	// 		await deleteUnitOfMeasure(id as string).unwrap()
+	// 		// setRows(rows.filter((row) => row.id !== id))
+	// 		enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
+	// 	} catch (error: any) {
+	// 		console.error(error)
+	// 		enqueueSnackbar({ message: error.message, variant: 'error' })
+	// 	}
+	// }
 
 	const isCellEditable = (p: GridCellParams) => {
 		const row = p.row as UnitOfMeasureENTITY & { isNew: boolean }
@@ -93,20 +93,23 @@ export default function LayoutUnitOfMeasure() {
 			setRows={setRows}
 			rowModesModel={rowModesModel}
 			setRowModesModel={setRowModesModel}
-			columns={columns({
-				handleDeleteClick,
-				rowModesModel,
-				setRowModesModel,
-				rows,
-				setRows,
-				buttonEdit: PUT_UNIT_OF_MEASURE_BY_ID,
-				buttonDelete: DELETE_UNIT_OF_MEASURE_BY_ID,
-			})}
+			columns={columns(
+				// {
+				// handleDeleteClick,
+				// rowModesModel,
+				// setRowModesModel,
+				// rows,
+				// setRows,
+				// buttonEdit: PUT_UNIT_OF_MEASURE_BY_ID,
+				// buttonDelete: DELETE_UNIT_OF_MEASURE_BY_ID,
+				// }
+			)}
 			newRowTemplate={newRowTemplate}
 			processRowUpdate={processRowUpdate}
 			isCellEditable={isCellEditable}
-			loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
-			buttonCreate={POST_UNIT_OF_MEASURE}
+			loading={isLoading || isLoadingCreate || isLoadingUpdate}
+		// loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+		// buttonCreate={POST_UNIT_OF_MEASURE}
 		/>
 	)
 }

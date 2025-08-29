@@ -1,69 +1,93 @@
 import {
+    GridActionsCellItem,
+    GridActionsCellItemProps,
     GridColDef,
-    GridRowId,
-    GridRowModesModel,
-    GridValidRowModel,
 } from '@mui/x-data-grid'
-import { RowActions } from '@shared/ui-library'
-import { currencies, CurrencyDTO, ProductENTITY, ProductPriceENTITY } from 'logiflowerp-sdk'
+import { CurrencyDTO, ProductENTITY, ProductPriceENTITY } from 'logiflowerp-sdk'
+import { ReactElement } from 'react'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 
 interface IParams {
-    handleDeleteClick: (id: GridRowId) => () => void
-    rowModesModel: GridRowModesModel
-    setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
-    rows: readonly GridValidRowModel[]
-    setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
-    dataProducts: ProductENTITY[] | undefined
-    buttonEdit?: boolean
-    buttonDelete?: boolean
+    handleEditClick: (row: ProductPriceENTITY) => void
+    handleDeleteClick: (row: ProductPriceENTITY) => Promise<void>
+    dataProducts?: ProductENTITY[]
+    PUT_PRODUCT_PRICE_BY_ID: boolean
+    DELETE_PRODUCT_PRICE_BY_ID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
+    const {
+        handleDeleteClick,
+        handleEditClick,
+        dataProducts = [],
+        PUT_PRODUCT_PRICE_BY_ID,
+        DELETE_PRODUCT_PRICE_BY_ID,
+    } = params
     return [
         {
             field: 'itemCode',
-            headerName: 'Producto',
-            type: 'singleSelect',
-            width: 350,
-            editable: true,
-            valueOptions: params?.dataProducts?.map(e => ({ value: e.itemCode, label: e.itemName })) ?? [],
+            headerName: 'Código',
         },
         {
-            field: 'currency',
-            headerName: 'Divisa',
-            type: 'singleSelect',
-            width: 150,
-            editable: true,
-            valueOptions: currencies.map(e => ({ value: e.code, label: e.name })),
-            valueSetter: (value, row) => {
-                const currency = currencies.find(e => e.code === value)
-                if (!currency) return row
-                row.currency = currency
-                return row
-            },
-            valueGetter: (value: CurrencyDTO) => value?.code
+            field: 'itemName',
+            headerName: 'Nombre',
+            valueGetter: (_value, row) => {
+                const product = dataProducts.find(e => e.itemCode === row.itemCode)
+                return product ? product.itemName : ''
+            }
         },
         {
             field: 'price',
             headerName: 'Precio',
             type: 'number',
-            width: 100,
             align: 'left',
             headerAlign: 'left',
-            editable: true
+        },
+        {
+            field: 'currency',
+            headerName: 'Divisa',
+            valueGetter: (value: CurrencyDTO) => value.code
         },
         {
             field: 'actions',
             type: 'actions',
-            headerName: 'Acciones',
-            width: 100,
-            cellClassName: 'actions',
-            getActions: ({ id }) => [
-                <RowActions
-                    id={id}
-                    {...params}
-                />
-            ]
-        },
+            width: 50,
+            getActions: (params) => {
+                const actions: ReactElement<GridActionsCellItemProps>[] = []
+                if (PUT_PRODUCT_PRICE_BY_ID) {
+                    // actions.push(
+                    //     <GridActionsCellItem
+                    //         key='changeStatus'
+                    //         icon={<ChangeCircleIcon />}
+                    //         label={params.row.state === State.ACTIVO ? 'Desactivar' : 'Activar'}
+                    //         onClick={() => handleChangeStatusClick(params.row)}
+                    //         showInMenu
+                    //     />
+                    // )
+                    actions.push(
+                        <GridActionsCellItem
+                            key='edit'
+                            icon={<EditIcon color='primary' />}
+                            label='Editar'
+                            onClick={() => handleEditClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                if (DELETE_PRODUCT_PRICE_BY_ID) {
+                    actions.push(
+                        <GridActionsCellItem
+                            key="delete"
+                            icon={<DeleteIcon color='error' />}
+                            label='Eliminar'
+                            onClick={() => handleDeleteClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                return actions
+            },
+        }
     ]
 }

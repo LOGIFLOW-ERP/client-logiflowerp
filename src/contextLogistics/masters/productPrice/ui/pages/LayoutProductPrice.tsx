@@ -1,35 +1,32 @@
-import { useEffect, useState } from 'react'
-import { CreateProductPriceDTO, ProductPriceENTITY, UpdateProductPriceDTO, validateCustom } from 'logiflowerp-sdk'
+import { lazy, useEffect, useState } from 'react'
+import { ProductPriceENTITY } from 'logiflowerp-sdk'
 import {
-	GridCellParams,
-	GridRowId,
-	GridRowModel,
-	GridRowModesModel,
-	GridValidRowModel,
+	DataGrid,
+	useGridApiRef,
 } from '@mui/x-data-grid'
 import { useSnackbar } from 'notistack'
 import {
-	useCreateProductPriceMutation,
 	useDeleteProductPriceMutation,
 	useGetProductPipelineQuery,
 	useGetProductPricesQuery,
-	useUpdateProductPriceMutation,
 } from '@shared/api'
-import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
+import { CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { CustomToolbar } from '../components/CustomToolbar'
+import { Box } from '@mui/material'
+const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
+const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
 export default function LayoutProductPrice() {
 
-	const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
-	const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
-	const newRowTemplate: Partial<ProductPriceENTITY & { fieldToFocus: keyof ProductPriceENTITY, currencyCode: string }> = {
-		fieldToFocus: 'itemCode', ...new ProductPriceENTITY()
-	}
+	const [openAdd, setOpenAdd] = useState(false)
+	const [openEdit, setOpenEdit] = useState(false)
+	const [selectedRow, setSelectedRow] = useState<ProductPriceENTITY>()
+	const apiRef = useGridApiRef()
 
 	const [
-		POST_PRODUCT_PRICE,
 		PUT_PRODUCT_PRICE_BY_ID,
 		DELETE_PRODUCT_PRICE_BY_ID
 	] = usePermissions([
@@ -40,37 +37,29 @@ export default function LayoutProductPrice() {
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductPricesQuery()
-	const pipelineProducts = [{ $match: { isDeleted: false } }]
+	const pipelineProducts = [{ $match: {} }]
 	const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
-	const [createProductPrice, { isLoading: isLoadingCreate }] = useCreateProductPriceMutation()
-	const [updateProductPrice, { isLoading: isLoadingUpdate }] = useUpdateProductPriceMutation()
 	const [deleteProductPrice, { isLoading: isLoadingDelete }] = useDeleteProductPriceMutation()
-	useEffect(() => data && setRows(data), [data])
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data, dataProducts])
 
-	const processRowUpdate = async (newRow: GridRowModel) => {
-		const { isNew } = newRow
-		const updatedRow = { ...newRow, isNew: false }
+	const handleEditClick = (row: ProductPriceENTITY) => {
 		try {
-			if (isNew) {
-				const body = await validateCustom(newRow, CreateProductPriceDTO, Error)
-				await createProductPrice(body).unwrap()
-			} else {
-				const body = await validateCustom(newRow, UpdateProductPriceDTO, Error)
-				await updateProductPrice({ id: newRow._id, data: body }).unwrap()
-			}
-			// setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
-			return updatedRow
+			setSelectedRow(row)
+			setOpenEdit(true)
 		} catch (error: any) {
 			console.error(error)
 			enqueueSnackbar({ message: error.message, variant: 'error' })
 		}
 	}
 
-	const handleDeleteClick = (id: GridRowId) => async () => {
+	const handleDeleteClick = async (row: ProductPriceENTITY) => {
 		try {
-			await deleteProductPrice(id as string).unwrap()
-			// setRows(rows.filter((row) => row.id !== id))
+			await deleteProductPrice(row._id).unwrap()
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
 		} catch (error: any) {
 			console.error(error)
@@ -78,40 +67,46 @@ export default function LayoutProductPrice() {
 		}
 	}
 
-	const isCellEditable = (p: GridCellParams) => {
-		const row = p.row as ProductPriceENTITY & { isNew: boolean }
-		return !(['itemCode'] as (keyof ProductPriceENTITY)[]).includes(p.field as keyof ProductPriceENTITY) || row.isNew
-	}
-
 	if (error) return <CustomViewError />
 
 	return (
-		<CustomDataGrid
-			rows={rows}
-			setRows={setRows}
-			rowModesModel={rowModesModel}
-			setRowModesModel={setRowModesModel}
-			columns={columns({
-				handleDeleteClick,
-				rowModesModel,
-				setRowModesModel,
-				rows,
-				setRows,
-				dataProducts,
-				buttonEdit: PUT_PRODUCT_PRICE_BY_ID,
-				buttonDelete: DELETE_PRODUCT_PRICE_BY_ID
-			})}
-			newRowTemplate={newRowTemplate}
-			processRowUpdate={processRowUpdate}
-			isCellEditable={isCellEditable}
-			loading={
-				isLoading ||
-				isLoadingCreate ||
-				isLoadingUpdate ||
-				isLoadingDelete ||
-				isLoadingProducts
+		<>
+			<Box sx={{ height: 400, width: '100%' }}>
+				<DataGrid<ProductPriceENTITY>
+					rows={data}
+					columns={columns({
+						handleDeleteClick,
+						handleEditClick,
+						dataProducts,
+						PUT_PRODUCT_PRICE_BY_ID,
+						DELETE_PRODUCT_PRICE_BY_ID,
+					})}
+					disableRowSelectionOnClick
+					slots={{ toolbar: () => <CustomToolbar setOpenAdd={setOpenAdd} /> }}
+					getRowId={row => row._id}
+					density='compact'
+					apiRef={apiRef}
+					loading={isLoading || isLoadingDelete || isLoadingProducts}
+				/>
+			</Box>
+			{
+				openAdd && (
+					<AddDialog
+						open={openAdd}
+						setOpen={setOpenAdd}
+						dataProducts={dataProducts}
+					/>
+				)
 			}
-			buttonCreate={POST_PRODUCT_PRICE}
-		/>
+			{
+				(openEdit && selectedRow) && (
+					<EditDialog
+						open={openEdit}
+						setOpen={setOpenEdit}
+						row={selectedRow}
+					/>
+				)
+			}
+		</>
 	)
 }

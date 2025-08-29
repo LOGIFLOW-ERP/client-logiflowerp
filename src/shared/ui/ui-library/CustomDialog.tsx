@@ -30,6 +30,7 @@ export function CustomDialog(props: IProps) {
 			aria-labelledby="customized-dialog-title"
 			open={open}
 			maxWidth={maxWidth}
+			fullWidth
 		>
 			<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
 				{title}
