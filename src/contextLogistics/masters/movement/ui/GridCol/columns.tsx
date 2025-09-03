@@ -47,7 +47,7 @@ export const columns = (params: IParams): GridColDef<MovementENTITY>[] => {
             valueOptions: getDataStockType(),
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
             headerName: 'Acciones',
             width: 100,

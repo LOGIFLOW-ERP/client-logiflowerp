@@ -24,12 +24,10 @@ export const columns = (params: IParams): GridColDef<ProfileENTITY>[] => {
         {
             field: 'name',
             headerName: 'Nombre',
-            width: 110,
         },
         {
             field: 'description',
             headerName: 'Descripción',
-            width: 220,
         },
         {
             field: 'state',
@@ -37,13 +35,11 @@ export const columns = (params: IParams): GridColDef<ProfileENTITY>[] => {
             renderCell: CustomStatus,
             type: 'singleSelect',
             valueOptions: getDataState(),
-            width: 100,
             editable: true,
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
-            width: 50,
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []
                 if (PUT_PROFILE_BY_ID) {

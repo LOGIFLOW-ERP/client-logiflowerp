@@ -1,18 +1,18 @@
-import { lazy, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Paper from '@mui/material/Paper'
 import { useSnackbar } from 'notistack'
 import {
 	useDeleteWarehouseReturnMutation,
 	useGetWarehouseReturnPipelineQuery,
 } from '@shared/api'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseReturnENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
-import { CustomToolbar } from '../components'
 import { Box, Typography } from '@mui/material'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseReturn() {
@@ -20,11 +20,26 @@ export default function LayoutWarehouseReturn() {
 	const [openAdd, setOpenAdd] = useState(false)
 	const { setState } = useStore('warehouseReturn')
 
-	const [canDeleteWarehouseReturnByID] = usePermissions([PERMISSIONS.DELETE_WAREHOUSE_RETURN_BY_ID])
+	const [
+		POST_WAREHOUSE_RETURN,
+		canDeleteWarehouseReturnByID
+	] = usePermissions([
+		PERMISSIONS.POST_WAREHOUSE_RETURN,
+		PERMISSIONS.DELETE_WAREHOUSE_RETURN_BY_ID,
+	])
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
 	const { data, error, isLoading } = useGetWarehouseReturnPipelineQuery(pipeline)
 	const [deleteWarehouseReturn, { isLoading: isLoadingDelete }] = useDeleteWarehouseReturnMutation()
+
+	const apiRef = useGridApiRef()
+
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data, openAdd])
 
 	const handleAddClick = () => {
 		try {
@@ -69,21 +84,26 @@ export default function LayoutWarehouseReturn() {
 						rows={data}
 						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseReturnByID })}
 						disableRowSelectionOnClick
-						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
+						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_RETURN} /> }}
+						showToolbar
+						density='compact'
+						apiRef={apiRef}
 						getRowId={row => row._id}
 						loading={isLoading || isLoadingDelete}
 						autoPageSize
 					/>
 				</Box>
 			</Paper>
-			{
-				openAdd && (
-					<AddDialog
-						open={openAdd}
-						setOpen={setOpenAdd}
-					/>
-				)
-			}
+			<Suspense fallback={<Fallback />}>
+				{
+					openAdd && (
+						<AddDialog
+							open={openAdd}
+							setOpen={setOpenAdd}
+						/>
+					)
+				}
+			</Suspense>
 		</>
 	)
 }

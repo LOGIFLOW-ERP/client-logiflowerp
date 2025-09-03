@@ -50,7 +50,7 @@ export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
             valueGetter: (value: CurrencyDTO) => value.code
         },
         {
-            field: 'Actions',
+            field: 'Acciones',
             type: 'actions',
             width: 50,
             getActions: (params) => {

@@ -1,19 +1,20 @@
-import { ColumnsPanelTrigger, FilterPanelTrigger, Toolbar, ToolbarButton } from '@mui/x-data-grid'
-import { Badge, Box, Button, CircularProgress, ClickAwayListener, Paper, Popper, Stack, Tooltip } from '@mui/material'
+import { Toolbar, ToolbarButton } from '@mui/x-data-grid'
+import { Box, CircularProgress, ClickAwayListener, Divider, Paper, Popper, Stack, Tooltip } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
-import ViewColumnIcon from '@mui/icons-material/ViewColumn';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Dispatch, SetStateAction, Suspense, useRef, useState } from 'react'
+import { ToolbarButtonExportSearch } from '../components/ToolbarButtonExportSearch';
+import { ToolbarButtonColumnsFilter } from '../components/ToolbarButtonColumnsFilter';
 
 interface IProps {
-    setOpenAdd: Dispatch<SetStateAction<boolean>>
+    setOpenAdd?: Dispatch<SetStateAction<boolean>>
     AGREGAR_NUEVO_REGISTRO: boolean
     // onSubmit?: React.FormEventHandler<HTMLFormElement>;
     children?: React.ReactNode;
+    handleAddClick?: () => void
 }
 
-export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children }: IProps) {
+export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children, handleAddClick }: IProps) {
 
     const [filtersPanelOpen, setFiltersPanelOpen] = useState(false)
     const newPanelTriggerRef = useRef<HTMLButtonElement>(null)
@@ -38,31 +39,25 @@ export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children }: 
                     <Tooltip title="Agregar nuevo registro">
                         <ToolbarButton
                             aria-describedby="new-panel-add"
-                            onClick={() => setOpenAdd(true)}
+                            onClick={() => {
+                                if (setOpenAdd) {
+                                    setOpenAdd(true)
+                                }
+                                if (handleAddClick) {
+                                    handleAddClick()
+                                }
+                            }}
                         >
                             <AddIcon fontSize="small" color='success' />
                         </ToolbarButton>
                     </Tooltip>
                 )
             }
-            <Box sx={{ flexGrow: 1 }} />
-            <Tooltip title="Columnas">
-                <ColumnsPanelTrigger render={<ToolbarButton />}>
-                    <ViewColumnIcon fontSize="small" />
-                </ColumnsPanelTrigger>
-            </Tooltip>
 
-            <Tooltip title="Filtrar en tabla">
-                <FilterPanelTrigger
-                    render={(props, state) => (
-                        <ToolbarButton {...props} color="default">
-                            <Badge badgeContent={state.filterCount} color="primary" variant="dot">
-                                <FilterListIcon fontSize="small" />
-                            </Badge>
-                        </ToolbarButton>
-                    )}
-                />
-            </Tooltip>
+            <Box sx={{ flexGrow: 1 }} />
+
+
+            <ToolbarButtonColumnsFilter />
 
             {
                 children && (
@@ -119,6 +114,10 @@ export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children }: 
                     </>
                 )
             }
+
+            <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.5 }} />
+
+            <ToolbarButtonExportSearch />
         </Toolbar>
     )
 }

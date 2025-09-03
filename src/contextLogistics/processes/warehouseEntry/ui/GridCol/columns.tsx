@@ -16,12 +16,10 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         {
             field: 'documentNumber',
             headerName: 'Nro. Documento',
-            width: 125,
         },
         {
             field: 'storeCode',
             headerName: 'Cód Almacén',
-            width: 105,
             valueGetter: (_value, row) => {
                 return row.store.code
             }
@@ -29,7 +27,6 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         {
             field: 'storeName',
             headerName: 'Nombre Almacén',
-            width: 200,
             valueGetter: (_value, row) => {
                 return row.store.name
             }
@@ -37,7 +34,6 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         {
             field: 'companyCode',
             headerName: 'Cód Empresa',
-            width: 105,
             valueGetter: (_value, row) => {
                 return row.store.company.code
             }
@@ -45,7 +41,6 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         {
             field: 'companyName',
             headerName: 'Nombre Empresa',
-            width: 300,
             valueGetter: (_value, row) => {
                 return row.store.company.companyname
             }
@@ -53,7 +48,6 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         {
             field: 'creation_date',
             headerName: 'Fecha Registro',
-            width: 190,
             type: 'dateTime',
             valueGetter: (_value, row) => new Date(row.workflow.register.date)
         },
@@ -63,12 +57,10 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
             renderCell: CustomStatusOrder,
             type: 'singleSelect',
             valueOptions: getDataState(),
-            width: 116,
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
-            width: 50,
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<EditIcon color='info' />}

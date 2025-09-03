@@ -20,7 +20,6 @@ export const columns = (params: IParams): GridColDef<StoreENTITY>[] => {
         {
             field: 'company',
             headerName: 'Empresa',
-            width: 180,
             valueGetter: (value: CompanyDTO) => {
                 return `${value.code} ${value.companyname}`
             }
@@ -28,27 +27,22 @@ export const columns = (params: IParams): GridColDef<StoreENTITY>[] => {
         {
             field: 'code',
             headerName: 'Código',
-            width: 90,
         },
         {
             field: 'name',
             headerName: 'Nombre',
-            width: 180,
         },
         {
             field: 'address',
             headerName: 'Dirección',
-            width: 180,
         },
         {
             field: 'storagecapacity',
             headerName: 'Capacidad',
-            width: 180,
         },
         {
             field: 'storetype',
             headerName: 'Tipo',
-            width: 100,
         },
         {
             field: 'state',
@@ -56,12 +50,10 @@ export const columns = (params: IParams): GridColDef<StoreENTITY>[] => {
             renderCell: CustomStatus,
             type: 'singleSelect',
             valueOptions: getDataState(),
-            width: 100,
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
-            width: 50,
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []
                 if (PUT_STORE_BY_ID) {

@@ -100,7 +100,7 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
             type: 'number'
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
             width: 50,
             getActions: (params) => [

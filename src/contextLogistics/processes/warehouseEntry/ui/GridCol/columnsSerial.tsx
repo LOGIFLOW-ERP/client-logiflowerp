@@ -26,7 +26,7 @@ export const columnsSerial = (params: IParams): GridColDef<StockSerialDTO>[] => 
             width: 100,
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
             width: 60,
             renderCell: ({ row }) => (

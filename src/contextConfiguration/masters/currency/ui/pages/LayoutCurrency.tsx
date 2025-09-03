@@ -1,9 +1,19 @@
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columns } from '../GridCol'
 import { Box } from '@mui/material';
 import { currencies, CurrencyENTITY } from 'logiflowerp-sdk';
+import { useEffect } from 'react';
 
 export default function LayoutCurrency() {
+
+	const apiRef = useGridApiRef()
+
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [currencies])
 
 	return (
 		<Box
@@ -28,6 +38,8 @@ export default function LayoutCurrency() {
 				density='compact'
 				getRowId={row => row.code}
 				autoPageSize
+				showToolbar
+				apiRef={apiRef}
 			/>
 		</Box>
 	)
