@@ -78,4 +78,6 @@ export const PERMISSIONS = {
     POST_WAREHOUSE_STOCK_FIND: 'post_warehouse_stock_find',
     POST_WAREHOUSE_STOCK_REPORT: 'post_warehouse_stock_report',
     POST_WAREHOUSE_STOCK_SERIAL_FIND: 'post_warehouse_stock_serial_find',
+    GET_USER: 'get_user',
+    PUT_USER_BY_ID: 'put_user_by_id',
 } as const;
