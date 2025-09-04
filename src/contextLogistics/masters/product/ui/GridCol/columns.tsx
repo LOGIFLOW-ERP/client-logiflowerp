@@ -1,5 +1,5 @@
 import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
-import { getDataProducType, getDataState, State, ProductENTITY, ProducType } from 'logiflowerp-sdk'
+import { getDataProducType, getDataState, State, ProductENTITY, ProducType, ProductGroupENTITY } from 'logiflowerp-sdk'
 import { CustomStatus } from '@shared/ui-library'
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
 import EditIcon from '@mui/icons-material/Edit'
@@ -11,10 +11,11 @@ interface IParams {
     handleChangeStatusClick: (row: ProductENTITY) => void
     handleEditClick: (row: ProductENTITY) => void
     PUT_PRODUCT_BY_ID: boolean
+    dataProductGroups: ProductGroupENTITY[] | undefined
 }
 
 export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
-    const { handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID } = params
+    const { handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID, dataProductGroups = [] } = params
     return [
         {
             field: 'itemCode',
@@ -36,6 +37,14 @@ export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
         {
             field: 'maxLevel',
             headerName: 'Max',
+        },
+        {
+            field: 'itmsGrpCod',
+            headerName: 'Grupo',
+            valueGetter: (_value, row) => {
+                const product = dataProductGroups.find(e => e.itmsGrpCod === row.itmsGrpCod)
+                return product ? product.itmsGrpNam : '-'
+            }
         },
         {
             field: 'producType',
@@ -67,7 +76,7 @@ export const columns = (params: IParams): GridColDef<ProductENTITY>[] => {
             display: 'flex' as const,
         },
         {
-            field: 'actions',
+            field: 'Acción',
             type: 'actions',
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []

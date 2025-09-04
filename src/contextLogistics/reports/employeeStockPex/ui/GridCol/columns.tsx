@@ -36,7 +36,7 @@ export function getcolumns(params: IParams): GridColDef<EmployeeStockPEXENTITYFl
         ...columnsBase,
         ...extraColumns,
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
             width: 50,
             getActions: (params: { row: EmployeeStockPEXENTITYFlat }) => [

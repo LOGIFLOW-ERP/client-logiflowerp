@@ -1,19 +1,22 @@
-import { lazy, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
+	useGetProductGroupsQuery,
 	useGetProductsQuery,
+	useLazyGetProductPipelineQuery,
 	useUpdateProductMutation,
 } from '@shared/api'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
-import { CustomToolbar } from '../components'
 import { State, ProductENTITY, UpdateProductDTO } from 'logiflowerp-sdk'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
+const CustomFilters = lazy(() => import('../components/CustomFilters').then(m => ({ default: m.CustomFilters })))
 
 export default function LayoutProduct() {
 
@@ -22,28 +25,22 @@ export default function LayoutProduct() {
 	const [selectedRow, setSelectedRow] = useState<ProductENTITY>()
 	const apiRef = useGridApiRef()
 
-	const [PUT_PRODUCT_BY_ID] = usePermissions([
-		PERMISSIONS.PUT_PRODUCT_BY_ID
+	const [PUT_PRODUCT_BY_ID, POST_PRODUCT] = usePermissions([
+		PERMISSIONS.PUT_PRODUCT_BY_ID,
+		PERMISSIONS.POST_PRODUCT
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetProductsQuery()
+	const { data, isError, isLoading } = useGetProductsQuery()
+	const [fetchProducts, { data: pipelineData, isLoading: isLoadingPipeline, isError: isErrorPipeline }] = useLazyGetProductPipelineQuery()
+	const { data: dataProductGroups, error: errorProductGroups, isLoading: isLoadingProductGroups } = useGetProductGroupsQuery()
 	const [updateStore, { isLoading: isLoadingUpdate }] = useUpdateProductMutation()
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data])
-
-	const handleAddClick = () => {
-		try {
-			setOpenAdd(true)
-		} catch (error: any) {
-			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
-		}
-	}
+	}, [data, pipelineData, dataProductGroups, openAdd, openEdit])
 
 	const handleEditClick = (row: ProductENTITY) => {
 		try {
@@ -68,39 +65,52 @@ export default function LayoutProduct() {
 		}
 	}
 
-	if (error) return <CustomViewError />
+	if (isError || errorProductGroups || isErrorPipeline) return <CustomViewError />
+
+	const rows = pipelineData ?? data ?? []
 
 	return (
 		<>
 			<Box sx={{ height: 400, width: '100%' }}>
 				<DataGrid<ProductENTITY>
-					rows={data}
-					columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID })}
+					rows={rows}
+					columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID, dataProductGroups })}
 					disableRowSelectionOnClick
-					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
+					slots={{
+						toolbar: () => (
+							<CustomToolbar
+								setOpenAdd={setOpenAdd}
+								AGREGAR_NUEVO_REGISTRO={POST_PRODUCT}
+								children={<CustomFilters fetchProducts={fetchProducts} />}
+							/>
+						),
+					}}
+					showToolbar
 					getRowId={row => row._id}
 					density='compact'
 					apiRef={apiRef}
-					loading={isLoading || isLoadingUpdate}
+					loading={isLoading || isLoadingUpdate || isLoadingProductGroups || isLoadingPipeline}
 				/>
 			</Box>
-			{
-				openAdd && (
-					<AddDialog
-						open={openAdd}
-						setOpen={setOpenAdd}
-					/>
-				)
-			}
-			{
-				(openEdit && selectedRow) && (
-					<EditDialog
-						open={openEdit}
-						setOpen={setOpenEdit}
-						row={selectedRow}
-					/>
-				)
-			}
+			<Suspense fallback={<Fallback />}>
+				{
+					openAdd && (
+						<AddDialog
+							open={openAdd}
+							setOpen={setOpenAdd}
+						/>
+					)
+				}
+				{
+					(openEdit && selectedRow) && (
+						<EditDialog
+							open={openEdit}
+							setOpen={setOpenEdit}
+							row={selectedRow}
+						/>
+					)
+				}
+			</Suspense>
 		</>
 	)
 }

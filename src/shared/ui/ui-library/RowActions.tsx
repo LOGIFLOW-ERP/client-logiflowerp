@@ -60,7 +60,7 @@ export const RowActions: React.FC<RowActionsProps> = ({
             <GridActionsCellItem
                 icon={<SaveIcon />}
                 label="Save"
-                sx={{ color: 'primary.main' }}
+                color='primary'
                 onClick={handleSaveClick(id)}
             />
             <GridActionsCellItem

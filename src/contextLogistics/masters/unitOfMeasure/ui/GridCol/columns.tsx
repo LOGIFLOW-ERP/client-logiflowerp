@@ -23,20 +23,17 @@ export const columns = (): GridColDef<UnitOfMeasureENTITY>[] => {
         {
             field: 'uomCode',
             headerName: 'Código',
-            width: 90,
             editable: true
         },
         {
             field: 'uomName',
             headerName: 'Nombre',
-            width: 180,
             editable: true
         },
         // {
-        //     field: 'actions',
+        //     field: 'Acciones',
         //     type: 'actions',
         //     headerName: 'Acciones',
-        //     width: 100,
         //     cellClassName: 'actions',
         //     getActions: ({ id }) => [
         //         <RowActions

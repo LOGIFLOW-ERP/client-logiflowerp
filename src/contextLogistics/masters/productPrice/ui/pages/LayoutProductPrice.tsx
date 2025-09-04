@@ -10,11 +10,10 @@ import {
 	useGetProductPipelineQuery,
 	useGetProductPricesQuery,
 } from '@shared/api'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
-import { CustomToolbar } from '../components/CustomToolbar'
 import { Box } from '@mui/material'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
@@ -27,6 +26,7 @@ export default function LayoutProductPrice() {
 	const apiRef = useGridApiRef()
 
 	const [
+		POST_PRODUCT_PRICE,
 		PUT_PRODUCT_PRICE_BY_ID,
 		DELETE_PRODUCT_PRICE_BY_ID
 	] = usePermissions([
@@ -45,7 +45,7 @@ export default function LayoutProductPrice() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, dataProducts])
+	}, [data, dataProducts, openAdd, openEdit])
 
 	const handleEditClick = (row: ProductPriceENTITY) => {
 		try {
@@ -82,7 +82,15 @@ export default function LayoutProductPrice() {
 						DELETE_PRODUCT_PRICE_BY_ID,
 					})}
 					disableRowSelectionOnClick
-					slots={{ toolbar: () => <CustomToolbar setOpenAdd={setOpenAdd} /> }}
+					slots={{
+						toolbar: () => (
+							<CustomToolbar
+								setOpenAdd={setOpenAdd}
+								AGREGAR_NUEVO_REGISTRO={POST_PRODUCT_PRICE}
+							/>
+						)
+					}}
+					showToolbar
 					getRowId={row => row._id}
 					density='compact'
 					apiRef={apiRef}

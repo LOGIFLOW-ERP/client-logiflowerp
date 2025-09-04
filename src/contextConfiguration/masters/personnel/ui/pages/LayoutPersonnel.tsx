@@ -1,5 +1,5 @@
-import { lazy, useEffect, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
@@ -9,38 +9,42 @@ import {
 	useUpdatePersonnelMutation,
 } from '@shared/api'
 import { EmployeeENTITY, State, UpdateEmployeeDTO } from 'logiflowerp-sdk'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
-import { CustomToolbar } from '../components'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
 export default function LayoutPersonnel() {
-
-	const [rows, setRows] = useState<readonly EmployeeENTITY[]>([])
 	const [openAdd, setOpenAdd] = useState(false)
 	const [openEdit, setOpenEdit] = useState(false)
 	const [selectedRow, setSelectedRow] = useState<EmployeeENTITY>()
+	const apiRef = useGridApiRef()
 
-	const [PUT_PERSONNEL_BY_ID, DELETE_PERSONNEL_BY_ID] = usePermissions([PERMISSIONS.PUT_PERSONNEL_BY_ID, PERMISSIONS.DELETE_PERSONNEL_BY_ID])
+	const [
+		POST_PERSONNEL,
+		PUT_PERSONNEL_BY_ID,
+		DELETE_PERSONNEL_BY_ID,
+	] = usePermissions([
+		PERMISSIONS.POST_PERSONNEL,
+		PERMISSIONS.PUT_PERSONNEL_BY_ID,
+		PERMISSIONS.DELETE_PERSONNEL_BY_ID
+	])
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, isError, isLoading } = useGetPersonnelsQuery()
 	const [updatePersonnel, { isLoading: isLoadingUpdate }] = useUpdatePersonnelMutation()
 	const [deletePersonnel, { isLoading: isLoadingDelete }] = useDeletePersonnelMutation()
 	const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
-	useEffect(() => data && setRows(data), [data])
 
-	const handleAddClick = () => {
-		try {
-			setOpenAdd(true)
-		} catch (error: any) {
-			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
-		}
-	}
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data, dataProfiles, openAdd, openEdit])
 
 	const handleEditClick = (row: EmployeeENTITY) => {
 		try {
@@ -79,9 +83,9 @@ export default function LayoutPersonnel() {
 
 	return (
 		<>
-			<Box sx={{ height: 400, width: '100%' }}>
+			<Box sx={{ height: '85vh', width: '100%' }}>
 				<DataGrid<EmployeeENTITY>
-					rows={rows}
+					rows={data}
 					columns={columns({
 						handleChangeStatusClick,
 						handleEditClick,
@@ -91,29 +95,34 @@ export default function LayoutPersonnel() {
 						PUT_PERSONNEL_BY_ID
 					})}
 					disableRowSelectionOnClick
-					slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
+					slots={{ toolbar: () => <CustomToolbar setOpenAdd={setOpenAdd} AGREGAR_NUEVO_REGISTRO={POST_PERSONNEL} /> }}
 					getRowId={row => row._id}
 					loading={isLoading || isLoadingUpdate || isLoadingDelete || isLoadingProfiles}
 					density='compact'
+					showToolbar
+					autoPageSize
+					apiRef={apiRef}
 				/>
 			</Box>
-			{
-				openAdd && (
-					<AddDialog
-						open={openAdd}
-						setOpen={setOpenAdd}
-					/>
-				)
-			}
-			{
-				(openEdit && selectedRow) && (
-					<EditDialog
-						open={openEdit}
-						setOpen={setOpenEdit}
-						row={selectedRow}
-					/>
-				)
-			}
+			<Suspense fallback={<Fallback />}>
+				{
+					openAdd && (
+						<AddDialog
+							open={openAdd}
+							setOpen={setOpenAdd}
+						/>
+					)
+				}
+				{
+					(openEdit && selectedRow) && (
+						<EditDialog
+							open={openEdit}
+							setOpen={setOpenEdit}
+							row={selectedRow}
+						/>
+					)
+				}
+			</Suspense>
 		</>
 	)
 }

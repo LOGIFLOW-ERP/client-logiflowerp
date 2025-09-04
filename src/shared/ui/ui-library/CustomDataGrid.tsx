@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import {
     GridRowsProp,
@@ -8,7 +7,7 @@ import {
     GridRowModes,
     DataGrid,
     GridColDef,
-    GridToolbarContainer,
+    Toolbar,
     GridEventListener,
     GridRowModel,
     GridRowEditStopReasons,
@@ -17,7 +16,13 @@ import {
     GridCellParams,
     GridTreeNode,
     GridRowIdGetter,
+    useGridApiRef,
+    ToolbarButton,
 } from '@mui/x-data-grid'
+import { useEffect } from 'react';
+import { Divider, Tooltip } from '@mui/material';
+import { ToolbarButtonExportSearch } from '../components/ToolbarButtonExportSearch';
+import { ToolbarButtonColumnsFilter } from '../components/ToolbarButtonColumnsFilter';
 
 declare module '@mui/x-data-grid' {
     interface ToolbarPropsOverrides {
@@ -48,15 +53,28 @@ function EditToolbar(props: GridSlotProps['toolbar']) {
     };
 
     return (
-        <GridToolbarContainer>
+        <Toolbar>
             {
                 buttonCreate && (
-                    <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                        Crear
-                    </Button>
+                    <Tooltip title="Agregar nuevo registro">
+                        <ToolbarButton
+                            aria-describedby="new-panel-add"
+                            onClick={handleClick}
+                        >
+                            <AddIcon fontSize="small" color='success' />
+                        </ToolbarButton>
+                    </Tooltip>
                 )
             }
-        </GridToolbarContainer>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <ToolbarButtonColumnsFilter />
+
+            <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.5 }} />
+
+            <ToolbarButtonExportSearch />
+        </Toolbar>
     );
 }
 
@@ -90,6 +108,14 @@ export function CustomDataGrid(props: IProps) {
         buttonCreate
     } = props
 
+    const apiRef = useGridApiRef()
+    useEffect(() => {
+        apiRef.current?.autosizeColumns({
+            includeHeaders: true,
+            includeOutliers: true,
+        })
+    }, [rows])
+
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
         if (params.reason === GridRowEditStopReasons.rowFocusOut) {
             event.defaultMuiPrevented = true
@@ -103,7 +129,7 @@ export function CustomDataGrid(props: IProps) {
     return (
         <Box
             sx={{
-                height: 500,
+                height: '85vh',
                 width: '100%',
                 '& .actions': {
                     color: 'text.secondary',
@@ -125,6 +151,8 @@ export function CustomDataGrid(props: IProps) {
                 slotProps={{
                     toolbar: { setRows, setRowModesModel, newRowTemplate, buttonCreate }
                 }}
+                showToolbar
+                autoPageSize
                 density='compact'
                 onProcessRowUpdateError={(error) => {
                     console.error("Error en la actualización de fila:", error)
@@ -132,6 +160,7 @@ export function CustomDataGrid(props: IProps) {
                 isCellEditable={isCellEditable}
                 getRowId={getRowId ? getRowId : (row) => row._id}
                 loading={loading}
+                apiRef={apiRef}
             />
         </Box>
     )

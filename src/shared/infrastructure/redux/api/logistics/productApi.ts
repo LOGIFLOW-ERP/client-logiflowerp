@@ -15,5 +15,6 @@ export const {
     useCreateMutation: useCreateProductMutation,
     useUpdateMutation: useUpdateProductMutation,
     useDeleteMutation: useDeleteProductMutation,
-    useGetPipelineQuery: useGetProductPipelineQuery
+    useGetPipelineQuery: useGetProductPipelineQuery,
+    useLazyGetPipelineQuery: useLazyGetProductPipelineQuery
 } = productApi;

@@ -1,18 +1,18 @@
-import { lazy, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Paper from '@mui/material/Paper'
 import { useSnackbar } from 'notistack'
 import {
 	useDeleteWarehouseExitMutation,
 	useGetWarehouseExitPipelineQuery,
 } from '@shared/api'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseExitENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
-import { CustomToolbar } from '../components'
 import { Box, Typography } from '@mui/material'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseExit() {
@@ -20,11 +20,26 @@ export default function LayoutWarehouseExit() {
 	const [openAdd, setOpenAdd] = useState(false)
 	const { setState } = useStore('warehouseExit')
 
-	const [canDeleteWarehouseExitByID] = usePermissions([PERMISSIONS.DELETE_WAREHOUSE_EXIT_BY_ID])
+	const [
+		POST_WAREHOUSE_EXIT,
+		canDeleteWarehouseExitByID
+	] = usePermissions([
+		PERMISSIONS.POST_WAREHOUSE_EXIT,
+		PERMISSIONS.DELETE_WAREHOUSE_EXIT_BY_ID,
+	])
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
 	const { data, error, isLoading } = useGetWarehouseExitPipelineQuery(pipeline)
 	const [deleteWarehouseExit, { isLoading: isLoadingDelete }] = useDeleteWarehouseExitMutation()
+
+	const apiRef = useGridApiRef()
+
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data, openAdd])
 
 	const handleAddClick = () => {
 		try {
@@ -69,21 +84,26 @@ export default function LayoutWarehouseExit() {
 						rows={data}
 						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseExitByID })}
 						disableRowSelectionOnClick
-						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} /> }}
+						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_EXIT} /> }}
+						showToolbar
 						getRowId={row => row._id}
 						loading={isLoading || isLoadingDelete}
 						autoPageSize
+						density='compact'
+						apiRef={apiRef}
 					/>
 				</Box>
 			</Paper>
-			{
-				openAdd && (
-					<AddDialog
-						open={openAdd}
-						setOpen={setOpenAdd}
-					/>
-				)
-			}
+			<Suspense fallback={<Fallback />}>
+				{
+					openAdd && (
+						<AddDialog
+							open={openAdd}
+							setOpen={setOpenAdd}
+						/>
+					)
+				}
+			</Suspense>
 		</>
 	)
 }

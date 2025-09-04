@@ -1,11 +1,11 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomAutocomplete, CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomAutocomplete, CustomButtonSave, CustomDialog } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { UpdateProductDTO, getDataProducType, ProductENTITY, UnitOfMeasureENTITY } from 'logiflowerp-sdk'
+import { UpdateProductDTO, ProductENTITY, ProductGroupENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { TextField } from '@mui/material'
-import { useGetUnitOfMeasuresQuery, useUpdateProductMutation } from '@shared/api'
+import { useGetProductGroupsQuery, useUpdateProductMutation } from '@shared/api'
 
 const resolver = classValidatorResolver(UpdateProductDTO)
 
@@ -26,7 +26,7 @@ export function EditDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: row })
     const { enqueueSnackbar } = useSnackbar()
 
-    const { data: dataUM, isLoading: isLoadingUM, isError: isErrorUM, error: errorUM } = useGetUnitOfMeasuresQuery()
+    const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup, error: errorGroup } = useGetProductGroupsQuery()
     const [updateStore, { isLoading }] = useUpdateProductMutation()
 
     const onSubmit = async (data: UpdateProductDTO) => {
@@ -58,37 +58,43 @@ export function EditDialog(props: IProps) {
                     helperText={errors.itemName?.message}
                 />
                 <Controller
-                    name='uomCode'
+                    name='itmsGrpCod'
                     control={control}
                     render={({ field }) => (
-                        <CustomAutocomplete<UnitOfMeasureENTITY>
-                            loading={isLoadingUM}
-                            options={dataUM}
-                            error={!!errors.uomCode || isErrorUM}
-                            helperText={errors.uomCode?.message || (errorUM as Error)?.message}
-                            value={dataUM?.find((opt) => opt.uomCode === field.value) || null}
-                            onChange={(_, newValue) => field.onChange(newValue ? newValue.uomCode : undefined)}
-                            label='UM'
-                            getOptionLabel={(option) => `${option.uomCode} - ${option.uomName}`}
-                            isOptionEqualToValue={(option, value) => option.uomCode === value.uomCode}
+                        <CustomAutocomplete<ProductGroupENTITY>
+                            loading={isLoadingGroup}
+                            options={dataGroup}
+                            error={!!errors.itmsGrpCod || isErrorGroup}
+                            helperText={errors.itmsGrpCod?.message || (errorGroup as Error)?.message}
+                            value={dataGroup?.find((opt) => opt.itmsGrpCod === field.value) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue.itmsGrpCod : undefined)}
+                            label='Grupo'
+                            getOptionLabel={(option) => `${option.itmsGrpCod} - ${option.itmsGrpNam}`}
+                            isOptionEqualToValue={(option, value) => option.itmsGrpCod === value.itmsGrpCod}
                         />
                     )}
                 />
-                <Controller
-                    name='producType'
-                    control={control}
-                    render={({ field }) => (
-                        <CustomSelect
-                            label='Tipo'
-                            options={getDataProducType()}
-                            {...field}
-                            labelKey='label'
-                            valueKey='value'
-                            margin='normal'
-                            error={!!errors.producType}
-                            helperText={errors.producType?.message}
-                        />
-                    )}
+                <TextField
+                    label='Min'
+                    variant='outlined'
+                    fullWidth
+                    margin='normal'
+                    size='small'
+                    type="number"
+                    {...register('minLevel', { valueAsNumber: true })}
+                    error={!!errors.minLevel}
+                    helperText={errors.minLevel?.message}
+                />
+                <TextField
+                    label='Max'
+                    variant='outlined'
+                    fullWidth
+                    margin='normal'
+                    size='small'
+                    type="number"
+                    {...register('maxLevel', { valueAsNumber: true })}
+                    error={!!errors.maxLevel}
+                    helperText={errors.maxLevel?.message}
                 />
                 <CustomButtonSave isLoading={isLoading} />
             </form>

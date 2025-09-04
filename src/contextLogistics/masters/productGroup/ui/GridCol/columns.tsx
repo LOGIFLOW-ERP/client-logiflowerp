@@ -22,20 +22,17 @@ export const columns = (params: IParams): GridColDef<ProductGroupENTITY>[] => {
         {
             field: 'itmsGrpCod',
             headerName: 'Código',
-            width: 90,
             editable: true
         },
         {
             field: 'itmsGrpNam',
             headerName: 'Nombre',
-            width: 350,
             editable: true
         },
         {
-            field: 'actions',
+            field: 'Acciones',
             type: 'actions',
             headerName: 'Acciones',
-            width: 100,
             cellClassName: 'actions',
             getActions: ({ id }) => [
                 <RowActions

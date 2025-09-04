@@ -8,19 +8,16 @@ export const columns = (): GridColDef<CurrencyENTITY>[] => {
         {
             field: 'code',
             headerName: 'Código',
-            width: 90,
             editable: true
         },
         {
             field: 'name',
             headerName: 'Nombre',
-            width: 180,
             editable: true
         },
         {
             field: 'symbol',
             headerName: 'Símbolo',
-            width: 100,
             editable: true
         },
     ]
