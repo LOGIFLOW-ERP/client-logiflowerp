@@ -71,7 +71,7 @@ export default function LayoutProduct() {
 
 	return (
 		<>
-			<Box sx={{ height: 400, width: '100%' }}>
+			<Box sx={{ height: '85vh', width: '100%' }}>
 				<DataGrid<ProductENTITY>
 					rows={rows}
 					columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID, dataProductGroups })}

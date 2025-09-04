@@ -1,23 +1,27 @@
 import {
+    GridActionsCellItem,
+    GridActionsCellItemProps,
     GridColDef,
-    GridRowId,
-    GridRowModesModel,
-    GridValidRowModel
 } from '@mui/x-data-grid'
-import { RowActions } from '@shared/ui-library'
 import { ProductGroupENTITY } from 'logiflowerp-sdk'
+import { ReactElement } from 'react'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 
 interface IParams {
-    handleDeleteClick: (id: GridRowId) => () => void
-    rowModesModel: GridRowModesModel
-    setRowModesModel: React.Dispatch<React.SetStateAction<GridRowModesModel>>
-    rows: readonly GridValidRowModel[]
-    setRows: React.Dispatch<React.SetStateAction<readonly GridValidRowModel[]>>
-    buttonEdit?: boolean
-    buttonDelete?: boolean
+    handleEditClick: (row: ProductGroupENTITY) => void
+    handleDeleteClick: (row: ProductGroupENTITY) => Promise<void>
+    PUT_PRODUCT_GROUP_BY_ID: boolean
+    DELETE_PRODUCT_GROUP_BY_ID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<ProductGroupENTITY>[] => {
+    const {
+        handleDeleteClick,
+        handleEditClick,
+        PUT_PRODUCT_GROUP_BY_ID,
+        DELETE_PRODUCT_GROUP_BY_ID,
+    } = params
     return [
         {
             field: 'itmsGrpCod',
@@ -32,14 +36,33 @@ export const columns = (params: IParams): GridColDef<ProductGroupENTITY>[] => {
         {
             field: 'Acciones',
             type: 'actions',
-            headerName: 'Acciones',
-            cellClassName: 'actions',
-            getActions: ({ id }) => [
-                <RowActions
-                    id={id}
-                    {...params}
-                />
-            ]
-        },
+            width: 50,
+            getActions: (params) => {
+                const actions: ReactElement<GridActionsCellItemProps>[] = []
+                if (PUT_PRODUCT_GROUP_BY_ID) {
+                    actions.push(
+                        <GridActionsCellItem
+                            key='edit'
+                            icon={<EditIcon color='primary' />}
+                            label='Editar'
+                            onClick={() => handleEditClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                if (DELETE_PRODUCT_GROUP_BY_ID) {
+                    actions.push(
+                        <GridActionsCellItem
+                            key="delete"
+                            icon={<DeleteIcon color='error' />}
+                            label='Eliminar'
+                            onClick={() => handleDeleteClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                return actions
+            },
+        }
     ]
 }
