@@ -44,7 +44,7 @@ export default function LayoutPersonnel() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openAdd, openEdit])
+	}, [data, dataProfiles, openAdd, openEdit])
 
 	const handleEditClick = (row: EmployeeENTITY) => {
 		try {
