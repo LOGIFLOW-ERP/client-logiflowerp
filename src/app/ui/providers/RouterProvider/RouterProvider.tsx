@@ -1,8 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { ErrorPage } from '../../pages'
+import { ErrorPage, ErrorPageTenant, Fallback, NotPageTenant } from '../../pages'
 import { lazy } from 'react'
 import { protectedLoader, publicLoader } from '@app/application'
 import { buildRoutes } from './index'
+import { useCheckTenantQuery } from '@shared/infrastructure/redux/api'
 
 const LayoutAuth = lazy(() => import('@processes-configuration/auth/ui/pages/LayoutAuth').then(mo => ({ default: mo.LayoutAuth })))
 const VerifyEmail = lazy(() => import('@processes-configuration/auth/ui/pages/VerifyEmail').then(mo => ({ default: mo.VerifyEmail })))
@@ -72,5 +73,20 @@ const router = createBrowserRouter([
 ])
 
 export function AppRouterProvider() {
+
+    const { data, error, isLoading } = useCheckTenantQuery()
+
+    if (isLoading) {
+        return <Fallback />
+    }
+
+    if (error) {
+        return <ErrorPageTenant />
+    }
+
+    if (!data) {
+        return <NotPageTenant />
+    }
+
     return <RouterProvider router={router} />
 }

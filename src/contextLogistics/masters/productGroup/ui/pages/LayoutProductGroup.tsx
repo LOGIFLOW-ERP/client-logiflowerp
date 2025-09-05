@@ -1,38 +1,31 @@
-import { useEffect, useState } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import {
-	CreateProductGroupDTO,
 	ProductGroupENTITY,
-	UpdateProductGroupDTO,
-	validateCustom
 } from 'logiflowerp-sdk'
 import {
-	GridCellParams,
-	GridRowId,
-	GridRowModel,
-	GridRowModesModel,
-	GridValidRowModel,
+	DataGrid,
+	useGridApiRef,
 } from '@mui/x-data-grid'
 import { useSnackbar } from 'notistack'
 import {
-	useCreateProductGroupMutation,
 	useDeleteProductGroupMutation,
 	useGetProductGroupsQuery,
-	useUpdateProductGroupMutation
 } from '@shared/api'
-import { CustomDataGrid, CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { columns } from '../GridCol'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Box } from '@mui/material'
+
+const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
+const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
 export default function LayoutProductGroup() {
 
-	const [rows, setRows] = useState<readonly GridValidRowModel[]>([])
-	const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
-	const newRowTemplate: Partial<ProductGroupENTITY & { fieldToFocus: keyof ProductGroupENTITY }> = {
-		itmsGrpCod: '',
-		itmsGrpNam: '',
-		fieldToFocus: 'itmsGrpCod'
-	}
+	const [openAdd, setOpenAdd] = useState(false)
+	const [openEdit, setOpenEdit] = useState(false)
+	const [selectedRow, setSelectedRow] = useState<ProductGroupENTITY>()
+	const apiRef = useGridApiRef()
 
 	const [
 		POST_PRODUCT_GROUP,
@@ -46,35 +39,27 @@ export default function LayoutProductGroup() {
 
 	const { enqueueSnackbar } = useSnackbar()
 	const { data, error, isLoading } = useGetProductGroupsQuery()
-	const [createProductGroup, { isLoading: isLoadingCreate }] = useCreateProductGroupMutation()
-	const [updateProductGroup, { isLoading: isLoadingUpdate }] = useUpdateProductGroupMutation()
 	const [deleteProductGroup, { isLoading: isLoadingDelete }] = useDeleteProductGroupMutation()
-	useEffect(() => data && setRows(data), [data])
+	useEffect(() => {
+		apiRef.current?.autosizeColumns({
+			includeHeaders: true,
+			includeOutliers: true,
+		})
+	}, [data, openAdd, openEdit])
 
-	const processRowUpdate = async (newRow: GridRowModel) => {
-		const { isNew } = newRow
-		const updatedRow = { ...newRow, isNew: false }
+	const handleEditClick = (row: ProductGroupENTITY) => {
 		try {
-			if (isNew) {
-				const body = await validateCustom(newRow, CreateProductGroupDTO, Error)
-				await createProductGroup(body).unwrap()
-			} else {
-				const body = await validateCustom(newRow, UpdateProductGroupDTO, Error)
-				await updateProductGroup({ id: newRow._id, data: body }).unwrap()
-			}
-			// setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
-			return updatedRow
+			setSelectedRow(row)
+			setOpenEdit(true)
 		} catch (error: any) {
 			console.error(error)
 			enqueueSnackbar({ message: error.message, variant: 'error' })
 		}
 	}
 
-	const handleDeleteClick = (id: GridRowId) => async () => {
+	const handleDeleteClick = async (row: ProductGroupENTITY) => {
 		try {
-			await deleteProductGroup(id as string).unwrap()
-			// setRows(rows.filter((row) => row.id !== id))
+			await deleteProductGroup(row._id).unwrap()
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
 		} catch (error: any) {
 			console.error(error)
@@ -82,33 +67,52 @@ export default function LayoutProductGroup() {
 		}
 	}
 
-	const isCellEditable = (p: GridCellParams) => {
-		const row = p.row as ProductGroupENTITY & { isNew: boolean }
-		return !(['itmsGrpCod'] as (keyof ProductGroupENTITY)[]).includes(p.field as keyof ProductGroupENTITY) || row.isNew
-	}
-
 	if (error) return <CustomViewError />
 
 	return (
-		<CustomDataGrid
-			rows={rows}
-			setRows={setRows}
-			rowModesModel={rowModesModel}
-			setRowModesModel={setRowModesModel}
-			columns={columns({
-				handleDeleteClick,
-				rowModesModel,
-				setRowModesModel,
-				rows,
-				setRows,
-				buttonEdit: PUT_PRODUCT_GROUP_BY_ID,
-				buttonDelete: DELETE_PRODUCT_GROUP_BY_ID
-			})}
-			newRowTemplate={newRowTemplate}
-			processRowUpdate={processRowUpdate}
-			isCellEditable={isCellEditable}
-			loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
-			buttonCreate={POST_PRODUCT_GROUP}
-		/>
+		<>
+			<Box sx={{ height: '85vh', width: '100%' }}>
+				<DataGrid<ProductGroupENTITY>
+					rows={data}
+					columns={columns({
+						handleDeleteClick,
+						handleEditClick,
+						PUT_PRODUCT_GROUP_BY_ID,
+						DELETE_PRODUCT_GROUP_BY_ID,
+					})}
+					disableRowSelectionOnClick
+					slots={{
+						toolbar: () => (
+							<CustomToolbar
+								setOpenAdd={setOpenAdd}
+								AGREGAR_NUEVO_REGISTRO={POST_PRODUCT_GROUP}
+							/>
+						)
+					}}
+					showToolbar
+					getRowId={row => row._id}
+					density='compact'
+					apiRef={apiRef}
+					loading={isLoading || isLoadingDelete}
+				/>
+			</Box>
+			{
+				openAdd && (
+					<AddDialog
+						open={openAdd}
+						setOpen={setOpenAdd}
+					/>
+				)
+			}
+			{
+				(openEdit && selectedRow) && (
+					<EditDialog
+						open={openEdit}
+						setOpen={setOpenEdit}
+						row={selectedRow}
+					/>
+				)
+			}
+		</>
 	)
 }

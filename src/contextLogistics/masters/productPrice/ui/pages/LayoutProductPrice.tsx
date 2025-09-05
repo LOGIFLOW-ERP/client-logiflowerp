@@ -71,7 +71,7 @@ export default function LayoutProductPrice() {
 
 	return (
 		<>
-			<Box sx={{ height: 400, width: '100%' }}>
+			<Box sx={{ height: '85vh', width: '100%' }}>
 				<DataGrid<ProductPriceENTITY>
 					rows={data}
 					columns={columns({

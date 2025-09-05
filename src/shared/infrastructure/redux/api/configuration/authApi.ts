@@ -81,7 +81,11 @@ export const authApi = baseApi.injectEndpoints({
                 localStorage.removeItem('selectedNode')
             },
             transformErrorResponse
-        })
+        }),
+        checkTenant: builder.query<void, void>({
+            query: () => `/${schema}/${resource}/check-tenant`,
+            transformErrorResponse
+        }),
     })
 })
 
@@ -92,5 +96,6 @@ export const {
     useResetPasswordMutation,
     useSignInMutation,
     useSignOutMutation,
-    useChangePasswordMutation
+    useChangePasswordMutation,
+    useCheckTenantQuery
 } = authApi
