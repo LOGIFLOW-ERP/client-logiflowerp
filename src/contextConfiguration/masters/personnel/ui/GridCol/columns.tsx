@@ -50,6 +50,10 @@ export const columns = (params: IParams): GridColDef<EmployeeENTITY>[] => {
             headerName: 'Email',
         },
         {
+            field: 'toa_resource_id',
+            headerName: 'ID Recurso TOA',
+        },
+        {
             field: '_idprofile',
             headerName: 'Perfil',
             valueGetter: (value: string) => {
