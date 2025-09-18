@@ -56,7 +56,7 @@ export function AddDialog(props: IProps) {
                     helperText={errors.itmsGrpCod?.message}
                 />
                 <TextField
-                    label='Código'
+                    label='Nombre'
                     variant='outlined'
                     fullWidth
                     margin='normal'

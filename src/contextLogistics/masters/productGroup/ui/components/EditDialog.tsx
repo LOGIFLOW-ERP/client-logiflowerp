@@ -46,7 +46,7 @@ export function EditDialog(props: IProps) {
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField
-                    label='Código'
+                    label='Nombre'
                     variant='outlined'
                     fullWidth
                     margin='normal'

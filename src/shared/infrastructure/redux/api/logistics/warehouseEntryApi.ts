@@ -3,6 +3,7 @@ import { CreateOrderDetailDTO, StockSerialDTO, WarehouseEntryENTITY } from 'logi
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
 import { instanceToPlain } from 'class-transformer';
+import { provideTagReportWarehouseStock } from './warehouseStockApi';
 
 const schema = 'processes'
 const resource = 'warehouseEntry'
@@ -22,6 +23,7 @@ export const warehouseEntryApi = createRepository<WarehouseEntryENTITY, string>(
                     { type: path, id: `LIST1${path}` },
                     { type: path, id: `STATIC_PIPELINE${path}` },
                     { type: path, id: `PIPELINE${path}` },
+                    provideTagReportWarehouseStock
                 ],
                 transformErrorResponse
             }),

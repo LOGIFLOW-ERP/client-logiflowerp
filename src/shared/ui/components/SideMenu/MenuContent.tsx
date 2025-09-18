@@ -23,6 +23,7 @@ import { AboutDialog } from './AboutDialog';
 import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
 import Rotate90DegreesCcwRoundedIcon from '@mui/icons-material/Rotate90DegreesCcwRounded';
 import WidgetsRoundedIcon from '@mui/icons-material/WidgetsRounded';
+import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import { useTranslation } from 'react-i18next'
 
 // const secondaryListItems = [
@@ -47,6 +48,8 @@ const iconMap: Record<string, React.ElementType> = {
     'Warehouse Exit': LocalShippingRoundedIcon,
     'Warehouse Return': Rotate90DegreesCcwRoundedIcon,
     'Warehouse Stock': Inventory2RoundedIcon,
+    'Employee Stock': RecentActorsIcon,
+    'Employee Stock PEX': RecentActorsIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null
