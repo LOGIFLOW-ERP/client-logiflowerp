@@ -146,6 +146,22 @@ export function AddDialog(props: IProps) {
                             error={!!errors.email}
                             helperText={errors.email?.message}
                         />
+                        <TextField
+                            label='ID Recurso TOA'
+                            variant='outlined'
+                            fullWidth
+                            margin='normal'
+                            size='small'
+                            type='number'
+                            slotProps={{
+                                inputLabel: {
+                                    shrink: true
+                                }
+                            }}
+                            {...register('toa_resource_id', { valueAsNumber: true })}
+                            error={!!errors.toa_resource_id}
+                            helperText={errors.toa_resource_id?.message}
+                        />
                         <Controller
                             name='_idprofile'
                             control={control}

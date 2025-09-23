@@ -7,6 +7,7 @@ const schema = 'reports'
 const resource = 'employeeStock'
 
 const path = `${schema}/${resource}`
+export const provideTagReportEmployeeStock = { type: path, id: `REPORT${path}` }
 
 export const employeeStockApi = createRepository<EmployeeStockENTITY, string>(path, getBaseApiLogistics(path))
     .injectEndpoints({
@@ -18,7 +19,7 @@ export const employeeStockApi = createRepository<EmployeeStockENTITY, string>(pa
                     body: pipeline
                 }),
                 providesTags: (result) =>
-                    result ? [{ type: path, id: `REPORT${path}` }] : [],
+                    result ? [provideTagReportEmployeeStock] : [],
                 transformErrorResponse
             }),
         })
