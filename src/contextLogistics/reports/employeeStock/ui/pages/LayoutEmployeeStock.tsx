@@ -49,7 +49,8 @@ export default function LayoutEmployeeStock() {
                         "incomeAmount",
                         "amountReturned",
                         "ouputQuantity",
-                        "stock"
+                        "stock",
+                        'amountConsumed'
                     ], // solo estos campos
                     renameMap: {
                         stockType: 'Tipo',
@@ -60,7 +61,8 @@ export default function LayoutEmployeeStock() {
                         item_uomCode: 'UM',
                         incomeAmount: 'Ingreso',
                         amountReturned: 'Devolucion',
-                        ouputQuantity: 'Despacho'
+                        ouputQuantity: 'Despacho',
+                        amountConsumed: 'Consumo',
                     }
                 })}
                 disableRowSelectionOnClick
