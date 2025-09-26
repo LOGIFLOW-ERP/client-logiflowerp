@@ -48,7 +48,8 @@ export default function LayoutEmployeeStock() {
                         "item_uomCode",
                         "incomeAmount",
                         "amountReturned",
-                        "ouputQuantity"
+                        "ouputQuantity",
+                        "stock"
                     ], // solo estos campos
                     renameMap: {
                         stockType: 'Tipo',
