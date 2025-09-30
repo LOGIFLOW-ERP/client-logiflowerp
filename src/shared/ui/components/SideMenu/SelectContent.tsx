@@ -114,7 +114,7 @@ export function SelectContent(props: IProps) {
             onClose={() => setIsOpen(false)}
             sx={{
                 maxHeight: 56,
-                width: 215,
+                // width: 215,
                 '&.MuiList-root': { p: '8px' },
                 [`& .${selectClasses.select}`]: {
                     display: 'flex',

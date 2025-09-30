@@ -27,6 +27,7 @@ i18n.use(initReactI18next).init({
                 Masters: 'Maestros',
                 Processes: 'Procesos',
                 Reports: 'Reportes',
+                'Liquidation Order': 'Liquidación de Orden',
             }
         },
         en: {

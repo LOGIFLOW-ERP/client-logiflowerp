@@ -1,4 +1,6 @@
-import { Alert, Box, } from '@mui/material'
+import Typography from '@mui/material/Typography'
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import { SerializedError } from '@reduxjs/toolkit'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
@@ -19,8 +21,8 @@ export function CustomViewError({ error }: IProps) {
             <Alert severity='error'>
                 Ocurrió un problema. Por favor, inténtalo nuevamente o actualice la página. Si el problema continúa, contacta con Soporte.
                 <br />
-                {error && 'Error: ' + (error as FetchBaseQueryError).status}
-                {error && 'Error: ' + (error as SerializedError).message}
+                {(error && 'status' in error) && <Typography variant='body1'>Error: {error.status}</Typography>}
+                {(error && 'message' in error) && <Typography variant='body1'>Error: {error.message}</Typography>}
             </Alert>
         </Box>
     )
