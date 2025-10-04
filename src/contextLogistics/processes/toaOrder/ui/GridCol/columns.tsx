@@ -3,7 +3,8 @@ import { TOAOrderENTITY } from 'logiflowerp-sdk'
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { ReactElement } from 'react'
-import { Chip } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
 
 interface IParams {
     // handleChangeStatusClick: (row: StoreENTITY) => void
@@ -137,6 +138,48 @@ export const columns = (params: IParams): GridColDef<TOAOrderENTITY>[] => {
                 return (
                     <Chip label={value} color={color} size='small' />
                 );
+            },
+        },
+        {
+            field: 'cumplimiento',
+            headerName: 'Cumplimiento',
+            valueGetter: (_value, row) => {
+                let status: 'Si' | 'No' = 'No'
+
+                const [startHour, endHour] = row.time_slot.split('-').map(Number)
+                const settlement_date = new Date(row.settlement_date)
+                const fecha_de_cita = new Date(row.fecha_de_cita)
+
+                const startTime = new Date(fecha_de_cita)
+                startTime.setHours(startHour, 0, 0, 0)
+
+                const endTime = new Date(fecha_de_cita)
+                endTime.setHours(endHour, 0, 0, 0)
+
+
+                if (settlement_date > endTime) {
+                    status = 'No';
+                } else if (settlement_date >= startTime && settlement_date <= endTime) {
+                    status = 'Si'
+                }
+
+                return status
+            },
+            renderCell: ({ value }) => {
+                let color = 'info'
+                switch (value) {
+                    case 'Si':
+                        color = 'success'
+                        break;
+                    case 'No':
+                        color = 'error'
+                        break;
+                }
+                return (
+                    <Typography variant='caption' color={color}>
+                        {value}
+                    </Typography>
+                )
             },
         },
         {

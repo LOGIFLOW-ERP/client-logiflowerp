@@ -7,7 +7,7 @@ export function ErrorElement() {
                 display: 'flex'
             }}
         >
-            <Typography variant='subtitle1'>
+            <Typography variant='subtitle1' color=''>
                 😢 Ups, está función no está disponible
             </Typography>
         </Box>
