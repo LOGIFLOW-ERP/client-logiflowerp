@@ -28,6 +28,7 @@ i18n.use(initReactI18next).init({
                 Processes: 'Procesos',
                 Reports: 'Reportes',
                 'Liquidation Order': 'Liquidación de Orden',
+                'Toa Order': 'Orden TOA',
             }
         },
         en: {

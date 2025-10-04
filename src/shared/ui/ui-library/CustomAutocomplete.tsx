@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 interface CustomAutocompleteProps<T> {
     options: T[] | undefined
-    loading: boolean
+    loading?: boolean
     error?: boolean | undefined
     // label?: React.ReactNode
     label?: string
@@ -20,7 +20,7 @@ interface CustomAutocompleteProps<T> {
 export function CustomAutocomplete<T>(
     {
         options = [],
-        loading,
+        loading = false,
         isOptionEqualToValue,
         getOptionLabel,
         value,

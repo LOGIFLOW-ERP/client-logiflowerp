@@ -27,11 +27,12 @@ interface IProps {
 	title: string
 	children: React.ReactNode
 	maxWidth?: DialogProps['maxWidth']
+	slotProps?: DialogProps['slotProps']
 }
 
 export function CustomDialog(props: IProps) {
 
-	const { open, setOpen, title, children, maxWidth } = props
+	const { open, setOpen, title, children, maxWidth, slotProps } = props
 
 	return (
 		<BootstrapDialog
@@ -40,6 +41,7 @@ export function CustomDialog(props: IProps) {
 			open={open}
 			maxWidth={maxWidth}
 			fullWidth
+			slotProps={slotProps}
 		>
 			<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
 				{title}

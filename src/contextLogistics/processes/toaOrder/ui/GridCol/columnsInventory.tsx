@@ -1,0 +1,28 @@
+import { GridColDef } from '@mui/x-data-grid'
+import { InventoryDTO } from 'logiflowerp-sdk'
+
+export const columnsInventory = (): GridColDef<InventoryDTO>[] => {
+    return [
+        {
+            field: 'code',
+            headerName: 'Código',
+        },
+        {
+            field: 'description',
+            headerName: 'Descripción',
+        },
+        {
+            field: 'quantity',
+            headerName: 'Cantidad',
+            type: 'number',
+        },
+        {
+            field: 'invsn',
+            headerName: 'Serie',
+        },
+        {
+            field: 'invpool',
+            headerName: 'Tipo',
+        },
+    ]
+}
