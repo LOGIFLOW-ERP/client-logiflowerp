@@ -15,6 +15,7 @@ interface CustomAutocompleteProps<T> {
     value?: T | null | undefined
     onChange?: ((event: React.SyntheticEvent<Element, Event>, value: T | null, reason: AutocompleteChangeReason, details?: AutocompleteChangeDetails<T> | undefined) => void) | undefined
     margin?: "normal" | "dense" | "none" | undefined
+    readOnly?: boolean | undefined
 }
 
 export function CustomAutocomplete<T>(
@@ -28,7 +29,8 @@ export function CustomAutocomplete<T>(
         label,
         error,
         helperText,
-        margin = 'normal'
+        margin = 'normal',
+        readOnly
     }: CustomAutocompleteProps<T>
 ) {
     const [open, setOpen] = React.useState(false)
@@ -55,6 +57,7 @@ export function CustomAutocomplete<T>(
             onChange={onChange}
             size='small'
             fullWidth
+            readOnly={readOnly}
             renderInput={(params) => (
                 <TextField
                     {...params}

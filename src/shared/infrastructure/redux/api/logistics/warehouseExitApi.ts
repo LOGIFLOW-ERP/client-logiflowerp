@@ -83,6 +83,21 @@ export const warehouseExitApi = createRepository<WarehouseExitENTITY, string>(pa
                 ],
                 transformErrorResponse
             }),
+            automaticReplenishment: builder.mutation<WarehouseExitENTITY, Partial<WarehouseExitENTITY>>({
+                query: (newItem) => ({
+                    url: `${path}/automatic-replenishment`,
+                    method: 'POST',
+                    body: instanceToPlain(newItem),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `REPORT${path}` },
+                ],
+                transformErrorResponse
+            }),
         })
     })
 
@@ -98,4 +113,5 @@ export const {
     useDeleteDetailMutation: useDeleteDetailWarehouseExitMutation,
     useAddSerialMutation: useAddSerialWarehouseExitMutation,
     useDeleteSerialMutation: useDeleteSerialWarehouseExitMutation,
+    useAutomaticReplenishmentMutation: useAutomaticReplenishmentWarehouseExitMutation,
 } = warehouseExitApi;

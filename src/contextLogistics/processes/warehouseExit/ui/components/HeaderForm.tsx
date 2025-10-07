@@ -1,13 +1,14 @@
-import { Button, CircularProgress, Grid, TextField } from '@mui/material'
+import { Button, CircularProgress, FormControlLabel, Grid, Switch, TextField } from '@mui/material'
 import {
     useGetMovementPipelineQuery,
     useGetPersonnelPipelineQuery,
     useGetStorePipelineQuery
 } from '@shared/api'
 import { PERMISSIONS } from '@shared/application'
-import { CustomSelectDto } from '@shared/ui-library'
+import { CustomAutocomplete, CustomSelectDto } from '@shared/ui-library'
 import { usePermissions } from '@shared/ui/hooks'
-import { CreateWarehouseExitDTO, MovementOrder, State } from 'logiflowerp-sdk'
+import { CreateWarehouseExitDTO, EmployeeENTITY, MovementOrder, State } from 'logiflowerp-sdk'
+import { Dispatch, SetStateAction } from 'react'
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
 
 interface Props {
@@ -16,11 +17,13 @@ interface Props {
     register: UseFormRegister<CreateWarehouseExitDTO>
     readOnly: boolean
     isLoading: boolean
+    reposicion: boolean
+    setReposicion: Dispatch<SetStateAction<boolean>>
 }
 
 export function CabeceraForm(props: Props) {
 
-    const { control, errors, readOnly, isLoading, register } = props
+    const { control, errors, readOnly, isLoading, register, reposicion, setReposicion } = props
 
     const [canCreateWarehouseExit] = usePermissions([PERMISSIONS.POST_WAREHOUSE_EXIT])
 
@@ -76,24 +79,23 @@ export function CabeceraForm(props: Props) {
                     )}
                 />
             </Grid>
-            <Grid size={{ md: 2 }} component='div'>
+            <Grid size={{ md: 4 }} component='div'>
                 <Controller
                     name='carrier'
                     control={control}
                     render={({ field }) => (
-                        <CustomSelectDto
-                            label='Personal'
-                            options={dataPersonnel ?? []}
-                            {...field}
-                            labelKey={['names', ' ', 'surnames', ' ', 'company.code']}
-                            valueKey='identity'
-                            margin='dense'
-                            error={!!errors.carrier}
+                        <CustomAutocomplete<EmployeeENTITY>
+                            loading={isLoadingPersonnel}
+                            options={dataPersonnel}
+                            error={!!errors.carrier || isErrorPersonnel}
                             helperText={errors.carrier?.message}
+                            value={dataPersonnel?.find((opt) => opt.identity === field.value?.identity) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
+                            label='Personal'
+                            getOptionLabel={(option) => `${option.identity} - ${option.names} ${option.surnames}`}
+                            isOptionEqualToValue={(option, value) => option._id === value._id}
+                            margin='dense'
                             readOnly={readOnly}
-                            autoFocus
-                            isLoading={isLoadingPersonnel}
-                            isError={isErrorPersonnel}
                         />
                     )}
                 />
@@ -111,24 +113,47 @@ export function CabeceraForm(props: Props) {
                     slotProps={{ input: { readOnly: readOnly } }}
                 />
             </Grid>
-            <Grid size={{ md: 1 }} component='div'>
-                {
-                    (!readOnly && canCreateWarehouseExit) && (
-                        <Button
-                            type='submit'
-                            variant='contained'
-                            color='primary'
-                            fullWidth
-                            sx={{ marginTop: 1 }}
-                            loading={isLoading}
-                            loadingIndicator={<CircularProgress size={24} color='warning' />}
-                            loadingPosition='center'
-                        >
-                            crear
-                        </Button>
-                    )
-                }
-            </Grid>
+            {
+                !readOnly &&
+                <>
+                    {
+                        true && (
+                            <Grid size={{ md: 1.5 }} component='div' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            size='small'
+                                            checked={reposicion}
+                                            onChange={(e) => setReposicion(e.target.checked)}
+                                            color='error'
+                                        />
+                                    }
+                                    label='Reposición'
+                                    labelPlacement='top'
+                                />
+                            </Grid>
+                        )
+                    }
+                    {
+                        canCreateWarehouseExit && (
+                            <Grid size={{ md: 1 }} component='div'>
+                                <Button
+                                    type='submit'
+                                    variant='contained'
+                                    color='primary'
+                                    fullWidth
+                                    sx={{ marginTop: 1 }}
+                                    loading={isLoading}
+                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                    loadingPosition='center'
+                                >
+                                    crear
+                                </Button>
+                            </Grid>
+                        )
+                    }
+                </>
+            }
         </Grid>
     )
 }

@@ -5,11 +5,12 @@ import { CreateWarehouseExitDTO } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Box, Button, Chip, CircularProgress, Divider } from '@mui/material'
 import {
+    useAutomaticReplenishmentWarehouseExitMutation,
     useCreateWarehouseExitMutation,
     useValidateWarehouseExitMutation
 } from '@shared/api'
 import { CabeceraForm } from './HeaderForm'
-import { lazy } from 'react'
+import { lazy, useState } from 'react'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
@@ -26,6 +27,7 @@ export function AddDialog(props: IProps) {
 
     const { open, setOpen } = props
     const { state: { selectedDocument }, setState } = useStore('warehouseExit')
+    const [reposicion, setReposicion] = useState(false)
     const {
         handleSubmit,
         formState: { errors },
@@ -36,11 +38,14 @@ export function AddDialog(props: IProps) {
     const [canWarehouseExitValidateByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_VALIDATE_BY_ID])
 
     const [create, { isLoading }] = useCreateWarehouseExitMutation()
+    const [createAutomaticReplenishment, { isLoading: isLoadingAutomaticReplenishment }] = useAutomaticReplenishmentWarehouseExitMutation()
     const [validate, { isLoading: isLoadingValidate }] = useValidateWarehouseExitMutation()
 
     const onSubmit = async (data: CreateWarehouseExitDTO) => {
         try {
-            const document = await create(data).unwrap()
+            const document = reposicion
+                ? await createAutomaticReplenishment(data).unwrap()
+                : await create(data).unwrap()
             enqueueSnackbar({ message: '¡Creado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
         } catch (error: any) {
@@ -92,9 +97,11 @@ export function AddDialog(props: IProps) {
                 <CabeceraForm
                     control={control}
                     errors={errors}
-                    isLoading={isLoading}
+                    isLoading={isLoading || isLoadingAutomaticReplenishment}
                     readOnly={!!selectedDocument}
                     register={register}
+                    reposicion={reposicion}
+                    setReposicion={setReposicion}
                 />
             </Box>
             {

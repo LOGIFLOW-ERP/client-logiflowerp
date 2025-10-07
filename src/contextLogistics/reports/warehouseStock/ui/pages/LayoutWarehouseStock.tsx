@@ -56,7 +56,8 @@ export default function LayoutWarehouseStock() {
 						"incomeAmount",
 						"amountReturned",
 						"ouputQuantity",
-						"stock"
+						"stock",
+						'lot'
 					], // solo estos campos
 					renameMap: {
 						stockType: 'Tipo',
@@ -67,7 +68,8 @@ export default function LayoutWarehouseStock() {
 						item_uomCode: 'UM',
 						incomeAmount: 'Ingreso',
 						amountReturned: 'Devolucion',
-						ouputQuantity: 'Despacho'
+						ouputQuantity: 'Despacho',
+						lot: 'Lote'
 					}
 				})}
 				disableRowSelectionOnClick
@@ -75,6 +77,7 @@ export default function LayoutWarehouseStock() {
 				density='compact'
 				// apiRef={apiRef}
 				loading={isLoading || isLoadingUpdate}
+				showToolbar
 			/>
 		</Box>
 	)
