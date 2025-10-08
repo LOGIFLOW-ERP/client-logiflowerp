@@ -6,11 +6,11 @@ import { instanceToPlain } from 'class-transformer';
 import { provideTagGetDataLiquidationOrderEmployeeStock } from './employeeStockApi';
 
 const schema = 'processes'
-const resource = 'LiquidationOrder'
+const resource = 'LiquidationCmsOrder'
 
 const path = `${schema}/${resource}`
 
-export const liquidationOrderApi = createRepository<TOAOrderENTITY, string>(path, getBaseApiLogistics(path))
+export const liquidationCmsOrderApi = createRepository<TOAOrderENTITY, string>(path, getBaseApiLogistics(path))
     .injectEndpoints({
         endpoints: (builder) => ({
             addInventory: builder.mutation<void, { _id: string, data: CreateInventoryDTO }>({
@@ -32,6 +32,6 @@ export const liquidationOrderApi = createRepository<TOAOrderENTITY, string>(path
     })
 
 export const {
-    useGetAllQuery: useGetLiquidationTOAOrdersQuery,
-    useAddInventoryMutation: useAddInventoryTOAOrderMutation,
-} = liquidationOrderApi;
+    useGetAllQuery: useGetLiquidationCMSOrdersQuery,
+    useAddInventoryMutation: useAddInventoryCMSOrderMutation,
+} = liquidationCmsOrderApi;

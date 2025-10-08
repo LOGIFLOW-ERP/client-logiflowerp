@@ -27,6 +27,7 @@ import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import { useTranslation } from 'react-i18next'
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -52,7 +53,8 @@ const iconMap: Record<string, React.ElementType> = {
     'Warehouse Stock': Inventory2RoundedIcon,
     'Employee Stock': RecentActorsIcon,
     'Employee Stock PEX': RecentActorsIcon,
-    'Liquidation Order': PostAddIcon,
+    'Liquidation Cms Order': PostAddIcon,
+    'Liquidation Win Order': AddTaskIcon,
     'Toa Order': ListAltIcon,
 }
 interface IProps {

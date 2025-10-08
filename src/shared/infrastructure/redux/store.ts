@@ -18,8 +18,9 @@ import {
     warehouseReturnApi,
     employeeStockApi,
     employeeStockPexApi,
-    liquidationOrderApi,
-    toaOrderApi
+    liquidationCmsOrderApi,
+    toaOrderApi,
+    liquidationWinOrderApi,
 } from '@shared/api'
 import { authReducer } from './auth'
 import { warehouseEntryReducer } from './warehouseEntry'
@@ -50,8 +51,9 @@ export const store = configureStore({
         [warehouseStockApi.reducerPath]: warehouseStockApi.reducer as Reducer,
         [employeeStockApi.reducerPath]: employeeStockApi.reducer as Reducer,
         [employeeStockPexApi.reducerPath]: employeeStockPexApi.reducer as Reducer,
-        [liquidationOrderApi.reducerPath]: liquidationOrderApi.reducer as Reducer,
+        [liquidationCmsOrderApi.reducerPath]: liquidationCmsOrderApi.reducer as Reducer,
         [toaOrderApi.reducerPath]: toaOrderApi.reducer as Reducer,
+        [liquidationWinOrderApi.reducerPath]: liquidationWinOrderApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -73,7 +75,8 @@ export const store = configureStore({
             .concat(warehouseStockApi.middleware)
             .concat(employeeStockApi.middleware)
             .concat(employeeStockPexApi.middleware)
-            .concat(liquidationOrderApi.middleware)
+            .concat(liquidationCmsOrderApi.middleware)
+            .concat(liquidationWinOrderApi.middleware)
             .concat(toaOrderApi.middleware)
 })
 

@@ -1,14 +1,13 @@
 import { CustomDialog } from '@shared/ui-library'
 import React from 'react'
-import { InventoryToaDTO, TOAOrderENTITY } from 'logiflowerp-sdk'
-import { DataGrid } from '@mui/x-data-grid/DataGrid'
+import { InventoryWinDTO, WINOrderENTITY } from 'logiflowerp-sdk'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columnsInventory } from '../GridCol'
-import { useGridApiRef } from '@mui/x-data-grid'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
-    selectedRow: TOAOrderENTITY
+    selectedRow: WINOrderENTITY
 }
 
 export function InventoryDialog(props: IProps) {
@@ -21,7 +20,6 @@ export function InventoryDialog(props: IProps) {
             open={open}
             setOpen={setOpen}
             title='Inventario'
-            maxWidth='md'
             slotProps={{
                 transition: {
                     onEntered: () => {
@@ -33,7 +31,7 @@ export function InventoryDialog(props: IProps) {
                 }
             }}
         >
-            <DataGrid<InventoryToaDTO>
+            <DataGrid<InventoryWinDTO>
                 rows={selectedRow.inventory}
                 columns={columnsInventory()}
                 disableRowSelectionOnClick
