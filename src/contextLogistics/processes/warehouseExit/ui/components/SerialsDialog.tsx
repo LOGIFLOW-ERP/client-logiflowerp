@@ -1,18 +1,22 @@
 import { CustomDialog } from '@shared/ui-library'
 import { StockSerialDTO } from 'logiflowerp-sdk'
-import { Box, Button, CircularProgress, Grid, TextField } from '@mui/material'
+import { Box, Button, CircularProgress, Grid, TextField, Tooltip } from '@mui/material'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useSnackbar } from 'notistack'
 import { useForm } from 'react-hook-form'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import {
     useAddSerialWarehouseExitMutation,
-    useDeleteSerialWarehouseExitMutation
+    useDeleteSerialWarehouseExitMutation,
 } from '@shared/api'
 import { DataGrid } from '@mui/x-data-grid'
-import { columnsSerial } from '../GridCol'
+import { columnsSerial } from '../GridCol/columnsSerial'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import ViewListIcon from '@mui/icons-material/ViewList';
+import { lazy, Suspense, useState } from 'react'
+import { Fallback } from '@app/ui/pages'
+const WarehouseStockSerialDialog = lazy(() => import('./WarehouseStockSerialDialog').then(m => ({ default: m.WarehouseStockSerialDialog })))
 
 const resolver = classValidatorResolver(StockSerialDTO)
 
@@ -37,6 +41,7 @@ export function SerialsDialog(props: IProps) {
     const [addSerial, { isLoading: isLoadingAddSerial }] = useAddSerialWarehouseExitMutation()
     const [deleteSerial, { isLoading: isLoadingDeleteSerial }] = useDeleteSerialWarehouseExitMutation()
     const [canWarehouseExitDeleteSerialByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_DELETE_SERIAL_BY_ID])
+    const [openWarehouseStockSerialDialog, setOpenWarehouseStockSerialDialog] = useState(false)
 
     const onSubmit = async (data: StockSerialDTO) => {
         try {
@@ -85,84 +90,113 @@ export function SerialsDialog(props: IProps) {
     }
 
     return (
-        <CustomDialog
-            open={open}
-            setOpen={setOpen}
-            title={`AGREGAR SERIES ${selectedDetail ? ` - ${selectedDetail.serials.length} de ${selectedDetail.amount}` : '¡Error!'}`.trim()}
-        >
-            {
-                (!!selectedDetail && selectedDetail.amount !== selectedDetail.serials.length) && (
-                    <Box component='form' onSubmit={handleSubmit(onSubmit)} paddingBottom={2}>
-                        <Grid container columnSpacing={2}>
-                            <Grid size={{ md: 6 }} component='div'>
-                                <TextField
-                                    label='Marca'
-                                    variant='outlined'
-                                    fullWidth
-                                    margin='dense'
-                                    size='small'
-                                    {...register('brand')}
-                                    error={!!errors.brand}
-                                    helperText={errors.brand?.message}
-                                />
+        <>
+            <CustomDialog
+                open={open}
+                setOpen={setOpen}
+                title={`AGREGAR SERIES ${selectedDetail ? ` - ${selectedDetail.serials.length} de ${selectedDetail.amount}` : '¡Error!'}`.trim()}
+            >
+                {
+                    (!!selectedDetail && selectedDetail.amount !== selectedDetail.serials.length) && (
+                        <Box component='form' onSubmit={handleSubmit(onSubmit)} paddingBottom={2}>
+                            <Grid container columnSpacing={3}>
+                                <Grid size={{ md: 5 }} component='div'>
+                                    <TextField
+                                        label='Marca'
+                                        variant='outlined'
+                                        fullWidth
+                                        margin='dense'
+                                        size='small'
+                                        {...register('brand')}
+                                        error={!!errors.brand}
+                                        helperText={errors.brand?.message}
+                                    />
+                                </Grid>
+                                <Grid size={{ md: 5 }} component='div'>
+                                    <TextField
+                                        label='Modelo'
+                                        variant='outlined'
+                                        fullWidth
+                                        margin='dense'
+                                        size='small'
+                                        {...register('model')}
+                                        error={!!errors.model}
+                                        helperText={errors.model?.message}
+                                    />
+                                </Grid>
+                                <Grid size={{ md: 2 }} component='div'>
+                                    <Tooltip title='Ver series disponibles'>
+                                        <Button
+                                            variant='contained'
+                                            color='info'
+                                            fullWidth
+                                            sx={{ marginTop: 1 }}
+                                            loading={isLoadingAddSerial}
+                                            loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                            loadingPosition='center'
+                                            onClick={() => setOpenWarehouseStockSerialDialog(true)}
+                                        >
+                                            <ViewListIcon />
+                                        </Button>
+                                    </Tooltip>
+                                </Grid>
+                                <Grid size={{ md: 8 }} component='div'>
+                                    <TextField
+                                        label='Serie'
+                                        variant='outlined'
+                                        fullWidth
+                                        margin='dense'
+                                        autoFocus
+                                        size='small'
+                                        {...register('serial')}
+                                        error={!!errors.serial}
+                                        helperText={errors.serial?.message}
+                                        autoComplete='off'
+                                    />
+                                </Grid>
+                                <Grid size={{ md: 4 }} component='div'>
+                                    <Button
+                                        type='submit'
+                                        variant='contained'
+                                        color='primary'
+                                        fullWidth
+                                        sx={{ marginTop: 1 }}
+                                        loading={isLoadingAddSerial}
+                                        loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                        loadingPosition='center'
+                                    >
+                                        <AddRoundedIcon />
+                                    </Button>
+                                </Grid>
                             </Grid>
-                            <Grid size={{ md: 6 }} component='div'>
-                                <TextField
-                                    label='Modelo'
-                                    variant='outlined'
-                                    fullWidth
-                                    margin='dense'
-                                    size='small'
-                                    {...register('model')}
-                                    error={!!errors.model}
-                                    helperText={errors.model?.message}
-                                />
-                            </Grid>
-                            <Grid size={{ md: 8 }} component='div'>
-                                <TextField
-                                    label='Serie'
-                                    variant='outlined'
-                                    fullWidth
-                                    margin='dense'
-                                    autoFocus
-                                    size='small'
-                                    {...register('serial')}
-                                    error={!!errors.serial}
-                                    helperText={errors.serial?.message}
-                                    autoComplete='off'
-                                />
-                            </Grid>
-                            <Grid size={{ md: 4 }} component='div'>
-                                <Button
-                                    type='submit'
-                                    variant='contained'
-                                    color='primary'
-                                    fullWidth
-                                    sx={{ marginTop: 1 }}
-                                    loading={isLoadingAddSerial}
-                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
-                                    loadingPosition='center'
-                                >
-                                    <AddRoundedIcon />
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                )
-            }
-            <Box sx={{ height: '50vh' }}>
-                <DataGrid<StockSerialDTO>
-                    rows={selectedDetail?.serials}
-                    columns={columnsSerial({ handleDeleteClick })}
-                    disableRowSelectionOnClick
-                    getRowId={row => row.serial}
-                    loading={isLoadingDeleteSerial}
-                    autoPageSize
-                    columnVisibilityModel={{
-                        actions: canWarehouseExitDeleteSerialByID
-                    }}
-                />
-            </Box>
-        </CustomDialog>
+                        </Box>
+                    )
+                }
+                <Box sx={{ height: '50vh' }}>
+                    <DataGrid<StockSerialDTO>
+                        rows={selectedDetail?.serials}
+                        columns={columnsSerial({ handleDeleteClick })}
+                        disableRowSelectionOnClick
+                        getRowId={row => row.serial}
+                        loading={isLoadingDeleteSerial}
+                        autoPageSize
+                        columnVisibilityModel={{
+                            actions: canWarehouseExitDeleteSerialByID
+                        }}
+                    />
+                </Box>
+            </CustomDialog>
+            <Suspense fallback={<Fallback />}>
+                {
+                    (selectedDetail && openWarehouseStockSerialDialog) && (
+                        <WarehouseStockSerialDialog
+                            open={openWarehouseStockSerialDialog}
+                            setOpen={setOpenWarehouseStockSerialDialog}
+                            selectedRow={selectedDetail}
+                        />
+                    )
+                }
+            </Suspense>
+        </>
     )
 }

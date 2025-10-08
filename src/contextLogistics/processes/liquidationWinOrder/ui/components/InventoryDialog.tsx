@@ -2,7 +2,7 @@ import { CustomDialog } from '@shared/ui-library'
 import React from 'react'
 import { InventoryWinDTO, WINOrderENTITY } from 'logiflowerp-sdk'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
-import { columnsInventory } from '../GridCol'
+import { columnsInventory } from '../GridCol/columnsInventory'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>

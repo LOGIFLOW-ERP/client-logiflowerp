@@ -1,7 +1,7 @@
 import { OrderDetailENTITY } from 'logiflowerp-sdk'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { Box } from '@mui/material'
-import { columnsDetail } from '../GridCol'
+import { columnsDetail } from '../GridCol/columnsDetail'
 import { useSnackbar } from 'notistack'
 import { useDeleteDetailWarehouseExitMutation, useEditAmountDetailWarehouseExitMutation } from '@shared/api'
 import { lazy, Suspense, useEffect, useState } from 'react'
