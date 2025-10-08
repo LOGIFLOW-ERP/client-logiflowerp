@@ -24,7 +24,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 interface IProps {
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>
 	open: boolean
-	title: string
+	title: React.ReactNode
 	children: React.ReactNode
 	maxWidth?: DialogProps['maxWidth']
 	slotProps?: DialogProps['slotProps']
@@ -37,17 +37,17 @@ export function CustomDialog(props: IProps) {
 	return (
 		<BootstrapDialog
 			onClose={() => setOpen(false)}
-			aria-labelledby="customized-dialog-title"
+			aria-labelledby='customized-dialog-title'
 			open={open}
 			maxWidth={maxWidth}
 			fullWidth
 			slotProps={slotProps}
 		>
-			<DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+			<DialogTitle sx={{ m: 0, p: 2 }} id='customized-dialog-title'>
 				{title}
 			</DialogTitle>
 			<IconButton
-				aria-label="close"
+				aria-label='close'
 				onClick={() => setOpen(false)}
 				sx={(theme) => ({
 					position: 'absolute',

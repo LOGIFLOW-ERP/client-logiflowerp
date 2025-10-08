@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next'
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddTaskIcon from '@mui/icons-material/AddTask';
+import ListIcon from '@mui/icons-material/List';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -56,6 +57,7 @@ const iconMap: Record<string, React.ElementType> = {
     'Liquidation Cms Order': PostAddIcon,
     'Liquidation Win Order': AddTaskIcon,
     'Toa Order': ListAltIcon,
+    'Win Order': ListIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null

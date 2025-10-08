@@ -13,3 +13,4 @@ export * from './employeeStockPexApi';
 export * from './liquidationCmsOrderApi';
 export * from './toaOrderApi';
 export * from './liquidationWinOrderApi';
+export * from './winOrderApi';
