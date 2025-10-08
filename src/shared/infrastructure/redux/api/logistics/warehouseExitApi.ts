@@ -83,9 +83,24 @@ export const warehouseExitApi = createRepository<WarehouseExitENTITY, string>(pa
                 ],
                 transformErrorResponse
             }),
-            automaticReplenishment: builder.mutation<WarehouseExitENTITY, Partial<WarehouseExitENTITY>>({
+            automaticReplenishmentToa: builder.mutation<WarehouseExitENTITY, Partial<WarehouseExitENTITY>>({
                 query: (newItem) => ({
-                    url: `${path}/automatic-replenishment`,
+                    url: `${path}/automatic-replenishment-toa`,
+                    method: 'POST',
+                    body: instanceToPlain(newItem),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `REPORT${path}` },
+                ],
+                transformErrorResponse
+            }),
+            automaticReplenishmentWin: builder.mutation<WarehouseExitENTITY, Partial<WarehouseExitENTITY>>({
+                query: (newItem) => ({
+                    url: `${path}/automatic-replenishment-win`,
                     method: 'POST',
                     body: instanceToPlain(newItem),
                 }),
@@ -113,5 +128,6 @@ export const {
     useDeleteDetailMutation: useDeleteDetailWarehouseExitMutation,
     useAddSerialMutation: useAddSerialWarehouseExitMutation,
     useDeleteSerialMutation: useDeleteSerialWarehouseExitMutation,
-    useAutomaticReplenishmentMutation: useAutomaticReplenishmentWarehouseExitMutation,
+    useAutomaticReplenishmentToaMutation: useAutomaticReplenishmentToaWarehouseExitMutation,
+    useAutomaticReplenishmentWinMutation: useAutomaticReplenishmentWinWarehouseExitMutation,
 } = warehouseExitApi;

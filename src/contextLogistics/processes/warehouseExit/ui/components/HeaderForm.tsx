@@ -1,4 +1,4 @@
-import { Button, CircularProgress, FormControlLabel, Grid, Switch, TextField } from '@mui/material'
+import { Button, CircularProgress, Grid, TextField } from '@mui/material'
 import {
     useGetMovementPipelineQuery,
     useGetPersonnelPipelineQuery,
@@ -7,9 +7,10 @@ import {
 import { PERMISSIONS } from '@shared/application'
 import { CustomAutocomplete, CustomSelectDto } from '@shared/ui-library'
 import { usePermissions } from '@shared/ui/hooks'
-import { CreateWarehouseExitDTO, EmployeeENTITY, MovementOrder, State } from 'logiflowerp-sdk'
-import { Dispatch, SetStateAction } from 'react'
-import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
+import { CreateWarehouseExitDTO, EmployeeENTITY, MovementOrder, ScrapingSystem, State } from 'logiflowerp-sdk'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { Control, Controller, FieldErrors, UseFormGetValues, UseFormRegister } from 'react-hook-form'
+import { ReposicionAutomaticaDialog } from './ReposicionAutomaticaDialog'
 
 interface Props {
     control: Control<CreateWarehouseExitDTO, any>
@@ -17,14 +18,15 @@ interface Props {
     register: UseFormRegister<CreateWarehouseExitDTO>
     readOnly: boolean
     isLoading: boolean
-    reposicion: boolean
-    setReposicion: Dispatch<SetStateAction<boolean>>
+    reposicion: null | ScrapingSystem
+    setReposicion: Dispatch<SetStateAction<null | ScrapingSystem>>
+    getValues: UseFormGetValues<CreateWarehouseExitDTO>
 }
 
 export function CabeceraForm(props: Props) {
 
-    const { control, errors, readOnly, isLoading, register, reposicion, setReposicion } = props
-
+    const { control, errors, readOnly, isLoading, register, reposicion, setReposicion, getValues } = props
+    const [open, setOpen] = useState(false);
     const [canCreateWarehouseExit] = usePermissions([PERMISSIONS.POST_WAREHOUSE_EXIT])
 
     const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA } }]
@@ -118,18 +120,14 @@ export function CabeceraForm(props: Props) {
                 <>
                     {
                         true && (
-                            <Grid size={{ md: 1.5 }} component='div' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            size='small'
-                                            checked={reposicion}
-                                            onChange={(e) => setReposicion(e.target.checked)}
-                                            color='error'
-                                        />
-                                    }
-                                    label='Reposición'
-                                    labelPlacement='top'
+                            <Grid size={{ md: 1 }} component='div' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <ReposicionAutomaticaDialog
+                                    open={open}
+                                    selectedValue={reposicion}
+                                    setOpen={setOpen}
+                                    setSelectedValue={setReposicion}
+                                    getValues={getValues}
+                                    dataPersonnel={dataPersonnel ?? []}
                                 />
                             </Grid>
                         )

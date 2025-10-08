@@ -1,10 +1,10 @@
 import { OrderDetailENTITY } from 'logiflowerp-sdk'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { Box } from '@mui/material'
 import { columnsDetail } from '../GridCol'
 import { useSnackbar } from 'notistack'
 import { useDeleteDetailWarehouseExitMutation } from '@shared/api'
-import { lazy, useState } from 'react'
+import { lazy, useEffect, useState } from 'react'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
@@ -23,6 +23,14 @@ export function DetailTable() {
         PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_SERIAL_BY_ID,
         PERMISSIONS.PUT_WAREHOUSE_EXIT_DELETE_DETAIL_BY_ID
     ])
+    const apiRef = useGridApiRef()
+
+    useEffect(() => {
+        apiRef.current?.autosizeColumns({
+            includeHeaders: true,
+            includeOutliers: true,
+        })
+    }, [])
 
     const handleDeleteClick = async (row: OrderDetailENTITY) => {
         try {
@@ -64,6 +72,7 @@ export function DetailTable() {
                     columnVisibilityModel={{
                         actions: canWarehouseExitDeleteDetailByID
                     }}
+                    apiRef={apiRef}
                 />
             </Box>
             {

@@ -8,6 +8,7 @@ const resource = 'warehouseStock'
 
 const path = `${schema}/${resource}`
 export const provideTagReportWarehouseStock = { type: path, id: `REPORT${path}` }
+export const provideTagReportWithAvailableWarehouseStock = { type: path, id: `REPORTWithAvailable${path}` }
 
 export const warehouseStockApi = createRepository<WarehouseStockENTITY, string>(path, getBaseApiLogistics(path))
     .injectEndpoints({
@@ -22,6 +23,16 @@ export const warehouseStockApi = createRepository<WarehouseStockENTITY, string>(
                     result ? [provideTagReportWarehouseStock] : [],
                 transformErrorResponse
             }),
+            findWithAvailable: builder.query<WarehouseStockENTITY[], any[]>({
+                query: (pipeline) => ({
+                    url: `${path}/find-with-available`,
+                    method: 'POST',
+                    body: pipeline
+                }),
+                providesTags: (result) =>
+                    result ? [provideTagReportWithAvailableWarehouseStock] : [],
+                transformErrorResponse
+            })
         })
     })
 
@@ -33,5 +44,6 @@ export const {
     useDeleteMutation: useDeleteWarehouseStockMutation,
     useGetPipelineQuery: useGetWarehouseStockPipelineQuery,
     useLazyReportQuery: useLazyReportWarehouseStockQuery,
-    useReportQuery: useReportWarehouseStockQuery
+    useReportQuery: useReportWarehouseStockQuery,
+    useFindWithAvailableQuery: useFindWithAvailableWarehouseStockQuery,
 } = warehouseStockApi;
