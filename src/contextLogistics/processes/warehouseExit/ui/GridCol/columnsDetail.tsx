@@ -3,14 +3,16 @@ import { OrderDetailENTITY, ProducType } from 'logiflowerp-sdk'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { Box, Tooltip } from '@mui/material'
 import DocumentScannerRoundedIcon from '@mui/icons-material/DocumentScannerRounded';
+import { CustomCellEdit } from '@shared/ui/ui-library';
 
 interface IParams {
     handleDeleteClick: (row: OrderDetailENTITY) => void
     handleScannClick: (row: OrderDetailENTITY) => void
+    handleAmoutClick: (row: OrderDetailENTITY) => void
 }
 
 export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] => {
-    const { handleScannClick, handleDeleteClick } = params
+    const { handleScannClick, handleDeleteClick, handleAmoutClick } = params
     return [
         {
             field: 'position',
@@ -89,7 +91,15 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
         {
             field: 'amount',
             headerName: 'Cantidad',
-            type: 'number'
+            type: 'number',
+            renderCell: ({ value, row }) => {
+                return (
+                    <CustomCellEdit
+                        value={value}
+                        onClick={() => handleAmoutClick(row)}
+                    />
+                )
+            }
         },
         {
             field: 'Acciones',

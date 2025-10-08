@@ -3,11 +3,13 @@ import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { Box } from '@mui/material'
 import { columnsDetail } from '../GridCol'
 import { useSnackbar } from 'notistack'
-import { useDeleteDetailWarehouseExitMutation } from '@shared/api'
-import { lazy, useEffect, useState } from 'react'
+import { useDeleteDetailWarehouseExitMutation, useEditAmountDetailWarehouseExitMutation } from '@shared/api'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
+const EditAmountDetailDialog = lazy(() => import('./EditAmountDetailDialog').then(m => ({ default: m.EditAmountDetailDialog })))
 
 export function DetailTable() {
 
@@ -15,7 +17,9 @@ export function DetailTable() {
 
     const { enqueueSnackbar } = useSnackbar()
     const [deleteDetail, { isLoading: isLoadingDeleteDetail }] = useDeleteDetailWarehouseExitMutation()
+    const [editAmountDetail, { isLoading: isLoadingEditAmountDetail }] = useEditAmountDetailWarehouseExitMutation()
     const [open, setOpen] = useState(false)
+    const [openEditAmountDetailDialog, setOpenEditAmountDetailDialog] = useState(false)
     const [
         canWarehouseExitAddSerialByID,
         canWarehouseExitDeleteDetailByID
@@ -30,7 +34,11 @@ export function DetailTable() {
             includeHeaders: true,
             includeOutliers: true,
         })
-    }, [])
+    }, [
+        open,
+        openEditAmountDetailDialog,
+        setState
+    ])
 
     const handleDeleteClick = async (row: OrderDetailENTITY) => {
         try {
@@ -59,15 +67,28 @@ export function DetailTable() {
         }
     }
 
+    const handleAmoutClick = (row: OrderDetailENTITY) => {
+        try {
+            if (!canWarehouseExitAddSerialByID) {
+                throw new Error(`¡Sin permisos para realizar esta acción!`)
+            }
+            setState({ selectedDetail: row })
+            setOpenEditAmountDetailDialog(true)
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
+    }
+
     return (
         <>
             <Box sx={{ height: '100%' }}>
                 <DataGrid<OrderDetailENTITY>
                     rows={selectedDocument?.detail}
-                    columns={columnsDetail({ handleScannClick, handleDeleteClick })}
+                    columns={columnsDetail({ handleScannClick, handleDeleteClick, handleAmoutClick })}
                     disableRowSelectionOnClick
                     getRowId={row => row.keyDetail}
-                    loading={isLoadingDeleteDetail}
+                    loading={isLoadingDeleteDetail || isLoadingEditAmountDetail}
                     autoPageSize
                     columnVisibilityModel={{
                         actions: canWarehouseExitDeleteDetailByID
@@ -75,14 +96,26 @@ export function DetailTable() {
                     apiRef={apiRef}
                 />
             </Box>
-            {
-                (selectedDetail && open) && (
-                    <SerialsDialog
-                        open={open}
-                        setOpen={setOpen}
-                    />
-                )
-            }
+            <Suspense fallback={<Fallback />}>
+                {
+                    (selectedDetail && open) && (
+                        <SerialsDialog
+                            open={open}
+                            setOpen={setOpen}
+                        />
+                    )
+                }
+                {
+                    (selectedDetail && openEditAmountDetailDialog) && (
+                        <EditAmountDetailDialog
+                            open={openEditAmountDetailDialog}
+                            setOpen={setOpenEditAmountDetailDialog}
+                            editAmountDetail={editAmountDetail}
+                            isLoading={isLoadingEditAmountDetail}
+                        />
+                    )
+                }
+            </Suspense>
         </>
     )
 }

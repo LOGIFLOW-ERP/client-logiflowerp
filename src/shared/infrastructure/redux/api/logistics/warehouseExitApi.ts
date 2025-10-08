@@ -1,5 +1,10 @@
 import { createRepository } from '../baseRepository'
-import { CreateWarehouseExitDetailDTO, StockSerialDTO, WarehouseExitENTITY } from 'logiflowerp-sdk'
+import {
+    CreateWarehouseExitDetailDTO,
+    EditAmountDetailDTO,
+    StockSerialDTO,
+    WarehouseExitENTITY
+} from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
 import { instanceToPlain } from 'class-transformer';
@@ -113,6 +118,20 @@ export const warehouseExitApi = createRepository<WarehouseExitENTITY, string>(pa
                 ],
                 transformErrorResponse
             }),
+            editAmountDetail: builder.mutation<WarehouseExitENTITY, { _id: string, keyDetail: string, data: EditAmountDetailDTO }>({
+                query: ({ _id, data, keyDetail }) => ({
+                    url: `${path}/edit-amount-detail/${_id}?keyDetail=${keyDetail}`,
+                    method: 'PUT',
+                    body: instanceToPlain(data),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
         })
     })
 
@@ -127,6 +146,7 @@ export const {
     useAddDetailMutation: useAddDetailWarehouseExitMutation,
     useDeleteDetailMutation: useDeleteDetailWarehouseExitMutation,
     useAddSerialMutation: useAddSerialWarehouseExitMutation,
+    useEditAmountDetailMutation: useEditAmountDetailWarehouseExitMutation,
     useDeleteSerialMutation: useDeleteSerialWarehouseExitMutation,
     useAutomaticReplenishmentToaMutation: useAutomaticReplenishmentToaWarehouseExitMutation,
     useAutomaticReplenishmentWinMutation: useAutomaticReplenishmentWinWarehouseExitMutation,
