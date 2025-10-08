@@ -1,6 +1,6 @@
 import { CustomDialog } from '@shared/ui-library'
 import React, { useEffect } from 'react'
-import { InventoryDTO, TOAOrderENTITY } from 'logiflowerp-sdk'
+import { InventoryToaDTO, TOAOrderENTITY } from 'logiflowerp-sdk'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columnsInventory } from '../GridCol'
 
@@ -28,7 +28,7 @@ export function InventoryDialog(props: IProps) {
             setOpen={setOpen}
             title='Inventario'
         >
-            <DataGrid<InventoryDTO>
+            <DataGrid<InventoryToaDTO>
                 rows={selectedRow.inventory}
                 columns={columnsInventory()}
                 disableRowSelectionOnClick

@@ -26,7 +26,7 @@ interface SideMenuMobileProps {
 export function SideMenuMobile({ open, toggleDrawer, setSelectedNode, selectedNode }: SideMenuMobileProps) {
 
 	const { state: { user }, setState } = useStore('auth')
-	const [showBadge, setShowBadge] = useState(false)
+	const [showBadge, _setShowBadge] = useState(false)
 	const [signOut, { isLoading }] = useSignOutMutation()
 	const navigate = useNavigate()
 	const { enqueueSnackbar } = useSnackbar()
@@ -98,6 +98,7 @@ export function SideMenuMobile({ open, toggleDrawer, setSelectedNode, selectedNo
 						variant="outlined"
 						fullWidth
 						startIcon={<LogoutRoundedIcon />}
+						loading={isLoading}
 					>
 						Salir
 					</Button>

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { CreateInventoryDTO, EmployeeStockSerialENTITY, ProductOrderDTO, ProducType, TOAOrderENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { useAddInventoryTOAOrderMutation, useGetDataLiquidationOrderEmployeeStockQuery } from '@shared/api'
+import { useAddInventoryWINOrderMutation, useGetDataLiquidationOrderEmployeeStockQuery } from '@shared/api'
 import TextField from '@mui/material/TextField'
 
 const resolver = classValidatorResolver(CreateInventoryDTO)
@@ -25,7 +25,6 @@ export function AddDialog(props: IProps) {
         control,
         getValues,
         setValue,
-        watch
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
 
@@ -36,11 +35,11 @@ export function AddDialog(props: IProps) {
         isLoading: isLoadingES
     } = useGetDataLiquidationOrderEmployeeStockQuery()
 
-    const [addInventoryTOAOrder, { isLoading }] = useAddInventoryTOAOrderMutation()
+    const [_addInventoryTOAOrder, { isLoading }] = useAddInventoryWINOrderMutation()
 
-    const onSubmit = async (data: CreateInventoryDTO) => {
+    const onSubmit = async (_data: CreateInventoryDTO) => {
         try {
-            await addInventoryTOAOrder({ _id: props.selectedRow._id, data }).unwrap()
+            // await addInventoryTOAOrder({ _id: props.selectedRow._id, data }).unwrap()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setOpen(false)
         } catch (error: any) {

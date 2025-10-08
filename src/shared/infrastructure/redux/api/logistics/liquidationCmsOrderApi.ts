@@ -32,6 +32,6 @@ export const liquidationCmsOrderApi = createRepository<TOAOrderENTITY, string>(p
     })
 
 export const {
-    useGetAllQuery: useGetLiquidationCMSOrdersQuery,
+    // useGetAllQuery: useGetLiquidationCMSOrdersQuery,
     useAddInventoryMutation: useAddInventoryCMSOrderMutation,
 } = liquidationCmsOrderApi;

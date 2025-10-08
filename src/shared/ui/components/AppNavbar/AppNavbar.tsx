@@ -8,7 +8,7 @@ import MenuButton from './MenuButton'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import { SideMenuMobile } from './SideMenuMobile'
 import { MenuDTO } from 'logiflowerp-sdk'
-import { useLocation } from 'react-router-dom'
+// import { useLocation } from 'react-router-dom'
 import { NavbarBreadcrumbs } from '../Header/NavbarBreadcrumbs'
 
 const Toolbar = styled(MuiToolbar)({
@@ -34,7 +34,7 @@ interface IProps {
 
 export function AppNavbar({ setSelectedNode, selectedNode }: IProps) {
     const [open, setOpen] = useState(false)
-    const location = useLocation()
+    // const location = useLocation()
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen)
