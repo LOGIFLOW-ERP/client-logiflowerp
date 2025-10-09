@@ -3,6 +3,7 @@ import { Header, SideMenu } from '../components'
 import { Outlet } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { MenuDTO } from 'logiflowerp-sdk'
+import { AppNavbar } from '../components/AppNavbar/AppNavbar'
 
 export function LayoutHome() {
 
@@ -17,6 +18,10 @@ export function LayoutHome() {
                 selectedNode={selectedNode}
                 setSelectedNode={setSelectedNode}
             />
+            <AppNavbar
+                setSelectedNode={setSelectedNode}
+                selectedNode={selectedNode}
+            />
             <Box
                 component='main'
                 sx={(theme) => ({
@@ -29,9 +34,9 @@ export function LayoutHome() {
                     spacing={2}
                     sx={{
                         alignItems: 'center',
-                        mx: 3,
+                        mx: { xs: 2, md: 3 },
                         pb: 5,
-                        mt: { xs: 8, md: 0 },
+                        mt: { xs: 6, md: 0 },
                     }}
                 >
                     <Header />

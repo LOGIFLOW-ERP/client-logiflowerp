@@ -17,7 +17,12 @@ import {
     warehouseStockApi,
     warehouseReturnApi,
     employeeStockApi,
-    employeeStockPexApi
+    employeeStockPexApi,
+    liquidationCmsOrderApi,
+    toaOrderApi,
+    liquidationWinOrderApi,
+    winOrderApi,
+    warehouseStockSerialApi,
 } from '@shared/api'
 import { authReducer } from './auth'
 import { warehouseEntryReducer } from './warehouseEntry'
@@ -48,6 +53,11 @@ export const store = configureStore({
         [warehouseStockApi.reducerPath]: warehouseStockApi.reducer as Reducer,
         [employeeStockApi.reducerPath]: employeeStockApi.reducer as Reducer,
         [employeeStockPexApi.reducerPath]: employeeStockPexApi.reducer as Reducer,
+        [liquidationCmsOrderApi.reducerPath]: liquidationCmsOrderApi.reducer as Reducer,
+        [toaOrderApi.reducerPath]: toaOrderApi.reducer as Reducer,
+        [liquidationWinOrderApi.reducerPath]: liquidationWinOrderApi.reducer as Reducer,
+        [winOrderApi.reducerPath]: winOrderApi.reducer as Reducer,
+        [warehouseStockSerialApi.reducerPath]: warehouseStockSerialApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -69,6 +79,11 @@ export const store = configureStore({
             .concat(warehouseStockApi.middleware)
             .concat(employeeStockApi.middleware)
             .concat(employeeStockPexApi.middleware)
+            .concat(liquidationCmsOrderApi.middleware)
+            .concat(liquidationWinOrderApi.middleware)
+            .concat(toaOrderApi.middleware)
+            .concat(winOrderApi.middleware)
+            .concat(warehouseStockSerialApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

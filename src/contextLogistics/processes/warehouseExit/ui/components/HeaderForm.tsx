@@ -5,10 +5,12 @@ import {
     useGetStorePipelineQuery
 } from '@shared/api'
 import { PERMISSIONS } from '@shared/application'
-import { CustomSelectDto } from '@shared/ui-library'
+import { CustomAutocomplete, CustomSelectDto } from '@shared/ui-library'
 import { usePermissions } from '@shared/ui/hooks'
-import { CreateWarehouseExitDTO, MovementOrder, State } from 'logiflowerp-sdk'
-import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form'
+import { CreateWarehouseExitDTO, EmployeeENTITY, MovementOrder, ScrapingSystem, State } from 'logiflowerp-sdk'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { Control, Controller, FieldErrors, UseFormGetValues, UseFormRegister } from 'react-hook-form'
+import { ReposicionAutomaticaDialog } from './ReposicionAutomaticaDialog'
 
 interface Props {
     control: Control<CreateWarehouseExitDTO, any>
@@ -16,12 +18,15 @@ interface Props {
     register: UseFormRegister<CreateWarehouseExitDTO>
     readOnly: boolean
     isLoading: boolean
+    reposicion: null | ScrapingSystem
+    setReposicion: Dispatch<SetStateAction<null | ScrapingSystem>>
+    getValues: UseFormGetValues<CreateWarehouseExitDTO>
 }
 
 export function CabeceraForm(props: Props) {
 
-    const { control, errors, readOnly, isLoading, register } = props
-
+    const { control, errors, readOnly, isLoading, register, reposicion, setReposicion, getValues } = props
+    const [open, setOpen] = useState(false);
     const [canCreateWarehouseExit] = usePermissions([PERMISSIONS.POST_WAREHOUSE_EXIT])
 
     const pipelineMovement = [{ $match: { movement: MovementOrder.SALIDA } }]
@@ -76,24 +81,23 @@ export function CabeceraForm(props: Props) {
                     )}
                 />
             </Grid>
-            <Grid size={{ md: 2 }} component='div'>
+            <Grid size={{ md: 4 }} component='div'>
                 <Controller
                     name='carrier'
                     control={control}
                     render={({ field }) => (
-                        <CustomSelectDto
-                            label='Personal'
-                            options={dataPersonnel ?? []}
-                            {...field}
-                            labelKey={['names', ' ', 'surnames', ' ', 'company.code']}
-                            valueKey='identity'
-                            margin='dense'
-                            error={!!errors.carrier}
+                        <CustomAutocomplete<EmployeeENTITY>
+                            loading={isLoadingPersonnel}
+                            options={dataPersonnel}
+                            error={!!errors.carrier || isErrorPersonnel}
                             helperText={errors.carrier?.message}
+                            value={dataPersonnel?.find((opt) => opt.identity === field.value?.identity) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
+                            label='Personal'
+                            getOptionLabel={(option) => `${option.identity} - ${option.names} ${option.surnames}`}
+                            isOptionEqualToValue={(option, value) => option._id === value._id}
+                            margin='dense'
                             readOnly={readOnly}
-                            autoFocus
-                            isLoading={isLoadingPersonnel}
-                            isError={isErrorPersonnel}
                         />
                     )}
                 />
@@ -111,24 +115,43 @@ export function CabeceraForm(props: Props) {
                     slotProps={{ input: { readOnly: readOnly } }}
                 />
             </Grid>
-            <Grid size={{ md: 1 }} component='div'>
-                {
-                    (!readOnly && canCreateWarehouseExit) && (
-                        <Button
-                            type='submit'
-                            variant='contained'
-                            color='primary'
-                            fullWidth
-                            sx={{ marginTop: 1 }}
-                            loading={isLoading}
-                            loadingIndicator={<CircularProgress size={24} color='warning' />}
-                            loadingPosition='center'
-                        >
-                            crear
-                        </Button>
-                    )
-                }
-            </Grid>
+            {
+                !readOnly &&
+                <>
+                    {
+                        true && (
+                            <Grid size={{ md: 1 }} component='div' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <ReposicionAutomaticaDialog
+                                    open={open}
+                                    selectedValue={reposicion}
+                                    setOpen={setOpen}
+                                    setSelectedValue={setReposicion}
+                                    getValues={getValues}
+                                    dataPersonnel={dataPersonnel ?? []}
+                                />
+                            </Grid>
+                        )
+                    }
+                    {
+                        canCreateWarehouseExit && (
+                            <Grid size={{ md: 1 }} component='div'>
+                                <Button
+                                    type='submit'
+                                    variant='contained'
+                                    color='primary'
+                                    fullWidth
+                                    sx={{ marginTop: 1 }}
+                                    loading={isLoading}
+                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                    loadingPosition='center'
+                                >
+                                    crear
+                                </Button>
+                            </Grid>
+                        )
+                    }
+                </>
+            }
         </Grid>
     )
 }

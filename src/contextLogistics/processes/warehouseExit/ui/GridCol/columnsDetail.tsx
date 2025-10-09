@@ -3,25 +3,31 @@ import { OrderDetailENTITY, ProducType } from 'logiflowerp-sdk'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import { Box, Tooltip } from '@mui/material'
 import DocumentScannerRoundedIcon from '@mui/icons-material/DocumentScannerRounded';
+import { CustomCellEdit } from '@shared/ui/ui-library';
 
 interface IParams {
     handleDeleteClick: (row: OrderDetailENTITY) => void
     handleScannClick: (row: OrderDetailENTITY) => void
+    handleAmoutClick: (row: OrderDetailENTITY) => void
+    PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID: boolean
 }
 
 export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] => {
-    const { handleScannClick, handleDeleteClick } = params
+    const {
+        handleScannClick,
+        handleDeleteClick,
+        handleAmoutClick,
+        PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID
+    } = params
     return [
         {
             field: 'position',
             headerName: 'Posición',
-            width: 80,
             type: 'number'
         },
         {
             field: 'itemCode',
             headerName: 'Código',
-            width: 105,
             valueGetter: (_value, row) => {
                 return row.item.itemCode
             }
@@ -29,7 +35,6 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
         {
             field: 'itemName',
             headerName: 'Nombre',
-            width: 300,
             valueGetter: (_value, row) => {
                 return row.item.itemName
             }
@@ -37,7 +42,6 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
         {
             field: 'uomCode',
             headerName: 'UM',
-            width: 80,
             valueGetter: (_value, row) => {
                 return row.item.uomCode
             }
@@ -45,7 +49,6 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
         {
             field: 'producType',
             headerName: 'Tipo',
-            width: 60,
             valueGetter: (_value, row) => {
                 return row.item.producType
             },
@@ -82,12 +85,10 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
         {
             field: 'lot',
             headerName: 'Lote',
-            width: 100,
         },
         {
             field: 'price',
             headerName: 'Precio',
-            width: 60,
             type: 'number',
             valueGetter: (_value, row) => {
                 return row.price.price
@@ -96,13 +97,20 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
         {
             field: 'amount',
             headerName: 'Cantidad',
-            width: 75,
-            type: 'number'
+            type: 'number',
+            renderCell: ({ value, row }) => {
+                return (
+                    <CustomCellEdit
+                        value={value}
+                        onClick={() => handleAmoutClick(row)}
+                        showIcon={PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID}
+                    />
+                )
+            }
         },
         {
             field: 'Acciones',
             type: 'actions',
-            width: 50,
             getActions: (params) => [
                 <GridActionsCellItem
                     icon={<DeleteForeverRoundedIcon color='error' />}

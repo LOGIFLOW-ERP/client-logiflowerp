@@ -90,6 +90,8 @@ interface IProps {
     loading?: boolean
     getRowId?: GridRowIdGetter | undefined
     buttonCreate?: boolean
+    showToolbar?: boolean
+    height?: string
 }
 
 export function CustomDataGrid(props: IProps) {
@@ -105,7 +107,9 @@ export function CustomDataGrid(props: IProps) {
         isCellEditable,
         loading,
         getRowId,
-        buttonCreate
+        buttonCreate,
+        showToolbar = true,
+        height = '85vh'
     } = props
 
     const apiRef = useGridApiRef()
@@ -129,7 +133,7 @@ export function CustomDataGrid(props: IProps) {
     return (
         <Box
             sx={{
-                height: '85vh',
+                height,
                 width: '100%',
                 '& .actions': {
                     color: 'text.secondary',
@@ -151,7 +155,7 @@ export function CustomDataGrid(props: IProps) {
                 slotProps={{
                     toolbar: { setRows, setRowModesModel, newRowTemplate, buttonCreate }
                 }}
-                showToolbar
+                showToolbar={showToolbar}
                 autoPageSize
                 density='compact'
                 onProcessRowUpdateError={(error) => {

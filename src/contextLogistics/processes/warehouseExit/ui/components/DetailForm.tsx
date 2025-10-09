@@ -2,7 +2,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import {
     useAddDetailWarehouseExitMutation,
-    useGetWarehouseStockPipelineQuery
+    useFindWithAvailableWarehouseStockQuery
 } from '@shared/api';
 import { CustomAutocomplete } from '@shared/ui-library';
 import { CreateWarehouseExitDetailDTO, State, WarehouseStockENTITY } from 'logiflowerp-sdk';
@@ -30,7 +30,7 @@ export function DetalleForm() {
     const [canWarehouseExitAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_ID])
 
     const pipelineWS = [{ $match: { state: State.ACTIVO, 'store.code': selectedDocument?.store.code } }]
-    const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS, error: errorWS } = useGetWarehouseStockPipelineQuery(pipelineWS)
+    const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS, error: errorWS } = useFindWithAvailableWarehouseStockQuery(pipelineWS)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseExitMutation()
 
     const onSubmit = async (data: CreateWarehouseExitDetailDTO) => {
@@ -80,6 +80,18 @@ export function DetalleForm() {
                         size='small'
                         slotProps={{ input: { readOnly: true } }}
                         value={watch('warehouseStock')?.lot ?? ''}
+                    />
+                </Grid>
+                <Grid size={{ md: 1 }} component='div'>
+                    <TextField
+                        label='Disponible'
+                        variant='outlined'
+                        type='number'
+                        fullWidth
+                        margin='dense'
+                        size='small'
+                        slotProps={{ input: { readOnly: true } }}
+                        value={watch('warehouseStock')?.available ?? ''}
                     />
                 </Grid>
                 <Grid size={{ md: 1.5 }} component='div'>

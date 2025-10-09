@@ -25,6 +25,10 @@ import Rotate90DegreesCcwRoundedIcon from '@mui/icons-material/Rotate90DegreesCc
 import WidgetsRoundedIcon from '@mui/icons-material/WidgetsRounded';
 import RecentActorsIcon from '@mui/icons-material/RecentActors';
 import { useTranslation } from 'react-i18next'
+import PostAddIcon from '@mui/icons-material/PostAdd';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import ListIcon from '@mui/icons-material/List';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -50,14 +54,19 @@ const iconMap: Record<string, React.ElementType> = {
     'Warehouse Stock': Inventory2RoundedIcon,
     'Employee Stock': RecentActorsIcon,
     'Employee Stock PEX': RecentActorsIcon,
+    'Liquidation Cms Order': PostAddIcon,
+    'Liquidation Win Order': AddTaskIcon,
+    'Toa Order': ListAltIcon,
+    'Win Order': ListIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null
+    toggleDrawer?: (newOpen: boolean) => () => void
 }
 
 const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline
 
-export function MenuContent({ selectedNode }: IProps) {
+export function MenuContent({ selectedNode, toggleDrawer }: IProps) {
 
     const navigate = useNavigate()
     const { enqueueSnackbar } = useSnackbar()
@@ -77,7 +86,7 @@ export function MenuContent({ selectedNode }: IProps) {
     return (
         <>
             <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
-                <List dense>
+                <List dense onClick={toggleDrawer ? toggleDrawer(false) : undefined}>
                     {
                         selectedNode
                             ? selectedNode.children.map((item, index) => {

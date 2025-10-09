@@ -17,7 +17,7 @@ export default function LayoutEmployeeStock() {
 
     const { enqueueSnackbar } = useSnackbar()
     const pipeline = [{ $match: {} }]
-    const { data, isLoading, isError } = useReportEmployeeStockQuery(pipeline)
+    const { data, isLoading, isError, error } = useReportEmployeeStockQuery(pipeline)
     const [_updateIStore, { isLoading: isLoadingUpdate }] = useUpdateEmployeeStockMutation()
 
     const handleEditClick = (row: EmployeeStockENTITYFlat) => {
@@ -30,7 +30,7 @@ export default function LayoutEmployeeStock() {
         }
     }
 
-    if (isError) return <CustomViewError />
+    if (isError) return <CustomViewError error={error} />
 
     return (
         <Box sx={{ height: 400, width: '100%' }}>
@@ -46,6 +46,7 @@ export default function LayoutEmployeeStock() {
                         "item_itemCode",
                         "item_itemName",
                         "item_uomCode",
+                        'lot',
                         "incomeAmount",
                         "amountReturned",
                         "ouputQuantity",
@@ -63,6 +64,7 @@ export default function LayoutEmployeeStock() {
                         amountReturned: 'Devolucion',
                         ouputQuantity: 'Despacho',
                         amountConsumed: 'Consumo',
+                        lot: 'Lote'
                     }
                 })}
                 disableRowSelectionOnClick

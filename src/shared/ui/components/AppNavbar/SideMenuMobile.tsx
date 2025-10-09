@@ -1,0 +1,109 @@
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Drawer, { drawerClasses } from '@mui/material/Drawer';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
+import MenuButton from './MenuButton';
+import { useStore } from '@shared/ui/hooks';
+import { useState } from 'react';
+import { SelectContent } from '../SideMenu/SelectContent';
+import { AuthUserDTO, MenuDTO } from 'logiflowerp-sdk';
+import { MenuContent } from '../SideMenu/MenuContent';
+import { useSignOutMutation } from '@shared/infrastructure/redux/api';
+import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+
+interface SideMenuMobileProps {
+	open: boolean | undefined;
+	toggleDrawer: (newOpen: boolean) => () => void;
+	setSelectedNode: React.Dispatch<React.SetStateAction<MenuDTO | null>>
+	selectedNode: MenuDTO | null
+}
+
+export function SideMenuMobile({ open, toggleDrawer, setSelectedNode, selectedNode }: SideMenuMobileProps) {
+
+	const { state: { user }, setState } = useStore('auth')
+	const [showBadge, _setShowBadge] = useState(false)
+	const [signOut, { isLoading }] = useSignOutMutation()
+	const navigate = useNavigate()
+	const { enqueueSnackbar } = useSnackbar()
+
+	const handleClickLogout = async () => {
+		try {
+			await signOut().unwrap()
+			// setAnchorEl(null)
+			setState({ isAuthenticated: false, user: new AuthUserDTO() })
+			navigate('/sign-in', { replace: true })
+		} catch (error: any) {
+			console.error(error)
+			enqueueSnackbar({ message: '¡Ocurrió un error!', variant: 'error' })
+		}
+	}
+
+	return (
+		<Drawer
+			anchor="right"
+			open={open}
+			onClose={toggleDrawer(false)}
+			sx={{
+				zIndex: (theme) => theme.zIndex.drawer + 1,
+				[`& .${drawerClasses.paper}`]: {
+					backgroundImage: 'none',
+					backgroundColor: 'background.paper',
+				},
+			}}
+		>
+			<Stack
+				sx={{
+					maxWidth: '70dvw',
+					height: '100%',
+				}}
+			>
+				<Stack direction="row" sx={{ p: 2, pb: 0, gap: 1 }}>
+					<Stack
+						direction="row"
+						sx={{ gap: 1, alignItems: 'center', flexGrow: 1, p: 1 }}
+					>
+						<Avatar
+							sizes="small"
+							alt="Riley Carter"
+							src="/static/images/avatar/7.jpg"
+							sx={{ width: 24, height: 24 }}
+						/>
+						<Typography
+							component='p'
+							variant='h6'
+						>
+							{user.names}
+						</Typography>
+					</Stack>
+					<MenuButton showBadge={showBadge}>
+						<NotificationsRoundedIcon />
+					</MenuButton>
+				</Stack>
+				<Divider />
+				<Stack sx={{ flexGrow: 1, px: 1, gap: 2 }}>
+					<SelectContent setSelectedNode={setSelectedNode} />
+					<Divider />
+					<MenuContent selectedNode={selectedNode} toggleDrawer={toggleDrawer} />
+					<Divider />
+				</Stack>
+				{/* <CardAlert /> */}
+				<Stack sx={{ p: 2 }}>
+					<Button
+						onClick={handleClickLogout}
+						variant="outlined"
+						fullWidth
+						startIcon={<LogoutRoundedIcon />}
+						loading={isLoading}
+					>
+						Salir
+					</Button>
+				</Stack>
+			</Stack>
+		</Drawer>
+	);
+}

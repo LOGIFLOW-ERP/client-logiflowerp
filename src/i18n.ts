@@ -27,6 +27,10 @@ i18n.use(initReactI18next).init({
                 Masters: 'Maestros',
                 Processes: 'Procesos',
                 Reports: 'Reportes',
+                'Liquidation Cms Order': 'Liquidación de Orden',
+                'Liquidation Win Order': 'Liq. Orden Win',
+                'Toa Order': 'Orden TOA',
+                'Win Order': 'Orden WIN',
             }
         },
         en: {

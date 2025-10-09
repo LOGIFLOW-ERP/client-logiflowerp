@@ -8,7 +8,7 @@ import {
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseExitENTITY, StateOrder } from 'logiflowerp-sdk'
-import { columns } from '../GridCol'
+import { columns } from '../GridCol/columns'
 import { Box, Typography } from '@mui/material'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
