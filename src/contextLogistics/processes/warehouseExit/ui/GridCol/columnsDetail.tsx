@@ -9,10 +9,16 @@ interface IParams {
     handleDeleteClick: (row: OrderDetailENTITY) => void
     handleScannClick: (row: OrderDetailENTITY) => void
     handleAmoutClick: (row: OrderDetailENTITY) => void
+    PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID: boolean
 }
 
 export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] => {
-    const { handleScannClick, handleDeleteClick, handleAmoutClick } = params
+    const {
+        handleScannClick,
+        handleDeleteClick,
+        handleAmoutClick,
+        PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID
+    } = params
     return [
         {
             field: 'position',
@@ -97,6 +103,7 @@ export const columnsDetail = (params: IParams): GridColDef<OrderDetailENTITY>[] 
                     <CustomCellEdit
                         value={value}
                         onClick={() => handleAmoutClick(row)}
+                        showIcon={PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID}
                     />
                 )
             }

@@ -8,6 +8,8 @@ import { useGridApiRef } from '@mui/x-data-grid'
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { Fallback } from '@app/ui/pages'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const InventoryDialog = lazy(() => import('../components/InventoryDialog').then(m => ({ default: m.InventoryDialog })))
@@ -19,6 +21,11 @@ export default function LayoutLiquidationOrder() {
     const [openAdd, setOpenAdd] = useState(false)
     const [openInventory, setOpenInventory] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
+    const [
+        PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
+    ] = usePermissions([
+        PERMISSIONS.PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
+    ])
 
     useEffect(() => {
         apiRef.current?.autosizeColumns({
@@ -56,24 +63,17 @@ export default function LayoutLiquidationOrder() {
             >
                 <DataGrid<WINOrderENTITY>
                     rows={data}
-                    // columns={columns({ handleChangeStatusClick, handleEditClick, PUT_PRODUCT_BY_ID, dataProductGroups })}
-                    columns={columns({ handleLiquidationClick, handleInventoryClick })}
+                    columns={columns({
+                        handleLiquidationClick,
+                        handleInventoryClick,
+                        PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
+                    })}
                     disableRowSelectionOnClick
-                    // slots={{
-                    //     toolbar: () => (
-                    //         <CustomToolbar
-                    //             setOpenAdd={setOpenAdd}
-                    //             AGREGAR_NUEVO_REGISTRO={POST_PRODUCT}
-                    //             children={<CustomFilters fetchProducts={fetchProducts} />}
-                    //         />
-                    //     ),
-                    // }}
                     showToolbar
                     getRowId={row => row._id}
                     density='compact'
                     apiRef={apiRef}
                     loading={isLoading}
-                // error={isError}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>

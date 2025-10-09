@@ -9,12 +9,16 @@ interface IParams {
     handleLiquidationClick: (row: TOAOrderENTITY) => void
     handleInventoryClick: (row: TOAOrderENTITY) => void
     // handleDeleteClick: (row: StoreENTITY) => Promise<void>
-    // PUT_STORE_BY_ID: boolean
+    PUT_LIQUIDATION_CMS_ORDER_ADD_INVENTORY_BY_ID: boolean
     // DELETE_STORE_BY_ID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<TOAOrderENTITY>[] => {
-    const { handleLiquidationClick, handleInventoryClick } = params
+    const {
+        handleLiquidationClick,
+        handleInventoryClick,
+        PUT_LIQUIDATION_CMS_ORDER_ADD_INVENTORY_BY_ID,
+    } = params
     return [
         {
             field: 'Acciones',
@@ -22,7 +26,7 @@ export const columns = (params: IParams): GridColDef<TOAOrderENTITY>[] => {
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []
                 // if (DELETE_STORE_BY_ID) {
-                if (true) {
+                if (PUT_LIQUIDATION_CMS_ORDER_ADD_INVENTORY_BY_ID) {
                     actions.push(
                         <GridActionsCellItem
                             key='liquidation'

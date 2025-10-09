@@ -22,10 +22,12 @@ export function DetailTable() {
     const [openEditAmountDetailDialog, setOpenEditAmountDetailDialog] = useState(false)
     const [
         canWarehouseExitAddSerialByID,
-        canWarehouseExitDeleteDetailByID
+        canWarehouseExitDeleteDetailByID,
+        PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID
     ] = usePermissions([
         PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_SERIAL_BY_ID,
-        PERMISSIONS.PUT_WAREHOUSE_EXIT_DELETE_DETAIL_BY_ID
+        PERMISSIONS.PUT_WAREHOUSE_EXIT_DELETE_DETAIL_BY_ID,
+        PERMISSIONS.PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID,
     ])
     const apiRef = useGridApiRef()
 
@@ -85,7 +87,12 @@ export function DetailTable() {
             <Box sx={{ height: '100%' }}>
                 <DataGrid<OrderDetailENTITY>
                     rows={selectedDocument?.detail}
-                    columns={columnsDetail({ handleScannClick, handleDeleteClick, handleAmoutClick })}
+                    columns={columnsDetail({
+                        handleScannClick,
+                        handleDeleteClick,
+                        handleAmoutClick,
+                        PUT_WAREHOUSE_EXIT_EDIT_AMOUNT_DETAIL_BY_ID
+                    })}
                     disableRowSelectionOnClick
                     getRowId={row => row.keyDetail}
                     loading={isLoadingDeleteDetail || isLoadingEditAmountDetail}

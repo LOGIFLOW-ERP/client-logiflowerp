@@ -1,8 +1,9 @@
-import { GridActionsCellItem, GridColDef } from '@mui/x-data-grid'
+import { GridActionsCellItem, GridActionsCellItemProps, GridColDef } from '@mui/x-data-grid'
 import { getDataState, WarehouseExitENTITY } from 'logiflowerp-sdk'
 import { CustomStatusOrder } from '@shared/ui-library'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import EditIcon from '@mui/icons-material/Edit'
+import { ReactElement } from 'react';
 
 interface IParams {
     handleDeleteClick: (row: WarehouseExitENTITY) => void
@@ -61,23 +62,28 @@ export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
         {
             field: 'Acciones',
             type: 'actions',
-            getActions: (params) => [
-                <GridActionsCellItem
-                    icon={<EditIcon color='info' />}
-                    label='Editar'
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />,
-                canDeleteWarehouseExitByID
-                    ?
+            getActions: (params) => {
+                const actions: ReactElement<GridActionsCellItemProps>[] = []
+                actions.push(
                     <GridActionsCellItem
-                        icon={<DeleteForeverRoundedIcon color='error' />}
-                        label='Eliminar'
-                        onClick={() => handleDeleteClick(params.row)}
+                        icon={<EditIcon color='info' />}
+                        label='Editar'
+                        onClick={() => handleEditClick(params.row)}
                         showInMenu
                     />
-                    : <></>,
-            ],
-        },
+                )
+                if (canDeleteWarehouseExitByID) {
+                    actions.push(
+                        <GridActionsCellItem
+                            icon={<DeleteForeverRoundedIcon color='error' />}
+                            label='Eliminar'
+                            onClick={() => handleDeleteClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                return actions
+            }
+        }
     ]
 }
