@@ -18,3 +18,4 @@ export * from './CustomButtonSearch';
 export * from './CustomMultipleSelectCheckmarks';
 export * from './CustomCellInfo';
 export * from './CustomCellEdit';
+export * from './CustomInputFileUpload';

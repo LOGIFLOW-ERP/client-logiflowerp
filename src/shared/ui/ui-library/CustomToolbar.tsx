@@ -9,22 +9,22 @@ import { ToolbarButtonColumnsFilter } from '../components/ToolbarButtonColumnsFi
 interface IProps {
     setOpenAdd?: Dispatch<SetStateAction<boolean>>
     AGREGAR_NUEVO_REGISTRO: boolean
-    // onSubmit?: React.FormEventHandler<HTMLFormElement>;
+    customInputFileUpload1?: React.ReactNode
     children?: React.ReactNode;
     handleAddClick?: () => void
 }
 
-export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children, handleAddClick }: IProps) {
+export function CustomToolbar(props: IProps) {
+    const {
+        setOpenAdd,
+        AGREGAR_NUEVO_REGISTRO,
+        customInputFileUpload1,
+        children,
+        handleAddClick
+    } = props
 
     const [filtersPanelOpen, setFiltersPanelOpen] = useState(false)
     const newPanelTriggerRef = useRef<HTMLButtonElement>(null)
-
-    // const handleFormSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    //     setFiltersPanelOpen(false)
-    //     if (onSubmit) {
-    //         onSubmit(e)
-    //     }
-    // }
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Escape') {
@@ -52,6 +52,11 @@ export function CustomToolbar({ setOpenAdd, AGREGAR_NUEVO_REGISTRO, children, ha
                         </ToolbarButton>
                     </Tooltip>
                 )
+            }
+            {
+                customInputFileUpload1
+                    ? customInputFileUpload1
+                    : null
             }
 
             <Box sx={{ flexGrow: 1 }} />

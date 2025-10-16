@@ -29,6 +29,7 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import ListIcon from '@mui/icons-material/List';
+import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 
 // const secondaryListItems = [
 //     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -58,6 +59,7 @@ const iconMap: Record<string, React.ElementType> = {
     'Liquidation Win Order': AddTaskIcon,
     'Toa Order': ListAltIcon,
     'Win Order': ListIcon,
+    'Cms Order': FormatListNumberedIcon,
 }
 interface IProps {
     selectedNode: MenuDTO | null
