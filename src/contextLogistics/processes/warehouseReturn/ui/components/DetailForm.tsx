@@ -29,14 +29,14 @@ export function DetalleForm() {
     const { enqueueSnackbar } = useSnackbar()
     const [canWarehouseReturnAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_ADD_DETAIL_BY_ID])
 
-    const pipelineWS = [{
+    const pipelineES = [{
         $match: {
             state: State.ACTIVO,
             'store.code': selectedDocument?.store.code,
             'employee.identity': selectedDocument?.carrier.identity
         }
     }]
-    const { data: dataES, isLoading: isLoadingES, isError: isErrorES, error: errorES } = useGetEmployeeStockPipelineQuery(pipelineWS)
+    const { data: dataES, isLoading: isLoadingES, isError: isErrorES, error: errorES } = useGetEmployeeStockPipelineQuery(pipelineES)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseReturnMutation()
 
     const onSubmit = async (data: CreateWarehouseReturnDetailDTO) => {
