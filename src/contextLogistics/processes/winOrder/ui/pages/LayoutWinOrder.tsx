@@ -14,6 +14,7 @@ const CustomFilters = lazy(() => import('../components/CustomFilters').then(m =>
 const InventoryDialog = lazy(() => import('../components/InventoryDialog').then(m => ({ default: m.InventoryDialog })))
 const DireccionClienteDialog = lazy(() => import('../components/DireccionClienteDialog').then(m => ({ default: m.DireccionClienteDialog })))
 const EstadosDialog = lazy(() => import('../components/EstadosDialog').then(m => ({ default: m.EstadosDialog })))
+const EstadosInternoDialog = lazy(() => import('../components/EstadosInternoDialog').then(m => ({ default: m.EstadosInternoDialog })))
 const hoy = new Date()
 const { start, end } = getMonthDateRange(hoy.getMonth() + 1)
 
@@ -26,6 +27,7 @@ export default function LayoutWinOrder() {
     const [openDireccionCliente, setOpenDireccionCliente] = useState(false)
     const [openInventory, setOpenInventory] = useState(false)
     const [openEstados, setOpenEstados] = useState(false)
+    const [openEstadosInterno, setOpenEstadosInterno] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
 
     useEffect(() => {
@@ -39,7 +41,9 @@ export default function LayoutWinOrder() {
         openInventory,
         pipelineData,
         openDireccionCliente,
-        openEstados
+        openEstados,
+        isFetchingPipeline,
+        openEstadosInterno
     ])
 
     const onSubmitFilter = async (pipeline: any[]) => {
@@ -67,6 +71,16 @@ export default function LayoutWinOrder() {
         }
     }
 
+    const handleEstadosInternoClick = (row: WINOrderENTITY) => {
+        try {
+            setSelectedRow(row)
+            setOpenEstadosInterno(true)
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
+    }
+
     const handleDireccionClienteClick = (row: WINOrderENTITY) => {
         try {
             setSelectedRow(row)
@@ -88,7 +102,12 @@ export default function LayoutWinOrder() {
             >
                 <DataGrid<WINOrderENTITY>
                     rows={rows}
-                    columns={columns({ handleInventoryClick, handleDireccionClienteClick, handleEstadosClick })}
+                    columns={columns({
+                        handleInventoryClick,
+                        handleDireccionClienteClick,
+                        handleEstadosClick,
+                        handleEstadosInternoClick
+                    })}
                     disableRowSelectionOnClick
                     sx={{
                         "& .MuiDataGrid-cell[data-field='estado']": {
@@ -142,6 +161,15 @@ export default function LayoutWinOrder() {
                             selectedRow={selectedRow!}
                         />
                     )
+                }
+                {
+                    (openEstadosInterno && selectedRow) ? (
+                        <EstadosInternoDialog
+                            open={openEstadosInterno}
+                            setOpen={setOpenEstadosInterno}
+                            selectedRow={selectedRow}
+                        />
+                    ) : null
                 }
             </Suspense>
         </>

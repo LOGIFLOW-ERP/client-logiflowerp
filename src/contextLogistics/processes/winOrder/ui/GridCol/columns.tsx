@@ -1,5 +1,5 @@
 import { GridActionsCellItem, GridActionsCellItemProps, GridColDef } from '@mui/x-data-grid'
-import { StateOrderWin, WINOrderENTITY } from 'logiflowerp-sdk'
+import { StateInternalOrderWin, StateOrderWin, WINOrderENTITY } from 'logiflowerp-sdk'
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline'
 import { ReactElement } from 'react'
 import { Chip } from '@mui/material'
@@ -9,10 +9,16 @@ interface IParams {
     handleInventoryClick: (row: WINOrderENTITY) => void
     handleDireccionClienteClick: (row: WINOrderENTITY) => void
     handleEstadosClick: (row: WINOrderENTITY) => void
+    handleEstadosInternoClick: (row: WINOrderENTITY) => void
 }
 
 export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
-    const { handleInventoryClick, handleDireccionClienteClick, handleEstadosClick } = params
+    const {
+        handleInventoryClick,
+        handleDireccionClienteClick,
+        handleEstadosClick,
+        handleEstadosInternoClick
+    } = params
     return [
         {
             field: 'Acciones',
@@ -147,6 +153,35 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
                     <CustomCellInfo
                         value={value}
                         onClick={() => handleEstadosClick(row)}
+                        sx={{
+                            backgroundColor,
+                            color,
+                            px: 1,
+                        }}
+                    />
+                )
+            }
+        },
+        {
+            field: 'estado_interno',
+            headerName: 'Estado Interno',
+            renderCell: ({ value, row }) => {
+                let backgroundColor = ''
+                let color = 'black'
+                switch (value) {
+                    case StateInternalOrderWin.FINALIZADA:
+                        backgroundColor = 'green'
+                        color = 'white'
+                        break
+
+                    default:
+                        break
+                }
+
+                return (
+                    <CustomCellInfo
+                        value={value}
+                        onClick={() => handleEstadosInternoClick(row)}
                         sx={{
                             backgroundColor,
                             color,
