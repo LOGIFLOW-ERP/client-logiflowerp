@@ -12,7 +12,7 @@ interface IProps {
 
 export function DireccionClienteDialog(props: IProps) {
 
-    const { open, setOpen, selectedRow } = props
+    const { open, setOpen } = props
 
     return (
         <CustomDialog

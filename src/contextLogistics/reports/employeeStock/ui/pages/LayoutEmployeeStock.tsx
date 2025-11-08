@@ -1,22 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
-import { useSnackbar } from 'notistack'
+// import { useSnackbar } from 'notistack'
 import {
     useReportEmployeeStockQuery,
     useUpdateEmployeeStockMutation
 } from '@shared/api'
 import { CustomViewError } from '@shared/ui-library'
 import { EmployeeStockENTITYFlat } from 'logiflowerp-sdk'
-import { getcolumns } from '../GridCol'
 import { columns_ } from '../GridCol/columns_'
 
 export default function LayoutEmployeeStock() {
 
-    const [_openEdit, setOpenEdit] = useState(false)
-    const [_selectedRow, setSelectedRow] = useState<EmployeeStockENTITYFlat>()
+    // const [_openEdit, setOpenEdit] = useState(false)
+    // const [_selectedRow, setSelectedRow] = useState<EmployeeStockENTITYFlat>()
 
-    const { enqueueSnackbar } = useSnackbar()
+    // const { enqueueSnackbar } = useSnackbar()
     const pipeline = [{ $match: {} }]
     const { data, isLoading, isError, error } = useReportEmployeeStockQuery(pipeline)
     const [_updateIStore, { isLoading: isLoadingUpdate }] = useUpdateEmployeeStockMutation()
@@ -32,15 +31,15 @@ export default function LayoutEmployeeStock() {
         isLoading
     ])
 
-    const handleEditClick = (row: EmployeeStockENTITYFlat) => {
-        try {
-            setSelectedRow(row)
-            setOpenEdit(true)
-        } catch (error: any) {
-            console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
-        }
-    }
+    // const handleEditClick = (row: EmployeeStockENTITYFlat) => {
+    //     try {
+    //         setSelectedRow(row)
+    //         setOpenEdit(true)
+    //     } catch (error: any) {
+    //         console.error(error)
+    //         enqueueSnackbar({ message: error.message, variant: 'error' })
+    //     }
+    // }
 
     if (isError) return <CustomViewError error={error} />
 
