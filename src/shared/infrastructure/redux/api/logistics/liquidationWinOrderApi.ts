@@ -28,6 +28,20 @@ export const liquidationWinOrderApi = createRepository<WINOrderENTITY, string>(p
                 ],
                 transformErrorResponse
             }),
+            sendReview: builder.mutation<void, string>({
+                query: (_id) => ({
+                    url: `${path}/send-review/${_id}`,
+                    method: 'PUT',
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                    provideTagGetDataLiquidationOrderEmployeeStock
+                ],
+                transformErrorResponse
+            }),
             deleteFile: builder.mutation<void, { _id: string, key: string }>({
                 query: ({ _id, key }) => ({
                     url: `${path}/delete-photos/${_id}`,
@@ -63,5 +77,6 @@ export const {
     useGetAllQuery: useGetLiquidationWINOrdersQuery,
     useAddInventoryMutation: useAddInventoryWINOrderMutation,
     useUploadFileMutation: useUploadFileWINOrderMutation,
-    useDeleteFileMutation: useDeleteFileWINOrderMutation
+    useDeleteFileMutation: useDeleteFileWINOrderMutation,
+    useSendReviewMutation: useSendReviewWINOrderMutation,
 } = liquidationWinOrderApi;

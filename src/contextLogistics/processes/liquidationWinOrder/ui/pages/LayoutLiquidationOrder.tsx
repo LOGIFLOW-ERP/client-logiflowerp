@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { DataGrid } from '@mui/x-data-grid/DataGrid'
-import { useGetLiquidationWINOrdersQuery } from '@shared/infrastructure/redux/api'
+import { useGetLiquidationWINOrdersQuery, useSendReviewWINOrderMutation } from '@shared/infrastructure/redux/api'
 import { WINOrderENTITY } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { CustomViewError } from '@shared/ui/ui-library'
@@ -21,6 +21,7 @@ export default function LayoutLiquidationOrder() {
     const [openAdd, setOpenAdd] = useState(false)
     const [openInventory, setOpenInventory] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
+    const [sendReview, { isLoading }] = useSendReviewWINOrderMutation()
     const [
         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
     ] = usePermissions([
@@ -38,7 +39,7 @@ export default function LayoutLiquidationOrder() {
                 setSelectedRow(row)
             }
         }
-    }, [data, selectedRow, openAdd, openInventory])
+    }, [data, selectedRow, openAdd, openInventory, isLoading, isFetching])
 
     const handleLiquidationClick = (row: WINOrderENTITY) => {
         try {
@@ -60,6 +61,16 @@ export default function LayoutLiquidationOrder() {
         }
     }
 
+    const handleSendReviewClick = async (row: WINOrderENTITY) => {
+        try {
+            await sendReview(row._id).unwrap()
+            enqueueSnackbar({ message: '¡Enviado a revisión!', variant: 'success' })
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
+    }
+
     if (isError) return <CustomViewError error={error} />
 
     return (
@@ -72,6 +83,7 @@ export default function LayoutLiquidationOrder() {
                     columns={columns({
                         handleLiquidationClick,
                         handleInventoryClick,
+                        handleSendReviewClick,
                         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
                     })}
                     disableRowSelectionOnClick
@@ -79,7 +91,7 @@ export default function LayoutLiquidationOrder() {
                     getRowId={row => row._id}
                     density='compact'
                     apiRef={apiRef}
-                    loading={isFetching}
+                    loading={isFetching || isLoading}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>

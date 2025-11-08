@@ -24,7 +24,7 @@ import { TreeItemProvider } from '@mui/x-tree-view/TreeItemProvider';
 import { TreeItemDragAndDropOverlay } from '@mui/x-tree-view/TreeItemDragAndDropOverlay';
 import { useTreeItemModel } from '@mui/x-tree-view/hooks';
 import { TreeViewBaseItem } from '@mui/x-tree-view/models';
-import { Button, Dialog, DialogContent, DialogTitle, IconButton, ImageListItem, useMediaQuery } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, ImageListItem, ImageListItemBar, useMediaQuery } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { FileDTO } from 'logiflowerp-sdk';
@@ -338,6 +338,33 @@ function MediaCardView(props: IPropsFileViewer) {
     const { open, setOpen, selectedItem } = props
     const theme = useTheme()
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+    const { enqueueSnackbar } = useSnackbar()
+
+    const handleDownload = async () => {
+        if (!selectedItem?.file?.key) return;
+
+        try {
+            const fileUrl = `${import.meta.env.VITE_FILES_R2_BASE_URL}/${selectedItem.file.key}`
+            const response = await fetch(fileUrl)
+            if (!response.ok) throw new Error('No se pudo descargar el archivo')
+
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+
+            const link = document.createElement('a')
+            link.href = url
+            link.download = `${selectedItem.label}-${Date.now()}`
+            document.body.appendChild(link)
+            link.click();
+            document.body.removeChild(link)
+
+            window.URL.revokeObjectURL(url)
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
     return (
         <Dialog
             fullScreen={fullScreen}
@@ -363,22 +390,32 @@ function MediaCardView(props: IPropsFileViewer) {
             <DialogContent>
                 <ImageListItem>
                     <img
-                        srcSet={`${`${import.meta.env.VITE_FILES_R2_BASE_URL}/${selectedItem.file?.key}`}?w=248&fit=crop&auto=format&dpr=2 2x`}
                         src={`${`${import.meta.env.VITE_FILES_R2_BASE_URL}/${selectedItem.file?.key}`}?w=248&fit=crop&auto=format`}
                         alt={selectedItem.label}
-                        loading="lazy"
+                        loading='lazy'
                     />
-                    {/* <ImageListItemBar position="below" title={item.author} /> */}
+                    <ImageListItemBar position='top' title={selectedItem.file?.uploadedBy} />
+                    <ImageListItemBar position='bottom' title={`${selectedItem.file ? (selectedItem.file?.size / (1024 * 1024)).toFixed(2) : 0} MB`} />
                 </ImageListItem>
             </DialogContent>
-            {/* <DialogActions>
-                <Button autoFocus onClick={handleClose}>
-                    Disagree
+            <DialogActions>
+                <Button
+                    component='a'
+                    autoFocus
+                    href={`${import.meta.env.VITE_FILES_R2_BASE_URL}/${selectedItem?.file?.key}`}
+                    download={selectedItem.label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Ampliar
                 </Button>
-                <Button onClick={() => setOpen(false)} autoFocus>
-                    Cerrar
+                <Button
+                    onClick={handleDownload}
+                    autoFocus
+                >
+                    Descargar
                 </Button>
-            </DialogActions> */}
+            </DialogActions>
         </Dialog>
     )
 }
@@ -392,7 +429,7 @@ interface IProps {
     loading?: boolean
 }
 
-export function FileExplorer(props: IProps) {
+export function CustomFileExplorer(props: IProps) {
     const { model, files, handleFileChange, handleFileDelete, loading } = props
     const [selectedItem, setSelectedItem] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps> | null>(null)
     const [isLeaf, setIsLeaf] = React.useState<boolean>(false)
@@ -409,6 +446,10 @@ export function FileExplorer(props: IProps) {
             if (nodeFile) {
                 node.file = nodeFile
             }
+            if (node.id === selectedItem?.id) {
+                setSelectedItem(node)
+            }
+            setIsLeaf(_isLeaf(node))
             if (node.children) {
                 attachFilesToTree(node.children, files)
             }
@@ -444,7 +485,6 @@ export function FileExplorer(props: IProps) {
                 throw new Error('Ocurrió un error al eliminar archivo.')
             }
             await handleFileDelete(selectedItem.file.key)
-            setSelectedItem(prev => prev ? ({ ...prev, file: undefined }) : null)
             enqueueSnackbar({ message: '¡Archivo eliminado!', variant: 'info' })
         } catch (error) {
             console.error(error)
@@ -469,7 +509,7 @@ export function FileExplorer(props: IProps) {
             <Box>
                 <Box>
                     {
-                        isLeaf
+                        (isLeaf && selectedItem)
                             ? <Box component='div' style={{ display: 'flex', gap: 4 }}>
                                 {
                                     !selectedItem?.file
