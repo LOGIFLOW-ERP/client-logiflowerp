@@ -5,12 +5,16 @@ import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columnsInventory } from '../GridCol/columnsInventory'
 import { Box } from '@mui/material'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
-import { useUploadFileWINOrderMutation } from '@shared/infrastructure/redux/api'
+import {
+    useDeleteFileWINOrderMutation,
+    useUploadFileWINOrderMutation
+} from '@shared/infrastructure/redux/api'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
     selectedRow: WINOrderENTITY
+    loadingData: boolean
 }
 
 const model: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
@@ -39,15 +43,20 @@ const model: TreeViewBaseItem<ExtendedTreeItemProps>[] = [
 
 export function InventoryDialog(props: IProps) {
 
-    const { open, setOpen, selectedRow } = props
+    const { open, setOpen, selectedRow, loadingData } = props
     const apiRef = useGridApiRef()
     const [uploadFile, { isLoading }] = useUploadFileWINOrderMutation()
+    const [deleteFile, { isLoading: isLoadingDeleteFile }] = useDeleteFileWINOrderMutation()
 
     const handleFileChange = async (file: File, selectedItem: TreeViewBaseItem<ExtendedTreeItemProps>) => {
         const formData = new FormData()
         formData.append('file', file)
         formData.append('id', selectedItem.id)
         await uploadFile({ _id: selectedRow._id, formData }).unwrap()
+    }
+
+    const handleFileDelete = async (key: string) => {
+        await deleteFile({ _id: selectedRow._id, key: key }).unwrap()
     }
 
     return (
@@ -71,7 +80,8 @@ export function InventoryDialog(props: IProps) {
                     model={model}
                     files={selectedRow.fotos}
                     handleFileChange={handleFileChange}
-                    loading={isLoading}
+                    handleFileDelete={handleFileDelete}
+                    loading={isLoading || isLoadingDeleteFile || loadingData}
                 />
                 <DataGrid<InventoryWinDTO>
                     rows={selectedRow.inventory}

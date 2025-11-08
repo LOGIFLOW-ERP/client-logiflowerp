@@ -388,11 +388,12 @@ interface IProps {
     model: TreeViewBaseItem<ExtendedTreeItemProps>[]
     files: FileDTO[]
     handleFileChange: (file: File, selectedItem: TreeViewBaseItem<ExtendedTreeItemProps>) => Promise<void>
+    handleFileDelete: (key: string) => Promise<void>
     loading?: boolean
 }
 
 export function FileExplorer(props: IProps) {
-    const { model, files, handleFileChange, loading } = props
+    const { model, files, handleFileChange, handleFileDelete, loading } = props
     const [selectedItem, setSelectedItem] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps> | null>(null)
     const [isLeaf, setIsLeaf] = React.useState<boolean>(false)
     const [items, setItems] = React.useState<TreeViewBaseItem<ExtendedTreeItemProps>[]>([])
@@ -439,11 +440,12 @@ export function FileExplorer(props: IProps) {
 
     const _handleFileDelete = async () => {
         try {
-            if (!selectedItem) {
-                throw new Error('No se seleccionó ningún archivo')
+            if (!selectedItem || !selectedItem.file) {
+                throw new Error('Ocurrió un error al eliminar archivo.')
             }
-            // await handleFileChange(file, selectedItem)
-            enqueueSnackbar({ message: '¡Archivo eliminado!', variant: 'success' })
+            await handleFileDelete(selectedItem.file.key)
+            setSelectedItem(prev => prev ? ({ ...prev, file: undefined }) : null)
+            enqueueSnackbar({ message: '¡Archivo eliminado!', variant: 'info' })
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })

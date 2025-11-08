@@ -15,7 +15,7 @@ const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ defa
 const InventoryDialog = lazy(() => import('../components/InventoryDialog').then(m => ({ default: m.InventoryDialog })))
 
 export default function LayoutLiquidationOrder() {
-    const { data, isError, error, isLoading } = useGetLiquidationWINOrdersQuery()
+    const { data, isError, error, isFetching } = useGetLiquidationWINOrdersQuery()
     const apiRef = useGridApiRef()
     const { enqueueSnackbar } = useSnackbar()
     const [openAdd, setOpenAdd] = useState(false)
@@ -79,7 +79,7 @@ export default function LayoutLiquidationOrder() {
                     getRowId={row => row._id}
                     density='compact'
                     apiRef={apiRef}
-                    loading={isLoading}
+                    loading={isFetching}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>
@@ -98,6 +98,7 @@ export default function LayoutLiquidationOrder() {
                             open={openInventory}
                             setOpen={setOpenInventory}
                             selectedRow={selectedRow!}
+                            loadingData={isFetching}
                         />
                     )
                 }
