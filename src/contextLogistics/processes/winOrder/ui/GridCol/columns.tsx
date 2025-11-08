@@ -173,6 +173,10 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
                         backgroundColor = 'green'
                         color = 'white'
                         break
+                    case StateInternalOrderWin.REVISION:
+                        backgroundColor = 'red'
+                        color = 'white'
+                        break
 
                     default:
                         break

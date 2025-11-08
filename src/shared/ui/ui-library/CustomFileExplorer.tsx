@@ -424,8 +424,8 @@ function MediaCardView(props: IPropsFileViewer) {
 interface IProps {
     model: TreeViewBaseItem<ExtendedTreeItemProps>[]
     files: FileDTO[]
-    handleFileChange: (file: File, selectedItem: TreeViewBaseItem<ExtendedTreeItemProps>) => Promise<void>
-    handleFileDelete: (key: string) => Promise<void>
+    handleFileChange?: (file: File, selectedItem: TreeViewBaseItem<ExtendedTreeItemProps>) => Promise<void>
+    handleFileDelete?: (key: string) => Promise<void>
     loading?: boolean
 }
 
@@ -471,7 +471,9 @@ export function CustomFileExplorer(props: IProps) {
                 throw new Error('No se seleccionó ningún archivo')
             }
             const file = files[0]
-            await handleFileChange(file, selectedItem)
+            if (handleFileChange) {
+                await handleFileChange(file, selectedItem)
+            }
             enqueueSnackbar({ message: '¡Archivo guardado!', variant: 'success' })
         } catch (error) {
             console.error(error)
@@ -484,7 +486,9 @@ export function CustomFileExplorer(props: IProps) {
             if (!selectedItem || !selectedItem.file) {
                 throw new Error('Ocurrió un error al eliminar archivo.')
             }
-            await handleFileDelete(selectedItem.file.key)
+            if (handleFileDelete) {
+                await handleFileDelete(selectedItem.file.key)
+            }
             enqueueSnackbar({ message: '¡Archivo eliminado!', variant: 'info' })
         } catch (error) {
             console.error(error)
@@ -513,22 +517,27 @@ export function CustomFileExplorer(props: IProps) {
                             ? <Box component='div' style={{ display: 'flex', gap: 4 }}>
                                 {
                                     !selectedItem?.file
-                                        ? (
-                                            <Button
-                                                component='label'
-                                                role={undefined}
-                                                variant='contained'
-                                                tabIndex={-1}
-                                                size='small'
-                                                loading={loading}
-                                            >
-                                                <CloudUploadIcon fontSize='small' />
-                                                <VisuallyHiddenInput
-                                                    type='file'
-                                                    onChange={(event) => _handleFileChange(event.target.files)}
-                                                />
-                                            </Button>
-                                        ) : (
+                                        ? <>
+                                            {
+                                                handleFileChange
+                                                    ?
+                                                    <Button
+                                                        component='label'
+                                                        role={undefined}
+                                                        variant='contained'
+                                                        tabIndex={-1}
+                                                        size='small'
+                                                        loading={loading}
+                                                    >
+                                                        <CloudUploadIcon fontSize='small' />
+                                                        <VisuallyHiddenInput
+                                                            type='file'
+                                                            onChange={(event) => _handleFileChange(event.target.files)}
+                                                        />
+                                                    </Button>
+                                                    : null
+                                            }
+                                        </> : (
                                             <>
                                                 <Button
                                                     component='label'
@@ -542,18 +551,22 @@ export function CustomFileExplorer(props: IProps) {
                                                 >
                                                     <VisibilityIcon fontSize='small' />
                                                 </Button>
-                                                <Button
-                                                    component='label'
-                                                    role={undefined}
-                                                    variant='contained'
-                                                    tabIndex={-1}
-                                                    size='small'
-                                                    loading={loading}
-                                                    onClick={_handleFileDelete}
-                                                    color='error'
-                                                >
-                                                    <DeleteIcon fontSize='small' />
-                                                </Button>
+                                                {
+                                                    handleFileDelete
+                                                        ? <Button
+                                                            component='label'
+                                                            role={undefined}
+                                                            variant='contained'
+                                                            tabIndex={-1}
+                                                            size='small'
+                                                            loading={loading}
+                                                            onClick={_handleFileDelete}
+                                                            color='error'
+                                                        >
+                                                            <DeleteIcon fontSize='small' />
+                                                        </Button>
+                                                        : null
+                                                }
                                             </>
                                         )
                                 }
