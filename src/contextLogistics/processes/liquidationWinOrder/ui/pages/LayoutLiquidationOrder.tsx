@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { DataGrid } from '@mui/x-data-grid/DataGrid'
-import { useGetLiquidationWINOrdersQuery } from '@shared/infrastructure/redux/api'
+import { useGetLiquidationWINOrdersQuery, useSendReviewWINOrderMutation } from '@shared/infrastructure/redux/api'
 import { WINOrderENTITY } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { CustomViewError } from '@shared/ui/ui-library'
@@ -15,12 +15,13 @@ const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ defa
 const InventoryDialog = lazy(() => import('../components/InventoryDialog').then(m => ({ default: m.InventoryDialog })))
 
 export default function LayoutLiquidationOrder() {
-    const { data, isError, error, isLoading } = useGetLiquidationWINOrdersQuery()
+    const { data, isError, error, isFetching } = useGetLiquidationWINOrdersQuery()
     const apiRef = useGridApiRef()
     const { enqueueSnackbar } = useSnackbar()
     const [openAdd, setOpenAdd] = useState(false)
     const [openInventory, setOpenInventory] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
+    const [sendReview, { isLoading }] = useSendReviewWINOrderMutation()
     const [
         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
     ] = usePermissions([
@@ -32,7 +33,13 @@ export default function LayoutLiquidationOrder() {
             includeHeaders: true,
             includeOutliers: true,
         })
-    }, [data, selectedRow, openAdd, openInventory])
+        if (selectedRow && data) {
+            const row = data.find(e => e._id === selectedRow._id)
+            if (row) {
+                setSelectedRow(row)
+            }
+        }
+    }, [data, selectedRow, openAdd, openInventory, isLoading, isFetching])
 
     const handleLiquidationClick = (row: WINOrderENTITY) => {
         try {
@@ -54,6 +61,16 @@ export default function LayoutLiquidationOrder() {
         }
     }
 
+    const handleSendReviewClick = async (row: WINOrderENTITY) => {
+        try {
+            await sendReview(row._id).unwrap()
+            enqueueSnackbar({ message: '¡Enviado a revisión!', variant: 'success' })
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
+    }
+
     if (isError) return <CustomViewError error={error} />
 
     return (
@@ -66,6 +83,7 @@ export default function LayoutLiquidationOrder() {
                     columns={columns({
                         handleLiquidationClick,
                         handleInventoryClick,
+                        handleSendReviewClick,
                         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
                     })}
                     disableRowSelectionOnClick
@@ -73,7 +91,7 @@ export default function LayoutLiquidationOrder() {
                     getRowId={row => row._id}
                     density='compact'
                     apiRef={apiRef}
-                    loading={isLoading}
+                    loading={isFetching || isLoading}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>
@@ -92,6 +110,7 @@ export default function LayoutLiquidationOrder() {
                             open={openInventory}
                             setOpen={setOpenInventory}
                             selectedRow={selectedRow!}
+                            loadingData={isFetching}
                         />
                     )
                 }
