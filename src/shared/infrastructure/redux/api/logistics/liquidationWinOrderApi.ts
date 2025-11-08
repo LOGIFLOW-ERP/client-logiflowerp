@@ -27,6 +27,20 @@ export const liquidationWinOrderApi = createRepository<WINOrderENTITY, string>(p
                     provideTagGetDataLiquidationOrderEmployeeStock
                 ],
                 transformErrorResponse
+            }),
+            uploadFile: builder.mutation<WINOrderENTITY, { _id: string, formData: FormData }>({
+                query: ({ formData, _id }) => ({
+                    url: `${path}/upload-photos/${_id}`,
+                    method: 'POST',
+                    body: formData,
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` }
+                ],
+                transformErrorResponse
             })
         })
     })
@@ -34,4 +48,5 @@ export const liquidationWinOrderApi = createRepository<WINOrderENTITY, string>(p
 export const {
     useGetAllQuery: useGetLiquidationWINOrdersQuery,
     useAddInventoryMutation: useAddInventoryWINOrderMutation,
+    useUploadFileMutation: useUploadFileWINOrderMutation
 } = liquidationWinOrderApi;

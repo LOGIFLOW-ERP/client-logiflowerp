@@ -32,6 +32,12 @@ export default function LayoutLiquidationOrder() {
             includeHeaders: true,
             includeOutliers: true,
         })
+        if (selectedRow && data) {
+            const row = data.find(e => e._id === selectedRow._id)
+            if (row) {
+                setSelectedRow(row)
+            }
+        }
     }, [data, selectedRow, openAdd, openInventory])
 
     const handleLiquidationClick = (row: WINOrderENTITY) => {
