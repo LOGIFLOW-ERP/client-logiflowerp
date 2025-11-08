@@ -13,7 +13,7 @@ interface IProps {
 
 export function InventoryDialog(props: IProps) {
 
-    const { open, setOpen, selectedRow } = props
+    const { open, setOpen } = props
     const apiRef = useGridApiRef()
 
     return (

@@ -58,7 +58,7 @@ export function CustomRichTreeView(props: IProps) {
 	const apiRef = useTreeViewApiRef()
 
 	const handleItemSelectionToggle = (
-		_event: React.SyntheticEvent,
+		_event: React.SyntheticEvent<Element, Event> | null,
 		itemId: string,
 		isSelected: boolean,
 	) => {
@@ -66,7 +66,7 @@ export function CustomRichTreeView(props: IProps) {
 	}
 
 	const handleSelectedItemsChange = (
-		_event: React.SyntheticEvent,
+		_event: React.SyntheticEvent<Element, Event> | null,
 		newSelectedItems: string[],
 	) => {
 		setSelectedItems(newSelectedItems)
