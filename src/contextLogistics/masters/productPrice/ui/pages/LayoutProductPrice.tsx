@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { ProductPriceENTITY } from 'logiflowerp-sdk'
 import {
 	DataGrid,
@@ -15,6 +15,7 @@ import { columns } from '../GridCol'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Box } from '@mui/material'
+import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
@@ -97,24 +98,26 @@ export default function LayoutProductPrice() {
 					loading={isLoading || isLoadingDelete || isLoadingProducts}
 				/>
 			</Box>
-			{
-				openAdd && (
-					<AddDialog
-						open={openAdd}
-						setOpen={setOpenAdd}
-						dataProducts={dataProducts}
-					/>
-				)
-			}
-			{
-				(openEdit && selectedRow) && (
-					<EditDialog
-						open={openEdit}
-						setOpen={setOpenEdit}
-						row={selectedRow}
-					/>
-				)
-			}
+			<Suspense fallback={<Fallback />}>
+				{
+					(openAdd && dataProducts) && (
+						<AddDialog
+							open={openAdd}
+							setOpen={setOpenAdd}
+							dataProducts={dataProducts}
+						/>
+					)
+				}
+				{
+					(openEdit && selectedRow) && (
+						<EditDialog
+							open={openEdit}
+							setOpen={setOpenEdit}
+							row={selectedRow}
+						/>
+					)
+				}
+			</Suspense>
 		</>
 	)
 }
