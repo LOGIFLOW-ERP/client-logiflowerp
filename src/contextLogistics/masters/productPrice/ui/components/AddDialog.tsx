@@ -12,7 +12,7 @@ const resolver = classValidatorResolver(CreateProductPriceDTO)
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
-    dataProducts?: ProductENTITY[]
+    dataProducts: ProductENTITY[]
 }
 
 export function AddDialog(props: IProps) {
@@ -72,7 +72,13 @@ export function AddDialog(props: IProps) {
                     margin='normal'
                     size='small'
                     type="number"
-                    {...register('price', { valueAsNumber: true })}
+                    slotProps={{
+                        htmlInput: { step: 'any' },
+                    }}
+                    {...register('price', {
+                        setValueAs: (v) =>
+                            v === '' ? undefined : parseFloat(v.toString().replace(',', '.')),
+                    })}
                     error={!!errors.price}
                     helperText={errors.price?.message}
                 />
