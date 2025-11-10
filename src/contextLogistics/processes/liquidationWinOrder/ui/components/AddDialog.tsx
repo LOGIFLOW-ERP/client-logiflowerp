@@ -127,7 +127,13 @@ export function AddDialog(props: IProps) {
                             margin='dense'
                             size='small'
                             type="number"
-                            {...register('quantity', { valueAsNumber: true })}
+                            slotProps={{
+                                htmlInput: { step: 'any' },
+                            }}
+                            {...register('quantity', {
+                                setValueAs: (v) =>
+                                    v === '' ? undefined : parseFloat(v.toString().replace(',', '.')),
+                            })}
                             error={!!errors.quantity}
                             helperText={errors.quantity?.message}
                         />

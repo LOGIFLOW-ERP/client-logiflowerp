@@ -124,7 +124,13 @@ export function AddDialog(props: IProps) {
                     margin='normal'
                     size='small'
                     type="number"
-                    {...register('minLevel', { valueAsNumber: true })}
+                    slotProps={{
+                        htmlInput: { step: 'any' },
+                    }}
+                    {...register('minLevel', {
+                        setValueAs: (v) =>
+                            v === '' ? undefined : parseFloat(v.toString().replace(',', '.')),
+                    })}
                     error={!!errors.minLevel}
                     helperText={errors.minLevel?.message}
                 />
@@ -135,7 +141,13 @@ export function AddDialog(props: IProps) {
                     margin='normal'
                     size='small'
                     type="number"
-                    {...register('maxLevel', { valueAsNumber: true })}
+                    slotProps={{
+                        htmlInput: { step: 'any' },
+                    }}
+                    {...register('maxLevel', {
+                        setValueAs: (v) =>
+                            v === '' ? undefined : parseFloat(v.toString().replace(',', '.')),
+                    })}
                     error={!!errors.maxLevel}
                     helperText={errors.maxLevel?.message}
                 />

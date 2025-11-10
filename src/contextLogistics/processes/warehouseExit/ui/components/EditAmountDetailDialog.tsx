@@ -76,7 +76,13 @@ export function EditAmountDetailDialog(props: IProps) {
                         margin='dense'
                         size='small'
                         type="number"
-                        {...register('amount', { valueAsNumber: true })}
+                        slotProps={{
+                            htmlInput: { step: 'any' },
+                        }}
+                        {...register('amount', {
+                            setValueAs: (v) =>
+                                v === '' ? undefined : parseFloat(v.toString().replace(',', '.')),
+                        })}
                         error={!!errors.amount}
                         helperText={errors.amount?.message}
                     />

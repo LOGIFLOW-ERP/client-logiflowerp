@@ -53,7 +53,13 @@ export function EditDialog(props: IProps) {
                     margin='normal'
                     size='small'
                     type="number"
-                    {...register('price', { valueAsNumber: true })}
+                    slotProps={{
+                        htmlInput: { step: 'any' },
+                    }}
+                    {...register('price', {
+                        setValueAs: (v) =>
+                            v === '' ? undefined : parseFloat(v.toString().replace(',', '.')),
+                    })}
                     error={!!errors.price}
                     helperText={errors.price?.message}
                 />
