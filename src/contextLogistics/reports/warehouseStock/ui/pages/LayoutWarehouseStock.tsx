@@ -5,24 +5,23 @@ import { useSnackbar } from 'notistack'
 import {
 	useReportWarehouseStockQuery
 } from '@shared/api'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { Paper, Typography } from '@mui/material'
 import { Fallback } from '@app/ui/pages'
+import { useExportExcel } from '@shared/ui/hooks'
 
 const WarehouseStockSerialDialog = lazy(() => import('../components/WarehouseStockSerialDialog').then(m => ({ default: m.WarehouseStockSerialDialog })))
 
 
 export default function LayoutWarehouseStock() {
-
-	const [openAdd] = useState(false)
-
 	const [openWarehouseStockSerialDialog, setOpenWarehouseStockSerialDialog] = useState(false)
 
 	const [_selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
 
 	const apiRef = useGridApiRef()
+	const { exportExcel } = useExportExcel()
 
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: {} }]
@@ -34,7 +33,7 @@ export default function LayoutWarehouseStock() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openAdd])
+	}, [data, openWarehouseStockSerialDialog, isLoading])
 
 	const handleScannClick = (row: WarehouseStockENTITYFlat) => {
 		try {
@@ -44,6 +43,12 @@ export default function LayoutWarehouseStock() {
 			console.error(error)
 			enqueueSnackbar({ message: error.message, variant: 'error' })
 		}
+	}
+
+	const handleExportExcelClick = () => {
+		if (!apiRef.current) return
+		const csv = apiRef.current.getDataAsCsv()
+		exportExcel(csv, 'Stock_Almacen')
 	}
 
 	if (isError) return <CustomViewError />
@@ -65,6 +70,14 @@ export default function LayoutWarehouseStock() {
 						autoPageSize
 						density='compact'
 						apiRef={apiRef}
+						slots={{
+							toolbar: () => (
+								<CustomToolbar
+									AGREGAR_NUEVO_REGISTRO={false}
+									handleExportExcelClick={handleExportExcelClick}
+								/>
+							)
+						}}
 					/>
 				</Box>
 			</Paper>

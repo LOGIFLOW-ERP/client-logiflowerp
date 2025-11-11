@@ -12,6 +12,7 @@ interface IProps {
     customInputFileUpload1?: React.ReactNode
     children?: React.ReactNode;
     handleAddClick?: () => void
+    handleExportExcelClick?: () => void
 }
 
 export function CustomToolbar(props: IProps) {
@@ -20,7 +21,8 @@ export function CustomToolbar(props: IProps) {
         AGREGAR_NUEVO_REGISTRO,
         customInputFileUpload1,
         children,
-        handleAddClick
+        handleAddClick,
+        handleExportExcelClick
     } = props
 
     const [filtersPanelOpen, setFiltersPanelOpen] = useState(false)
@@ -122,7 +124,9 @@ export function CustomToolbar(props: IProps) {
 
             <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.5 }} />
 
-            <ToolbarButtonExportSearch />
+            <ToolbarButtonExportSearch
+                handleExportExcelClick={handleExportExcelClick}
+            />
         </Toolbar>
     )
 }

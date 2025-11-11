@@ -1,9 +1,9 @@
-import { CustomGridToolbarInputFileUpload } from "@shared/ui/ui-library"
+import { CustomInputFileUpload } from "@shared/ui/ui-library"
 import { useSnackbar } from "notistack"
 import * as XLSX from 'xlsx'
 import { convertExcelDate } from 'logiflowerp-sdk'
 
-export function InputFileUploadOrder() {
+export function InputFileUploadDetail() {
 
     const { enqueueSnackbar } = useSnackbar()
 
@@ -16,9 +16,10 @@ export function InputFileUploadOrder() {
             const file = files[0]
             const fileType = file.type
 
-            const isXLS = fileType === 'application/vnd.ms-excel'
-            if (!isXLS) {
-                throw new Error('El archivo no es un Excel válido (.xls)')
+            const isExcel = fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; // .xlsx
+
+            if (!isExcel) {
+                throw new Error('El archivo no es un Excel válido (.xlsx)');
             }
 
             const reader = new FileReader();
@@ -52,33 +53,34 @@ export function InputFileUploadOrder() {
                 }
 
                 const [headers, ...dataRows] = rows
+                console.log(headers)
 
-                const jsonArray = dataRows.map((row) => {
-                    const obj: Record<string, any> = {}
-                    headers.forEach((header: string, i: number) => {
-                        if ([
-                            'fechorasig',
-                            'fechorprg',
-                            'fechorliq',
-                            'fechorinf',
-                            'fechorreg',
-                            'fechorfin',
-                            'fecregratn',
-                            'fecprg_mm',
-                            'fecvalliq',
-                            'fecenvgo',
-                        ].includes(header)) {
-                            obj[header] = row[i] === null ? new Date(0) : convertExcelDate(row[i])
-                        } else if (typeof row[i] === 'string') {
-                            obj[header] = row[i].trim()
-                        } else {
-                            obj[header] = row[i]
-                        }
-                    })
-                    return obj
-                })
+                // const jsonArray = dataRows.map((row) => {
+                //     const obj: Record<string, any> = {}
+                //     headers.forEach((header: string, i: number) => {
+                //         if ([
+                //             'fechorasig',
+                //             'fechorprg',
+                //             'fechorliq',
+                //             'fechorinf',
+                //             'fechorreg',
+                //             'fechorfin',
+                //             'fecregratn',
+                //             'fecprg_mm',
+                //             'fecvalliq',
+                //             'fecenvgo',
+                //         ].includes(header)) {
+                //             obj[header] = row[i] === null ? new Date(0) : convertExcelDate(row[i])
+                //         } else if (typeof row[i] === 'string') {
+                //             obj[header] = row[i].trim()
+                //         } else {
+                //             obj[header] = row[i]
+                //         }
+                //     })
+                //     return obj
+                // })
 
-                console.log('✅ JSON final:', jsonArray)
+                // console.log('✅ JSON final:', jsonArray)
             }
             reader.readAsArrayBuffer(file)
 
@@ -89,10 +91,10 @@ export function InputFileUploadOrder() {
     }
 
     return (
-        <CustomGridToolbarInputFileUpload
-            titleTooltip='Subir Orden CMS'
+        <CustomInputFileUpload
+            titleTooltip='Subir Detalle'
             handleFileChange={handleFileChange}
-            accept='.xls'
+            accept='.xlsx'
         />
     )
 }

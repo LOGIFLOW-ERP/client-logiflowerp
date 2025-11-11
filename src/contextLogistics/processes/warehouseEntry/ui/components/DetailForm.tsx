@@ -8,6 +8,7 @@ import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { usePermissions, useStore } from '@shared/ui/hooks';
 import { PERMISSIONS } from '@shared/application';
+import { InputFileUploadDetail } from './InputFileUploadDetail';
 
 const resolver = classValidatorResolver(CreateOrderDetailDTO)
 
@@ -79,7 +80,7 @@ export function DetalleForm() {
                         helperText={errors.lot?.message}
                     />
                 </Grid>
-                <Grid size={{ md: 1.5 }} component='div'>
+                <Grid size={{ md: 1 }} component='div'>
                     <TextField
                         label='Cantidad'
                         variant='outlined'
@@ -98,9 +99,9 @@ export function DetalleForm() {
                         helperText={errors.amount?.message}
                     />
                 </Grid>
-                <Grid size={{ md: 1 }} component='div'>
-                    {
-                        canWarehouseEntryAddDetailByID && (
+                {
+                    canWarehouseEntryAddDetailByID && (
+                        <Grid size={{ md: 1 }} component='div'>
                             <Button
                                 type='submit'
                                 variant='contained'
@@ -113,9 +114,16 @@ export function DetalleForm() {
                             >
                                 <AddRoundedIcon />
                             </Button>
-                        )
-                    }
-                </Grid>
+                        </Grid>
+                    )
+                }
+                {
+                    canWarehouseEntryAddDetailByID && (
+                        <Grid size={{ md: 1 }} component='div' sx={{ paddingTop: 1 }}>
+                            <InputFileUploadDetail />
+                        </Grid>
+                    )
+                }
             </Grid>
         </Box>
     )

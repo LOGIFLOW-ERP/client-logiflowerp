@@ -1,4 +1,11 @@
-import { ExportCsv, QuickFilter, QuickFilterClear, QuickFilterControl, QuickFilterTrigger, ToolbarButton } from '@mui/x-data-grid'
+import {
+    ExportCsv,
+    QuickFilter,
+    QuickFilterClear,
+    QuickFilterControl,
+    QuickFilterTrigger,
+    ToolbarButton
+} from '@mui/x-data-grid'
 import { InputAdornment, Menu, MenuItem, TextField, Tooltip } from '@mui/material'
 import { useRef, useState } from 'react'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
@@ -6,6 +13,7 @@ import { ExportPrint } from '@mui/x-data-grid'
 import { styled } from '@mui/material/styles'
 import SearchIcon from '@mui/icons-material/Search'
 import CancelIcon from '@mui/icons-material/Cancel'
+import { useSnackbar } from 'notistack'
 
 type OwnerState = {
     expanded: boolean
@@ -38,9 +46,26 @@ const StyledTextField = styled(TextField)<{
     transition: theme.transitions.create(['width', 'opacity']),
 }))
 
-export function ToolbarButtonExportSearch() {
+interface IProps {
+    handleExportExcelClick?: () => void
+}
+
+export function ToolbarButtonExportSearch({ handleExportExcelClick }: IProps) {
     const exportMenuTriggerRef = useRef<HTMLButtonElement>(null)
     const [exportMenuOpen, setExportMenuOpen] = useState(false)
+    const { enqueueSnackbar } = useSnackbar()
+
+    const _handleExportExcelClick = () => {
+        try {
+            setExportMenuOpen(false)
+            if (handleExportExcelClick) {
+                handleExportExcelClick()
+            }
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
 
     return (
         <>
@@ -76,6 +101,9 @@ export function ToolbarButtonExportSearch() {
                 <ExportCsv render={<MenuItem />} onClick={() => setExportMenuOpen(false)}>
                     Descargar como CSV
                 </ExportCsv>
+                <MenuItem onClick={_handleExportExcelClick}>
+                    Descargar como Excel
+                </MenuItem >
             </Menu>
 
             <StyledQuickFilter>
