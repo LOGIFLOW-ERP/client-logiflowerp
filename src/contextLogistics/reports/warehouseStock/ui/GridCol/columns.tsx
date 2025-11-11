@@ -1,122 +1,96 @@
-import EditIcon from '@mui/icons-material/Edit';
-import { GridColDef, GridActionsCellItem } from '@mui/x-data-grid';
-import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk';
+import { Box, Tooltip } from '@mui/material';
+import { GridColDef } from '@mui/x-data-grid';
+import { ProducType, WarehouseStockENTITYFlat } from 'logiflowerp-sdk';
+import DocumentScannerRoundedIcon from '@mui/icons-material/DocumentScannerRounded';
+
+
 
 interface IParams {
-    handleEditClick: (row: WarehouseStockENTITYFlat) => void;
-    rows: WarehouseStockENTITYFlat[];
-    fieldsToInclude?: string[];
-    renameMap?: Record<string, string>;
-    minWidth?: number;
-    maxWidth?: number;
-    extraColumns?: GridColDef[];   // 👈 aquí agregamos columnas extra por parámetro
+    handleScannClick: (row: WarehouseStockENTITYFlat) => void
 }
 
-export function getcolumns(params: IParams): GridColDef<WarehouseStockENTITYFlat>[] {
-    const {
-        handleEditClick,
-        rows,
-        fieldsToInclude,
-        renameMap,
-        minWidth,
-        maxWidth,
-        extraColumns = []          // 👈 valor por defecto vacío
-    } = params;
-
-    const columnsBase = generateColumnsFromEntity(
-        new WarehouseStockENTITYFlat(),
-        rows,
-        fieldsToInclude,
-        renameMap,
-        minWidth,
-        maxWidth
-    );
-
-    const finalColumns: GridColDef<WarehouseStockENTITYFlat>[] = [
-        ...columnsBase,
-        ...extraColumns,
+export const columns = (params: IParams): GridColDef<WarehouseStockENTITYFlat>[] => {
+    const { handleScannClick } = params
+    return [
         {
-            field: 'Acciones',
-            type: 'actions',
-            width: 50,
-            getActions: (params: { row: WarehouseStockENTITYFlat }) => [
-                <GridActionsCellItem
-                    icon={<EditIcon color="info" />}
-                    label="Editar"
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />,
-            ],
+            field: 'stockType',
+            headerName: 'Tipo Stock',
         },
-    ];
-
-    return finalColumns;
-}
-
-export const generateColumnsFromEntity = (
-    entityInstance: WarehouseStockENTITYFlat,
-    rows: Record<string, any>[],
-    fieldsToInclude?: string[],
-    renameMap: Record<string, string> = {},
-    minWidth: number = 80,
-    maxWidth: number = 600
-): GridColDef[] => {
-    const flatObject = flattenObject(entityInstance);
-
-    return Object.entries(flatObject)
-        .filter(([key]) => {
-            if (!fieldsToInclude || fieldsToInclude.length === 0) return true;
-            return fieldsToInclude.includes(key);
-        })
-        .map(([key, value]) => {
-            const header = renameMap[key] ?? toTitleCase(key);
-
-            // Calcular longitudes: header + valores en filas
-            const headerLength = header.length;
-            const maxRowLength = Math.max(
-                ...rows.map((row) =>
-                    row[key] !== null && row[key] !== undefined ? row[key].toString().length : 0
-                ),
-                0
-            );
-
-            // Calcular ancho con factor px por caracter
-            let width = Math.max(headerLength, maxRowLength) * 8 + 40;
-
-            // Clamp entre min y max
-            width = Math.min(Math.max(width, minWidth), maxWidth);
-
-            return {
-                field: key,
-                headerName: header,
-                width,
-                type: inferType(value),
-            };
-        });
-};
-
-// Utilidad para aplanar objetos anidados
-const flattenObject = (obj: any, prefix = ''): Record<string, any> => {
-    return Object.entries(obj).reduce((acc, [k, v]) => {
-        const fullKey = prefix ? `${prefix}.${k}` : k;
-        if (typeof v === 'object' && v !== null && !(v instanceof Date)) {
-            Object.assign(acc, flattenObject(v, fullKey));
-        } else {
-            acc[fullKey] = v;
+        {
+            field: 'store_company_code',
+            headerName: 'Codigo Empresa',
+        },
+        {
+            field: 'store_company_companyname',
+            headerName: 'Nombre Empresa',
+        },
+        {
+            field: 'store_code',
+            headerName: 'Almacén',
+        },
+        {
+            field: 'item_itemCode',
+            headerName: 'Codigo Sap',
+        },
+        {
+            field: 'item_itemName',
+            headerName: 'Descripción',
+        },
+        {
+            field: 'item_uomCode',
+            headerName: 'UM',
+        },
+        {
+            field: 'item_producType',
+            headerName: 'SB',
+            valueGetter: (_value, row) => {
+                return row.item_producType
+            },
+            renderCell: ({ value, row }) => {
+                if (value !== ProducType.SERIE) return value
+                const colorMapping = {
+                    0: '#FF0000',
+                    [row.stock]: '#32CD32'
+                }
+                const color = colorMapping[row.stock] || '#FF8C00'
+                return (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        }}
+                    >
+                        <span>{value}</span>
+                        <Tooltip title='Mostrar series' onClick={() => handleScannClick(row)}>
+                            <DocumentScannerRoundedIcon
+                                cursor='pointer'
+                                sx={{
+                                    color,
+                                    alignSelf: 'center',
+                                    ml: '8px'
+                                }}
+                            />
+                        </Tooltip>
+                    </Box>
+                )
+            }
+        },
+        {
+            field: 'incomeAmount',
+            headerName: 'Ingreso',
+        },
+        {
+            field: 'amountReturned',
+            headerName: 'Devolución',
+        },
+        {
+            field: 'ouputQuantity',
+            headerName: 'Despacho',
+        },
+        {
+            field: 'stock',
+            headerName: 'Stock',
         }
-        return acc;
-    }, {} as Record<string, any>);
-};
-
-const toTitleCase = (str: string) =>
-    str
-        .replace(/\./g, ' ')
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, (l) => l.toUpperCase());
-
-const inferType = (value: any): GridColDef['type'] => {
-    if (typeof value === 'number') return 'number';
-    if (typeof value === 'boolean') return 'boolean';
-    if (value instanceof Date) return 'dateTime';
-    return 'string';
-};
+    ]
+}
