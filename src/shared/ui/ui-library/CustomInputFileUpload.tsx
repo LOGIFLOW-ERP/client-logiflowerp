@@ -17,11 +17,12 @@ const VisuallyHiddenInput = styled('input')({
 
 interface IProps {
     titleTooltip: string
-    handleFileChange: (files: FileList | null) => void
+    handleFileChange: (files: FileList | null) => Promise<void>
     multiple?: boolean
     accept?: string
     size?: 'small' | 'large' | 'medium'
     fontSize?: 'small' | 'inherit' | 'large' | 'medium'
+    loading?: boolean | null
 }
 
 export function CustomInputFileUpload(props: IProps) {
@@ -31,13 +32,19 @@ export function CustomInputFileUpload(props: IProps) {
         multiple = false,
         accept,
         size,
-        fontSize
+        fontSize,
+        loading
     } = props
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
 
     const handleClick = () => {
         fileInputRef.current?.click()
+    }
+
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        await handleFileChange(event.target.files)
+        event.target.value = ''
     }
 
     return (
@@ -49,12 +56,13 @@ export function CustomInputFileUpload(props: IProps) {
                 color='info'
                 size={size}
                 fullWidth
+                loading={loading}
             >
                 <CloudUploadIcon fontSize={fontSize} />
                 <VisuallyHiddenInput
                     ref={fileInputRef}
                     type='file'
-                    onChange={(event) => handleFileChange(event.target.files)}
+                    onChange={handleChange}
                     multiple={multiple}
                     accept={accept}
                 />

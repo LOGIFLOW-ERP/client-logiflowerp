@@ -1,12 +1,13 @@
 import { OrderDetailENTITY } from 'logiflowerp-sdk'
-import { DataGrid } from '@mui/x-data-grid'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { Box } from '@mui/material'
-import { columnsDetail } from '../GridCol'
+import { columnsDetail } from '../GridCol/columnsDetail'
 import { useSnackbar } from 'notistack'
 import { useDeleteDetailWarehouseEntryMutation } from '@shared/api'
-import { lazy, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
 
 export function DetalleTable() {
@@ -23,6 +24,15 @@ export function DetalleTable() {
         PERMISSIONS.PUT_WAREHOUSE_ENTRY_ADD_SERIAL_BY_ID,
         PERMISSIONS.PUT_WAREHOUSE_ENTRY_DELETE_DETAIL_BY_ID
     ])
+    const apiRef = useGridApiRef()
+
+    useEffect(() => {
+        apiRef.current?.autosizeColumns({
+            includeHeaders: true,
+            includeOutliers: true,
+            disableColumnVirtualization: true
+        })
+    }, [open, selectedDocument])
 
     const handleDeleteClick = async (row: OrderDetailENTITY) => {
         try {
@@ -64,16 +74,19 @@ export function DetalleTable() {
                     columnVisibilityModel={{
                         actions: canWarehouseEntryDeleteDetailByID
                     }}
+                    apiRef={apiRef}
                 />
             </Box>
-            {
-                (selectedDetail && open) && (
-                    <SerialsDialog
-                        open={open}
-                        setOpen={setOpen}
-                    />
-                )
-            }
+            <Suspense fallback={<Fallback />}>
+                {
+                    (selectedDetail && open) && (
+                        <SerialsDialog
+                            open={open}
+                            setOpen={setOpen}
+                        />
+                    )
+                }
+            </Suspense>
         </>
     )
 }

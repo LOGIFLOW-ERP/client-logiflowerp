@@ -8,7 +8,7 @@ import {
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseEntryENTITY, StateOrder } from 'logiflowerp-sdk'
-import { columns } from '../GridCol'
+import { columns } from '../GridCol/columns'
 import { Box, Typography } from '@mui/material'
 import { useExportExcel, usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
@@ -18,7 +18,7 @@ const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ defa
 export default function LayoutWarehouseEntry() {
 
 	const [openAdd, setOpenAdd] = useState(false)
-	const { setState } = useStore('warehouseEntry')
+	const { setState, state: { selectedDocument, selectedDetail } } = useStore('warehouseEntry')
 
 	const [
 		POST_WAREHOUSE_ENTRY,
@@ -40,6 +40,14 @@ export default function LayoutWarehouseEntry() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
+		if (selectedDocument) {
+			const exist = data?.find(d => d._id === selectedDocument._id)
+			setState({ selectedDocument: exist ? exist : null })
+			if (selectedDetail) {
+				const exist = selectedDocument.detail?.find(d => d.keyDetail === selectedDetail.keyDetail && d.keySearch === selectedDetail.keySearch)
+				setState({ selectedDetail: exist ? exist : null })
+			}
+		}
 	}, [data, openAdd])
 
 	const handleAddClick = () => {
