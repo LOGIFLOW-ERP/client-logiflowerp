@@ -47,7 +47,7 @@ export default function LayoutProductPrice() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, dataProducts, openAdd, openEdit])
+	}, [isFetching, isLoadingProducts, isLoadingDelete, openAdd, openEdit])
 
 	const handleEditClick = (row: ProductPriceENTITY) => {
 		try {

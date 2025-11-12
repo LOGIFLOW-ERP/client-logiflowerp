@@ -28,6 +28,7 @@ export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
         {
             field: 'itemCode',
             headerName: 'Código',
+            type: 'string'
         },
         {
             field: 'itemName',
@@ -35,7 +36,8 @@ export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
             valueGetter: (_value, row) => {
                 const product = dataProducts.find(e => e.itemCode === row.itemCode)
                 return product ? product.itemName : '-'
-            }
+            },
+            type: 'string'
         },
         {
             field: 'price',
@@ -47,12 +49,12 @@ export const columns = (params: IParams): GridColDef<ProductPriceENTITY>[] => {
         {
             field: 'currency',
             headerName: 'Divisa',
-            valueGetter: (value: CurrencyDTO) => value.code
+            valueGetter: (value: CurrencyDTO) => value.code,
+            type: 'string'
         },
         {
             field: 'Acciones',
             type: 'actions',
-            width: 50,
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []
                 if (PUT_PRODUCT_PRICE_BY_ID) {
