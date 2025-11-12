@@ -4,9 +4,10 @@ import { Box } from '@mui/material'
 import { columnsDetail } from '../GridCol'
 import { useSnackbar } from 'notistack'
 import { useDeleteDetailWarehouseReturnMutation } from '@shared/api'
-import { lazy, useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
 
 export function DetailTable() {
@@ -66,14 +67,16 @@ export function DetailTable() {
                     }}
                 />
             </Box>
-            {
-                (selectedDetail && open) && (
-                    <SerialsDialog
-                        open={open}
-                        setOpen={setOpen}
-                    />
-                )
-            }
+            <Suspense fallback={<Fallback />}>
+                {
+                    (selectedDetail && open) && (
+                        <SerialsDialog
+                            open={open}
+                            setOpen={setOpen}
+                        />
+                    )
+                }
+            </Suspense>
         </>
     )
 }

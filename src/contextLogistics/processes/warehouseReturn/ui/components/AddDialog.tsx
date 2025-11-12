@@ -9,9 +9,10 @@ import {
     useValidateWarehouseReturnMutation
 } from '@shared/api'
 import { CabeceraForm } from './HeaderForm'
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
 const DetailTable = lazy(() => import('./DetailTable').then(m => ({ default: m.DetailTable })))
 
@@ -103,15 +104,17 @@ export function AddDialog(props: IProps) {
                         <Divider textAlign='left'>
                             <Chip label='Agregar Detalle' size='small' />
                         </Divider>
-                        <DetalleForm />
+                        <Suspense fallback={<Fallback />}>
+                            <DetalleForm />
+                        </Suspense>
                         {
                             !!selectedDocument.detail.length && (
-                                <>
+                                <Suspense fallback={<Fallback />}>
                                     <Divider textAlign='left'>
                                         <Chip label='Detalle' size='small' />
                                     </Divider>
                                     <DetailTable />
-                                </>
+                                </Suspense>
                             )
                         }
                     </>
