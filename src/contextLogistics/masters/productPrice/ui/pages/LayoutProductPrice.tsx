@@ -46,6 +46,7 @@ export default function LayoutProductPrice() {
 		apiRef.current?.autosizeColumns({
 			includeHeaders: true,
 			includeOutliers: true,
+			disableColumnVirtualization: true
 		})
 	}, [isFetching, isLoadingProducts, isLoadingDelete, openAdd, openEdit])
 

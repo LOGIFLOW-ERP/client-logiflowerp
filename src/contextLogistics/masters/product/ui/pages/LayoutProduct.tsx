@@ -40,6 +40,7 @@ export default function LayoutProduct() {
 		apiRef.current?.autosizeColumns({
 			includeHeaders: true,
 			includeOutliers: true,
+			disableColumnVirtualization: true
 		})
 	}, [isFetching, isLoadingPipeline, isLoadingProductGroups, openAdd, openEdit])
 
