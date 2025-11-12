@@ -16,6 +16,7 @@ import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Box } from '@mui/material'
 import { Fallback } from '@app/ui/pages'
+import { InputFileUploadBulkUpload } from '../components/InputFileUploadBulkUpload'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 
@@ -37,7 +38,7 @@ export default function LayoutProductPrice() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetProductPricesQuery()
+	const { data, error, isFetching } = useGetProductPricesQuery()
 	const pipelineProducts = [{ $match: {} }]
 	const { data: dataProducts, isLoading: isLoadingProducts } = useGetProductPipelineQuery(pipelineProducts)
 	const [deleteProductPrice, { isLoading: isLoadingDelete }] = useDeleteProductPriceMutation()
@@ -88,6 +89,7 @@ export default function LayoutProductPrice() {
 							<CustomToolbar
 								setOpenAdd={setOpenAdd}
 								AGREGAR_NUEVO_REGISTRO={POST_PRODUCT_PRICE}
+								customInputFileUpload1={<InputFileUploadBulkUpload />}
 							/>
 						)
 					}}
@@ -95,7 +97,7 @@ export default function LayoutProductPrice() {
 					getRowId={row => row._id}
 					density='compact'
 					apiRef={apiRef}
-					loading={isLoading || isLoadingDelete || isLoadingProducts}
+					loading={isFetching || isLoadingDelete || isLoadingProducts}
 				/>
 			</Box>
 			<Suspense fallback={<Fallback />}>

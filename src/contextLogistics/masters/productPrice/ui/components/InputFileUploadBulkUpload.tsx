@@ -1,13 +1,13 @@
 import { CustomGridToolbarInputFileUpload } from "@shared/ui/ui-library"
 import { useSnackbar } from "notistack"
 import { readExcelFile, validateHeadersExcel } from "@shared/utils"
-import { useInsertBulkProductMutation } from "@shared/infrastructure/redux/api"
+import { useInsertBulkProductPriceMutation } from "@shared/infrastructure/redux/api"
 
 
 export function InputFileUploadBulkUpload() {
 
     const { enqueueSnackbar } = useSnackbar()
-    const [insertBulkProduct, { isLoading }] = useInsertBulkProductMutation()
+    const [insertBulkProductPrice, { isLoading }] = useInsertBulkProductPriceMutation()
 
     const handleFileChange = async (files: FileList | null) => {
         try {
@@ -27,7 +27,7 @@ export function InputFileUploadBulkUpload() {
             const rows = await readExcelFile(file)
             const [headers, ...dataRows] = rows
 
-            const model = ['Codigo Grupo', 'Codigo Material', 'Nombre Material', 'UM', 'IND_SB', 'Min', 'Max']
+            const model = ['Codigo Material', 'Precio', 'Moneda']
             const { matchedModel } = validateHeadersExcel(headers, [model])
 
             const jsonArray: Record<string, any>[] = []
@@ -47,7 +47,7 @@ export function InputFileUploadBulkUpload() {
             })
 
             // console.log('✅ JSON final:', jsonArray)
-            await insertBulkProduct(jsonArray).unwrap()
+            await insertBulkProductPrice(jsonArray).unwrap()
 
             enqueueSnackbar({ message: '¡Se cargó correctamente!', variant: 'success' })
         } catch (error) {
