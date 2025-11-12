@@ -1,7 +1,6 @@
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Tooltip } from '@mui/material';
-import { ToolbarButton } from '@mui/x-data-grid';
+import { Button, Tooltip } from '@mui/material';
 import { useRef } from 'react';
 
 const VisuallyHiddenInput = styled('input')({
@@ -21,6 +20,8 @@ interface IProps {
     handleFileChange: (files: FileList | null) => void
     multiple?: boolean
     accept?: string
+    size?: 'small' | 'large' | 'medium'
+    fontSize?: 'small' | 'inherit' | 'large' | 'medium'
 }
 
 export function CustomInputFileUpload(props: IProps) {
@@ -28,7 +29,9 @@ export function CustomInputFileUpload(props: IProps) {
         titleTooltip,
         handleFileChange,
         multiple = false,
-        accept
+        accept,
+        size,
+        fontSize
     } = props
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -39,19 +42,23 @@ export function CustomInputFileUpload(props: IProps) {
 
     return (
         <Tooltip title={titleTooltip}>
-            <ToolbarButton
-                aria-describedby="InputFileUpload"
+            <Button
+                aria-describedby='InputFileUpload'
                 onClick={handleClick}
+                variant='outlined'
+                color='info'
+                size={size}
+                fullWidth
             >
-                <CloudUploadIcon fontSize='small' />
+                <CloudUploadIcon fontSize={fontSize} />
                 <VisuallyHiddenInput
                     ref={fileInputRef}
-                    type="file"
+                    type='file'
                     onChange={(event) => handleFileChange(event.target.files)}
                     multiple={multiple}
                     accept={accept}
                 />
-            </ToolbarButton>
+            </Button>
         </Tooltip>
     )
 }

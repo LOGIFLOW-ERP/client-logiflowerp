@@ -10,7 +10,7 @@ import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseEntryENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
 import { Box, Typography } from '@mui/material'
-import { usePermissions, useStore } from '@shared/ui/hooks'
+import { useExportExcel, usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
@@ -33,6 +33,7 @@ export default function LayoutWarehouseEntry() {
 	const [deleteWarehouseEntry, { isLoading: isLoadingDelete }] = useDeleteWarehouseEntryMutation()
 
 	const apiRef = useGridApiRef()
+	const { exportExcel } = useExportExcel()
 
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
@@ -71,6 +72,14 @@ export default function LayoutWarehouseEntry() {
 		}
 	}
 
+	const _columns = columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID })
+
+	const handleExportExcelClick = () => {
+		if (!apiRef.current) return
+		const csv = apiRef.current.getDataAsCsv()
+		exportExcel(csv, 'Ingreso_Almacen')
+	}
+
 	if (error) return <CustomViewError />
 
 	return (
@@ -82,9 +91,17 @@ export default function LayoutWarehouseEntry() {
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseEntryENTITY>
 						rows={data}
-						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID })}
+						columns={_columns}
 						disableRowSelectionOnClick
-						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_ENTRY} /> }}
+						slots={{
+							toolbar: () => (
+								<CustomToolbar
+									handleAddClick={handleAddClick}
+									AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_ENTRY}
+									handleExportExcelClick={handleExportExcelClick}
+								/>
+							)
+						}}
 						showToolbar
 						getRowId={row => row._id}
 						loading={isLoading || isLoadingDelete}

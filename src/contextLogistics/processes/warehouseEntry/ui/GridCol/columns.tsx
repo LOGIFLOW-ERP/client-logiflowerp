@@ -47,7 +47,7 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
         },
         {
             field: 'creation_date',
-            headerName: 'Fecha Registro',
+            headerName: 'Fecha, Registro',
             type: 'dateTime',
             valueGetter: (_value, row) => new Date(row.workflow.register.date)
         },
@@ -55,7 +55,6 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
             field: 'state',
             headerName: 'Status',
             renderCell: CustomStatusOrder,
-            type: 'singleSelect',
             valueOptions: getDataState(),
         },
         {

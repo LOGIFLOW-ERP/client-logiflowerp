@@ -1,4 +1,4 @@
-import { CustomInputFileUpload } from "@shared/ui/ui-library"
+import { CustomGridToolbarInputFileUpload } from "@shared/ui/ui-library"
 import { useSnackbar } from "notistack"
 import * as XLSX from 'xlsx'
 import { convertExcelDate } from 'logiflowerp-sdk'
@@ -89,7 +89,7 @@ export function InputFileUploadOrder() {
     }
 
     return (
-        <CustomInputFileUpload
+        <CustomGridToolbarInputFileUpload
             titleTooltip='Subir Orden CMS'
             handleFileChange={handleFileChange}
             accept='.xls'
