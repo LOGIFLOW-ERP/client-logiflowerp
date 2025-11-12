@@ -1,4 +1,4 @@
-import { lazy, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import {
 	ProductGroupENTITY,
 } from 'logiflowerp-sdk'
@@ -16,6 +16,7 @@ import { columns } from '../GridCol'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Box } from '@mui/material'
+import { Fallback } from '@app/ui/pages'
 
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
@@ -38,7 +39,7 @@ export default function LayoutProductGroup() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetProductGroupsQuery()
+	const { data, error, isFetching } = useGetProductGroupsQuery()
 	const [deleteProductGroup, { isLoading: isLoadingDelete }] = useDeleteProductGroupMutation()
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
@@ -93,26 +94,28 @@ export default function LayoutProductGroup() {
 					getRowId={row => row._id}
 					density='compact'
 					apiRef={apiRef}
-					loading={isLoading || isLoadingDelete}
+					loading={isFetching || isLoadingDelete}
 				/>
 			</Box>
-			{
-				openAdd && (
-					<AddDialog
-						open={openAdd}
-						setOpen={setOpenAdd}
-					/>
-				)
-			}
-			{
-				(openEdit && selectedRow) && (
-					<EditDialog
-						open={openEdit}
-						setOpen={setOpenEdit}
-						row={selectedRow}
-					/>
-				)
-			}
+			<Suspense fallback={<Fallback />}>
+				{
+					openAdd && (
+						<AddDialog
+							open={openAdd}
+							setOpen={setOpenAdd}
+						/>
+					)
+				}
+				{
+					(openEdit && selectedRow) && (
+						<EditDialog
+							open={openEdit}
+							setOpen={setOpenEdit}
+							row={selectedRow}
+						/>
+					)
+				}
+			</Suspense>
 		</>
 	)
 }

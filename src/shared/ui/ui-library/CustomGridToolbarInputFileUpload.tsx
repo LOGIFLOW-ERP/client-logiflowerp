@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { Tooltip } from '@mui/material';
+import { CircularProgress, Tooltip } from '@mui/material';
 import { ToolbarButton } from '@mui/x-data-grid';
 import { useRef } from 'react';
 
@@ -21,6 +21,8 @@ interface IProps {
     handleFileChange: (files: FileList | null) => void
     multiple?: boolean
     accept?: string
+    disabled?: boolean
+    loading?: boolean
 }
 
 export function CustomGridToolbarInputFileUpload(props: IProps) {
@@ -28,7 +30,9 @@ export function CustomGridToolbarInputFileUpload(props: IProps) {
         titleTooltip,
         handleFileChange,
         multiple = false,
-        accept
+        accept,
+        disabled,
+        loading
     } = props
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -38,19 +42,26 @@ export function CustomGridToolbarInputFileUpload(props: IProps) {
     }
 
     return (
-        <Tooltip title={titleTooltip}>
+        <Tooltip title={loading ? 'Cargando...' : titleTooltip}>
             <ToolbarButton
-                aria-describedby="InputFileUpload"
+                aria-describedby='InputFileUpload'
                 onClick={handleClick}
+                disabled={disabled}
             >
-                <CloudUploadIcon fontSize='small' />
-                <VisuallyHiddenInput
-                    ref={fileInputRef}
-                    type="file"
-                    onChange={(event) => handleFileChange(event.target.files)}
-                    multiple={multiple}
-                    accept={accept}
-                />
+                {
+                    loading
+                        ? <CircularProgress size={12} />
+                        : <>
+                            <CloudUploadIcon fontSize='small' />
+                            <VisuallyHiddenInput
+                                ref={fileInputRef}
+                                type='file'
+                                onChange={(event) => handleFileChange(event.target.files)}
+                                multiple={multiple}
+                                accept={accept}
+                            />
+                        </>
+                }
             </ToolbarButton>
         </Tooltip>
     )

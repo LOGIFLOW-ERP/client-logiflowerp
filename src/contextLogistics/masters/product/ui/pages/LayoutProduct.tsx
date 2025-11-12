@@ -14,6 +14,7 @@ import { State, ProductENTITY, UpdateProductDTO } from 'logiflowerp-sdk'
 import { usePermissions } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
+import { InputFileUploadBulkUpload } from '../components/InputFileUploadBulkUpload'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const EditDialog = lazy(() => import('../components/EditDialog').then(m => ({ default: m.EditDialog })))
 const CustomFilters = lazy(() => import('../components/CustomFilters').then(m => ({ default: m.CustomFilters })))
@@ -31,7 +32,7 @@ export default function LayoutProduct() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, isError, isLoading } = useGetProductsQuery()
+	const { data, isError, isFetching } = useGetProductsQuery()
 	const [fetchProducts, { data: pipelineData, isLoading: isLoadingPipeline, isError: isErrorPipeline }] = useLazyGetProductPipelineQuery()
 	const { data: dataProductGroups, error: errorProductGroups, isLoading: isLoadingProductGroups } = useGetProductGroupsQuery()
 	const [updateStore, { isLoading: isLoadingUpdate }] = useUpdateProductMutation()
@@ -40,7 +41,7 @@ export default function LayoutProduct() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, pipelineData, dataProductGroups, openAdd, openEdit])
+	}, [isFetching, isLoadingPipeline, isLoadingProductGroups, openAdd, openEdit])
 
 	const handleEditClick = (row: ProductENTITY) => {
 		try {
@@ -82,6 +83,7 @@ export default function LayoutProduct() {
 								setOpenAdd={setOpenAdd}
 								AGREGAR_NUEVO_REGISTRO={POST_PRODUCT}
 								children={<CustomFilters fetchProducts={fetchProducts} />}
+								customInputFileUpload1={<InputFileUploadBulkUpload />}
 							/>
 						),
 					}}
@@ -89,7 +91,7 @@ export default function LayoutProduct() {
 					getRowId={row => row._id}
 					density='compact'
 					apiRef={apiRef}
-					loading={isLoading || isLoadingUpdate || isLoadingProductGroups || isLoadingPipeline}
+					loading={isFetching || isLoadingUpdate || isLoadingProductGroups || isLoadingPipeline}
 				/>
 			</Box>
 			<Suspense fallback={<Fallback />}>
