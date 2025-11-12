@@ -9,10 +9,11 @@ import {
     useValidateWarehouseEntryMutation
 } from '@shared/api'
 import { CabeceraForm } from './HeaderForm'
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { DetalleTable } from './DetailTable'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
+import { Fallback } from '@app/ui/pages'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
 
 const resolver = classValidatorResolver(CreateWarehouseEntryDTO)
@@ -103,7 +104,9 @@ export function AddDialog(props: IProps) {
                         <Divider textAlign='left'>
                             <Chip label='Agregar Detalle' size='small' />
                         </Divider>
-                        <DetalleForm />
+                        <Suspense fallback={<Fallback />}>
+                            <DetalleForm />
+                        </Suspense>
                         {
                             !!selectedDocument.detail.length && (
                                 <>

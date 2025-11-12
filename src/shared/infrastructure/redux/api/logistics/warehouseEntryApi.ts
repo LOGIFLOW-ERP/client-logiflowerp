@@ -41,6 +41,20 @@ export const warehouseEntryApi = createRepository<WarehouseEntryENTITY, string>(
                 ],
                 transformErrorResponse
             }),
+            addDetailBulkWarehouseEntry: builder.mutation<WarehouseEntryENTITY, { _id: string, data: Record<string, any> }>({
+                query: ({ _id, data }) => ({
+                    url: `${path}/add-detail-bulk/${_id}`,
+                    method: 'PUT',
+                    body: instanceToPlain(data),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
             deleteDetail: builder.mutation<WarehouseEntryENTITY, { _id: string, keyDetail: string }>({
                 query: ({ _id, keyDetail }) => ({
                     url: `${path}/delete-detail/${_id}?keyDetail=${keyDetail}`,
@@ -96,4 +110,5 @@ export const {
     useDeleteDetailMutation: useDeleteDetailWarehouseEntryMutation,
     useAddSerialMutation: useAddSerialWarehouseEntryMutation,
     useDeleteSerialMutation: useDeleteSerialWarehouseEntryMutation,
+    useAddDetailBulkWarehouseEntryMutation
 } = warehouseEntryApi;

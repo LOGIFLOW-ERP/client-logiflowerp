@@ -58,7 +58,7 @@ export function InputFileUploadBulkUpload() {
 
     return (
         <CustomGridToolbarInputFileUpload
-            titleTooltip='¡Cargar Productos masivo!'
+            titleTooltip='¡Cargar precios producto masivo!'
             handleFileChange={handleFileChange}
             accept='.xlsx'
             loading={isLoading}

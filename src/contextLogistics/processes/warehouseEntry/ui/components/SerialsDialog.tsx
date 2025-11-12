@@ -10,7 +10,7 @@ import {
     useDeleteSerialWarehouseEntryMutation
 } from '@shared/api'
 import { DataGrid } from '@mui/x-data-grid'
-import { columnsSerial } from '../GridCol'
+import { columnsSerial } from '../GridCol/columnsSerial'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 

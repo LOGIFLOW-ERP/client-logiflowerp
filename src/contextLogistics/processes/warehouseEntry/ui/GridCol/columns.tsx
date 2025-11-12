@@ -14,6 +14,26 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
     const { handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID } = params
     return [
         {
+            field: 'Acciones',
+            type: 'actions',
+            getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<EditIcon color='info' />}
+                    label='Editar'
+                    onClick={() => handleEditClick(params.row)}
+                    showInMenu
+                />,
+                canDeleteWarehouseEntryByID
+                    ? <GridActionsCellItem
+                        icon={<DeleteForeverRoundedIcon color='error' />}
+                        label='Eliminar'
+                        onClick={() => handleDeleteClick(params.row)}
+                        showInMenu
+                    />
+                    : <></>,
+            ],
+        },
+        {
             field: 'documentNumber',
             headerName: 'Nro. Documento',
         },
@@ -56,26 +76,6 @@ export const columns = (params: IParams): GridColDef<WarehouseEntryENTITY>[] => 
             headerName: 'Status',
             renderCell: CustomStatusOrder,
             valueOptions: getDataState(),
-        },
-        {
-            field: 'Acciones',
-            type: 'actions',
-            getActions: (params) => [
-                <GridActionsCellItem
-                    icon={<EditIcon color='info' />}
-                    label='Editar'
-                    onClick={() => handleEditClick(params.row)}
-                    showInMenu
-                />,
-                canDeleteWarehouseEntryByID
-                    ? <GridActionsCellItem
-                        icon={<DeleteForeverRoundedIcon color='error' />}
-                        label='Eliminar'
-                        onClick={() => handleDeleteClick(params.row)}
-                        showInMenu
-                    />
-                    : <></>,
-            ],
-        },
+        }
     ]
 }

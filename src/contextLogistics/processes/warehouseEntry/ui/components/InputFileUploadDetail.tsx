@@ -1,13 +1,16 @@
 import { CustomInputFileUpload } from "@shared/ui/ui-library"
 import { useSnackbar } from "notistack"
-// import * as XLSX from 'xlsx'
-// import { validateHeadersExcel } from "@shared/utils"
+import { readExcelFile, validateHeadersExcel } from "@shared/utils"
+import { useAddDetailBulkWarehouseEntryMutation } from "@shared/infrastructure/redux/api"
+import { useStore } from "@shared/ui/hooks"
 
 export function InputFileUploadDetail() {
 
+    const { setState, state: { selectedDocument } } = useStore('warehouseEntry')
     const { enqueueSnackbar } = useSnackbar()
+    const [insertBulk, { isLoading }] = useAddDetailBulkWarehouseEntryMutation()
 
-    const handleFileChange = (files: FileList | null) => {
+    const handleFileChange = async (files: FileList | null) => {
         try {
             if (!files || files.length === 0) {
                 throw new Error('No se seleccionó ningún archivo')
@@ -22,8 +25,38 @@ export function InputFileUploadDetail() {
                 throw new Error('El archivo no es un Excel válido (.xlsx)');
             }
 
+            const rows = await readExcelFile(file)
+            const [headers, ...dataRows] = rows
 
+            const model = ['CodMaterial', 'Serie', 'Cantidad']
+            const { matchedModel } = validateHeadersExcel(headers, [model])
 
+            const jsonArray: Record<string, any>[] = []
+            dataRows.forEach((row) => {
+                const obj: Record<string, any> = {}
+                matchedModel.forEach((header) => {
+                    if (typeof row[header.i] === 'string') {
+                        obj[header.name] = row[header.i].trim()
+                    } else {
+                        obj[header.name] = row[header.i]
+                    }
+                })
+                if (obj['CodMaterial'] === null) {
+                    return
+                }
+                jsonArray.push(obj)
+            })
+
+            // console.log('✅ JSON final:', jsonArray)
+
+            if (!selectedDocument) {
+                throw new Error('¡No hay un documento seleccionado!')
+            }
+
+            const document = await insertBulk({ _id: selectedDocument._id, data: jsonArray }).unwrap()
+            setState({ selectedDocument: document })
+
+            enqueueSnackbar({ message: '¡Se cargó correctamente!', variant: 'success' })
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
@@ -35,6 +68,7 @@ export function InputFileUploadDetail() {
             titleTooltip='Subir Detalle'
             handleFileChange={handleFileChange}
             accept='.xlsx'
+            loading={isLoading}
         />
     )
 }
