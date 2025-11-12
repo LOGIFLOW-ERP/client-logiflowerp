@@ -1,7 +1,7 @@
 import { CustomInputFileUpload } from "@shared/ui/ui-library"
 import { useSnackbar } from "notistack"
-import * as XLSX from 'xlsx'
-import { validateHeadersExcel } from "@shared/utils"
+// import * as XLSX from 'xlsx'
+// import { validateHeadersExcel } from "@shared/utils"
 
 export function InputFileUploadDetail() {
 
