@@ -2,8 +2,13 @@ import { Stack, Typography } from '@mui/material'
 import { NavbarBreadcrumbs } from './NavbarBreadcrumbs'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 import MenuButton from './MenuButton'
+import { useSocketEvent } from '@shared/infrastructure/socket/useSocket';
 
 export function Header() {
+    useSocketEvent('notification:insertOne', (data) => {
+        console.log("✅ Pedido completado:", data)
+    })
+
     return (
         <Stack
             direction='row'

@@ -56,7 +56,11 @@ export function InputFileUploadDetail() {
             const document = await insertBulk({ _id: selectedDocument._id, data: jsonArray }).unwrap()
             setState({ selectedDocument: document })
 
-            enqueueSnackbar({ message: '¡Se cargó correctamente!', variant: 'success' })
+            enqueueSnackbar({
+                message: '¡Su solicitud está en proceso, le llegará una notificación al finalizar! (No cargar el archivo hasta recibir informacion de esta solicitud)',
+                variant: 'success',
+                autoHideDuration: 5000
+            })
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
