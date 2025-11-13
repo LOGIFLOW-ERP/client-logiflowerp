@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { SocketClient } from "./SocketClient";
+import { useStore } from "@shared/ui/hooks";
 
 interface SocketContextValue {
     socket: SocketClient;
     isConnected: boolean;
+    // connectSocket: () => void;
 }
 
 const SocketContext = createContext<SocketContextValue | null>(null);
@@ -11,9 +13,10 @@ const SocketContext = createContext<SocketContextValue | null>(null);
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [socket] = useState(() => SocketClient.getInstance());
     const [isConnected, setIsConnected] = useState(false);
+    const { state: { isAuthenticated } } = useStore('auth');
 
     useEffect(() => {
-        socket.connect();
+        // socket.connect();
 
         const handleConnect = () => setIsConnected(true);
         const handleDisconnect = () => setIsConnected(false);
@@ -28,7 +31,19 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         };
     }, [socket]);
 
+    useEffect(() => {
+        if (isAuthenticated) {
+            socket.connect();
+        } else {
+            socket.disconnect();
+        }
+    }, [isAuthenticated]);
+
+
+    // const connectSocket = () => socket.connect();
+
     return (
+        // <SocketContext.Provider value={{ socket, isConnected, connectSocket }}>
         <SocketContext.Provider value={{ socket, isConnected }}>
             {children}
         </SocketContext.Provider>

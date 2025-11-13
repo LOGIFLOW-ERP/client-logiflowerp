@@ -7,13 +7,13 @@ import { SocketProvider } from '@shared/infrastructure/socket/SocketContext'
 export function App() {
     return (
         <Suspense fallback={<Fallback />}>
-            <SocketProvider>
-                <StoreProvider>
+            <StoreProvider>
+                <SocketProvider>
                     <SnackbarProviderCustom>
                         <AppRouterProvider />
                     </SnackbarProviderCustom>
-                </StoreProvider>
-            </SocketProvider>
+                </SocketProvider>
+            </StoreProvider>
         </Suspense>
     )
 }
