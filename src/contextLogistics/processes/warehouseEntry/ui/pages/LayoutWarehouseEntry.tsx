@@ -28,8 +28,8 @@ export default function LayoutWarehouseEntry() {
 		PERMISSIONS.DELETE_WAREHOUSE_ENTRY_BY_ID,
 	])
 	const { enqueueSnackbar } = useSnackbar()
-	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
-	const { data, error, isLoading } = useGetWarehouseEntryPipelineQuery(pipeline)
+	const pipeline = [{ $match: { state: { $in: [StateOrder.REGISTRADO, StateOrder.PROCESANDO] } } }]
+	const { data, error, isFetching } = useGetWarehouseEntryPipelineQuery(pipeline)
 	const [deleteWarehouseEntry, { isLoading: isLoadingDelete }] = useDeleteWarehouseEntryMutation()
 
 	const apiRef = useGridApiRef()
@@ -42,13 +42,17 @@ export default function LayoutWarehouseEntry() {
 		})
 		if (selectedDocument) {
 			const exist = data?.find(d => d._id === selectedDocument._id)
-			setState({ selectedDocument: exist ? exist : null })
-			if (selectedDetail) {
-				const exist = selectedDocument.detail?.find(d => d.keyDetail === selectedDetail.keyDetail && d.keySearch === selectedDetail.keySearch)
-				setState({ selectedDetail: exist ? exist : null })
+			if (exist) {
+				setState({ selectedDocument: exist })
+				if (selectedDetail) {
+					const exist = selectedDocument.detail?.find(d => d.keyDetail === selectedDetail.keyDetail && d.keySearch === selectedDetail.keySearch)
+					if (exist) {
+						setState({ selectedDetail: exist })
+					}
+				}
 			}
 		}
-	}, [data, openAdd])
+	}, [data, openAdd, isFetching, isLoadingDelete])
 
 	const handleAddClick = () => {
 		try {
@@ -112,7 +116,7 @@ export default function LayoutWarehouseEntry() {
 						}}
 						showToolbar
 						getRowId={row => row._id}
-						loading={isLoading || isLoadingDelete}
+						loading={isFetching || isLoadingDelete}
 						autoPageSize
 						apiRef={apiRef}
 						density='compact'

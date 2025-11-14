@@ -7,6 +7,8 @@ import React from 'react'
 import {
     GridRenderCellParams,
 } from '@mui/x-data-grid'
+import LockResetIcon from '@mui/icons-material/LockReset';
+import { StateOrder } from 'logiflowerp-sdk'
 
 interface StatusProps {
     status: string
@@ -29,18 +31,24 @@ const StyledChip = styled(Chip)(({ }) => ({
         color: '#4caf50',
         border: `1px solid #4caf50`,
     },
+    '&.Procesando': {
+        color: '#ffc107',
+        border: `1px solid #ffc107`,
+    },
 }))
 
 const Status = React.memo((props: StatusProps) => {
     const { status } = props;
 
     let icon: any = null;
-    if (status === 'Registrado') {
+    if (status === StateOrder.REGISTRADO) {
         icon = <PendingIcon className='icon' />
-    } else if (status === 'Aprobado') {
+    } else if (status === StateOrder.APROBADO) {
         icon = <CheckCircleOutlineIcon className='icon' />
-    } else if (status === 'Validado') {
+    } else if (status === StateOrder.VALIDADO) {
         icon = <VerifiedIcon className='icon' />
+    } else if (status === StateOrder.PROCESANDO) {
+        icon = <LockResetIcon className='icon' />
     }
 
     return (

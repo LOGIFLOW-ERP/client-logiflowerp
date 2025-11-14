@@ -27,7 +27,7 @@ export class SocketClient {
             autoConnect: false,
             transports: ["websocket"],
             reconnection: true,
-            reconnectionAttempts: 5,
+            reconnectionAttempts: Infinity,
             reconnectionDelay: 1500,
         });
 
@@ -52,6 +52,22 @@ export class SocketClient {
 
         this.socket.on("connect_error", (err) => {
             console.warn("⚠️ Error de conexión socket:", err.message);
+        });
+
+        this.socket.on("reconnect_attempt", attemptNumber => {
+            console.log("♻️ Intentando reconectar...", attemptNumber);
+        });
+
+        this.socket.on("reconnect", attemptNumber => {
+            console.log("🟢 Reconexion exitosa después de intentos:", attemptNumber);
+        });
+
+        this.socket.on("reconnect_error", err => {
+            console.log("⚠️ Error intentando reconectar:", err.message);
+        });
+
+        this.socket.on("reconnect_failed", () => {
+            console.log("🔴 Falló reconexión después del máximo de intentos");
         });
     }
 

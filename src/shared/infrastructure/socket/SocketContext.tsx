@@ -5,7 +5,6 @@ import { useStore } from "@shared/ui/hooks";
 interface SocketContextValue {
     socket: SocketClient;
     isConnected: boolean;
-    // connectSocket: () => void;
 }
 
 const SocketContext = createContext<SocketContextValue | null>(null);
@@ -16,8 +15,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const { state: { isAuthenticated } } = useStore('auth');
 
     useEffect(() => {
-        // socket.connect();
-
         const handleConnect = () => setIsConnected(true);
         const handleDisconnect = () => setIsConnected(false);
 
@@ -39,11 +36,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
     }, [isAuthenticated]);
 
-
-    // const connectSocket = () => socket.connect();
-
     return (
-        // <SocketContext.Provider value={{ socket, isConnected, connectSocket }}>
         <SocketContext.Provider value={{ socket, isConnected }}>
             {children}
         </SocketContext.Provider>
