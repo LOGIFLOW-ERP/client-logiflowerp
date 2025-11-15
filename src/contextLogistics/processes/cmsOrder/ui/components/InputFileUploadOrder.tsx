@@ -7,7 +7,7 @@ export function InputFileUploadOrder() {
 
     const { enqueueSnackbar } = useSnackbar()
 
-    const handleFileChange = (files: FileList | null) => {
+    const handleFileChange = async (files: FileList | null) => {
         try {
             if (!files || files.length === 0) {
                 throw new Error('No se seleccionó ningún archivo')
