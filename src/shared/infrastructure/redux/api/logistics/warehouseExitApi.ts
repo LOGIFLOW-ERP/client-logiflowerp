@@ -3,6 +3,7 @@ import {
     CreateWarehouseExitDetailDTO,
     EditAmountDetailDTO,
     StockSerialDTO,
+    StoreDTO,
     WarehouseExitENTITY
 } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
@@ -32,6 +33,14 @@ export const warehouseExitApi = createRepository<WarehouseExitENTITY, string>(pa
                     provideTagReportEmployeeStock,
                     provideTagReportWarehouseStock,
                 ],
+                transformErrorResponse
+            }),
+            bulkExitWarehouseEntry: builder.mutation<void, { store: StoreDTO, data: Record<string, any> }>({
+                query: (data) => ({
+                    url: `${path}/bulk-exit`,
+                    method: 'POST',
+                    body: instanceToPlain(data),
+                }),
                 transformErrorResponse
             }),
             addDetail: builder.mutation<WarehouseExitENTITY, { _id: string, data: CreateWarehouseExitDetailDTO }>({
@@ -150,4 +159,5 @@ export const {
     useDeleteSerialMutation: useDeleteSerialWarehouseExitMutation,
     useAutomaticReplenishmentToaMutation: useAutomaticReplenishmentToaWarehouseExitMutation,
     useAutomaticReplenishmentWinMutation: useAutomaticReplenishmentWinWarehouseExitMutation,
+    useBulkExitWarehouseEntryMutation
 } = warehouseExitApi;

@@ -1,13 +1,14 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { InvalidatesTagsDTO } from 'logiflowerp-sdk'
-import { warehouseEntryApi } from '@shared/infrastructure/redux/api'
+import { warehouseEntryApi, warehouseExitApi } from '@shared/infrastructure/redux/api'
 
 export function useInvalidatesTags() {
     const dispatch = useDispatch()
 
     const mapApi = {
         warehouseEntryApi,
+        warehouseExitApi,
     } as const
 
     return useCallback((tags: InvalidatesTagsDTO[]) => {

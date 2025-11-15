@@ -13,6 +13,7 @@ import { Box, Typography } from '@mui/material'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
+import { InputFileUploadBulkExit } from '../components/InputFileUploadBulkExit'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseExit() {
@@ -84,7 +85,15 @@ export default function LayoutWarehouseExit() {
 						rows={data}
 						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseExitByID })}
 						disableRowSelectionOnClick
-						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_EXIT} /> }}
+						slots={{
+							toolbar: () => (
+								<CustomToolbar
+									handleAddClick={handleAddClick}
+									AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_EXIT}
+									customInputFileUpload1={<InputFileUploadBulkExit />}
+								/>
+							)
+						}}
 						showToolbar
 						getRowId={row => row._id}
 						loading={isLoading || isLoadingDelete}

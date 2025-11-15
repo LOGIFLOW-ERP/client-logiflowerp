@@ -3,6 +3,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { CircularProgress, Tooltip } from '@mui/material';
 import { ToolbarButton } from '@mui/x-data-grid';
 import { useRef } from 'react';
+import { useSnackbar } from 'notistack';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -18,7 +19,7 @@ const VisuallyHiddenInput = styled('input')({
 
 interface IProps {
     titleTooltip: string
-    handleFileChange: (files: FileList | null) => void
+    handleFileChange: (files: FileList | null) => Promise<void>
     multiple?: boolean
     accept?: string
     disabled?: boolean
@@ -36,9 +37,21 @@ export function CustomGridToolbarInputFileUpload(props: IProps) {
     } = props
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
+    const { enqueueSnackbar } = useSnackbar()
 
     const handleClick = () => {
         fileInputRef.current?.click()
+    }
+
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            await handleFileChange(event.target.files)
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        } finally {
+            event.target.value = ''
+        }
     }
 
     return (
@@ -56,7 +69,7 @@ export function CustomGridToolbarInputFileUpload(props: IProps) {
                             <VisuallyHiddenInput
                                 ref={fileInputRef}
                                 type='file'
-                                onChange={(event) => handleFileChange(event.target.files)}
+                                onChange={handleChange}
                                 multiple={multiple}
                                 accept={accept}
                             />
