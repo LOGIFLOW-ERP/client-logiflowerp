@@ -4,3 +4,4 @@ export * from './companyApi';
 export * from './systemOptionApi';
 export * from './profileApi';
 export * from './personnelApi';
+export * from './notificationApi';

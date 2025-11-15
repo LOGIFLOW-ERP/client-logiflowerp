@@ -4,9 +4,13 @@ import { readExcelFile, validateHeadersExcel } from "@shared/utils"
 import { useAddDetailBulkWarehouseEntryMutation } from "@shared/infrastructure/redux/api"
 import { useStore } from "@shared/ui/hooks"
 
-export function InputFileUploadDetail() {
+interface IProps {
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-    const { setState, state: { selectedDocument } } = useStore('warehouseEntry')
+export function InputFileUploadDetail({ setOpen }: IProps) {
+
+    const { state: { selectedDocument } } = useStore('warehouseEntry')
     const { enqueueSnackbar } = useSnackbar()
     const [insertBulk, { isLoading }] = useAddDetailBulkWarehouseEntryMutation()
 
@@ -53,10 +57,14 @@ export function InputFileUploadDetail() {
                 throw new Error('¡No hay un documento seleccionado!')
             }
 
-            const document = await insertBulk({ _id: selectedDocument._id, data: jsonArray }).unwrap()
-            setState({ selectedDocument: document })
+            await insertBulk({ _id: selectedDocument.documentNumber, data: jsonArray }).unwrap()
+            setOpen(false)
 
-            enqueueSnackbar({ message: '¡Se cargó correctamente!', variant: 'success' })
+            enqueueSnackbar({
+                message: '¡Su solicitud está en proceso, le llegará una notificación al finalizar! (No cargar el archivo hasta recibir informacion de esta solicitud)',
+                variant: 'success',
+                autoHideDuration: 5000
+            })
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })

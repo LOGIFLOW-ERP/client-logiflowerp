@@ -63,18 +63,24 @@ export function DetalleTable() {
 
     return (
         <>
-            <Box sx={{ height: '100%' }}>
+            <Box>
                 <DataGrid<OrderDetailENTITY>
                     rows={selectedDocument?.detail}
                     columns={columnsDetail({ handleScannClick, handleDeleteClick })}
                     disableRowSelectionOnClick
                     getRowId={row => row.keyDetail}
                     loading={isLoadingDeleteDetail}
-                    autoPageSize
+                    autoPageSize={false}
                     columnVisibilityModel={{
                         actions: canWarehouseEntryDeleteDetailByID
                     }}
                     apiRef={apiRef}
+                    pageSizeOptions={[10]}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 10 },
+                        },
+                    }}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>

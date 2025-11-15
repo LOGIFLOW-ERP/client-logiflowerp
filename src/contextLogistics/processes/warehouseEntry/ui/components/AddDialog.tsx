@@ -105,7 +105,7 @@ export function AddDialog(props: IProps) {
                             <Chip label='Agregar Detalle' size='small' />
                         </Divider>
                         <Suspense fallback={<Fallback />}>
-                            <DetalleForm />
+                            <DetalleForm setOpen={setOpen} />
                         </Suspense>
                         {
                             !!selectedDocument.detail.length && (

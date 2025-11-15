@@ -2,7 +2,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import { useAddDetailWarehouseEntryMutation, useGetProductPipelineQuery } from '@shared/api';
 import { CustomAutocomplete } from '@shared/ui-library';
-import { CreateOrderDetailDTO, ProductENTITY, State } from 'logiflowerp-sdk';
+import { CreateOrderDetailDTO, ProductENTITY, State, StateOrder } from 'logiflowerp-sdk';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -12,7 +12,11 @@ import { InputFileUploadDetail } from './InputFileUploadDetail';
 
 const resolver = classValidatorResolver(CreateOrderDetailDTO)
 
-export function DetalleForm() {
+interface IProps {
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export function DetalleForm({ setOpen }: IProps) {
 
     const { setState, state: { selectedDocument } } = useStore('warehouseEntry')
 
@@ -118,9 +122,9 @@ export function DetalleForm() {
                     )
                 }
                 {
-                    canWarehouseEntryAddDetailByID && (
+                    (canWarehouseEntryAddDetailByID && selectedDocument?.state !== StateOrder.PROCESANDO) && (
                         <Grid size={{ md: 1 }} component='div' sx={{ paddingTop: 1 }}>
-                            <InputFileUploadDetail />
+                            <InputFileUploadDetail setOpen={setOpen} />
                         </Grid>
                     )
                 }
