@@ -34,7 +34,7 @@ export function CabeceraForm(props: Props) {
     const pipelineStore = [{ $match: { state: State.ACTIVO } }]
     const { data: dataStores, isLoading: isLoadingStores, isError: isErrorStores } = useGetStorePipelineQuery(pipelineStore)
     const pipelinePersonnel = [{ $match: { state: State.ACTIVO } }]
-    const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
+    const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel, error: errorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
 
     return (
         <Grid container spacing={2} columns={16}>
@@ -90,7 +90,7 @@ export function CabeceraForm(props: Props) {
                             loading={isLoadingPersonnel}
                             options={dataPersonnel}
                             error={!!errors.carrier || isErrorPersonnel}
-                            helperText={errors.carrier?.message}
+                            helperText={errors.carrier?.message || (errorPersonnel as Error)?.message}
                             value={dataPersonnel?.find((opt) => opt.identity === field.value?.identity) || null}
                             onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
                             label='Personal'
