@@ -1,27 +1,29 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import {
     useReportEmployeeStockQuery,
 } from '@shared/api'
-import { CustomViewError } from '@shared/ui-library'
+import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { EmployeeStockENTITYFlat } from 'logiflowerp-sdk'
-// import { columns_ } from '../GridCol/columns_'
 import { columns } from '../GridCol/columns'
 import { Paper, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
+import { Fallback } from '@app/ui/pages'
+import { useExportExcel } from '@shared/ui/hooks'
+
+const EmployeeStockSerialDialog = lazy(() => import('../components/EmployeeStockSerialDialog').then(m => ({ default: m.EmployeeStockSerialDialog })))
+
 
 export default function LayoutEmployeeStock() {
 
-
-    const [_openEdit, setOpenEdit] = useState(false)
+    const [openEmployeeStockSerialDialog, setOpenEmployeeStockSerialDialog] = useState(false)
 
     const [_selectedRow, setSelectedRow] = useState<EmployeeStockENTITYFlat>()
 
     const apiRef = useGridApiRef()
-
+    const { exportExcel } = useExportExcel()
     const { enqueueSnackbar } = useSnackbar()
-
 
     const pipeline = [{ $match: {} }]
     const { data, isLoading, isError, error } = useReportEmployeeStockQuery(pipeline)
@@ -39,11 +41,17 @@ export default function LayoutEmployeeStock() {
     const handleScannClick = (row: EmployeeStockENTITYFlat) => {
         try {
             setSelectedRow(row)
-            setOpenEdit(true)
+            setOpenEmployeeStockSerialDialog(true)
         } catch (error: any) {
             console.error(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
         }
+    }
+
+    const handleExportExcelClick = () => {
+        if (!apiRef.current) return
+        const csv = apiRef.current.getDataAsCsv()
+        exportExcel(csv, 'Stock_Almacen')
     }
 
     if (isError) return <CustomViewError error={error} />
@@ -66,10 +74,29 @@ export default function LayoutEmployeeStock() {
                         autoPageSize
                         density='compact'
                         apiRef={apiRef}
+                        slots={{
+                            toolbar: () => (
+                                <CustomToolbar
+                                    AGREGAR_NUEVO_REGISTRO={false}
+                                    handleExportExcelClick={handleExportExcelClick}
+                                />
+                            )
+                        }}
                     />
                 </Box>
             </Paper>
 
+            <Suspense fallback={<Fallback />}>
+                {
+                    (_selectedRow && openEmployeeStockSerialDialog) && (
+                        <EmployeeStockSerialDialog
+                            open={openEmployeeStockSerialDialog}
+                            setOpen={setOpenEmployeeStockSerialDialog}
+                            selectedRow={_selectedRow}
+                        />
+                    )
+                }
+            </Suspense>
         </>
     )
 }
