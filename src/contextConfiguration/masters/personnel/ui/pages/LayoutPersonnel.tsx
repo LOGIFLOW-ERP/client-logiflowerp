@@ -34,7 +34,7 @@ export default function LayoutPersonnel() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, isError, isLoading } = useGetPersonnelsQuery()
+	const { data, isError, isFetching } = useGetPersonnelsQuery()
 	const [updatePersonnel, { isLoading: isLoadingUpdate }] = useUpdatePersonnelMutation()
 	const [deletePersonnel, { isLoading: isLoadingDelete }] = useDeletePersonnelMutation()
 	const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
@@ -97,7 +97,7 @@ export default function LayoutPersonnel() {
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar setOpenAdd={setOpenAdd} AGREGAR_NUEVO_REGISTRO={POST_PERSONNEL} /> }}
 					getRowId={row => row._id}
-					loading={isLoading || isLoadingUpdate || isLoadingDelete || isLoadingProfiles}
+					loading={isFetching || isLoadingUpdate || isLoadingDelete || isLoadingProfiles}
 					density='compact'
 					showToolbar
 					autoPageSize

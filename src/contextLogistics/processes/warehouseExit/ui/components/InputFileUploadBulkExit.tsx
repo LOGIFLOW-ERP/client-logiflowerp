@@ -52,7 +52,7 @@ export function InputFileUploadBulkExit() {
                     obj[header.name] = row[header.i].trim()
                 } else if (typeof row[header.i] === 'number') {
                     if (header.name === 'Tecnico') {
-                        obj[header.name] = row[header.i].toString().padStart(8, '0')
+                        obj[header.name] = row[header.i].toString()
                     } else {
                         obj[header.name] = row[header.i]
                     }
