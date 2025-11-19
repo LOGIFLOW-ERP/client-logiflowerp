@@ -1,28 +1,43 @@
 import { useSnackbar } from "notistack";
 import * as XLSX from "xlsx";
 
+interface Data {
+    csvString: string | Record<string, number | string>[]
+    name: string
+    headers?: string[]
+}
+
+interface ExportExcelProps {
+    filenamePrefix: string
+    data: Data[]
+}
+
 export function useExportExcel() {
     const { enqueueSnackbar } = useSnackbar();
 
     // 🔹 Función que exporta un CSV a Excel
-    const exportExcel = (csv: string, filenamePrefix = "Stock_Almacen") => {
+    const exportExcel = (params: ExportExcelProps) => {
         try {
-            const json = parseCSV(csv);
-            if (!json || json.length === 0) throw new Error("No hay datos para exportar");
+            const workbook = XLSX.utils.book_new()
+            for (const element of params.data) {
+                if (typeof element.csvString === 'string') {
+                    const json = parseCSV(element.csvString);
+                    if (!json || json.length === 0) throw new Error('No hay datos para exportar');
+                    const headers = Object.keys(json[0]);
+                    const rows = json.map((obj) => headers.map((key) => obj[key]))
+                    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+                    XLSX.utils.book_append_sheet(workbook, worksheet, element.name)
+                } else {
 
-            const headers = Object.keys(json[0]);
-            const rows = json.map((obj) => headers.map((key) => obj[key]));
+                }
+            }
 
-            const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
-
-            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+            const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" })
             const blob = new Blob([excelBuffer], {
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             });
 
-            const fileName = `${filenamePrefix}_${Date.now()}_${new Date()
+            const fileName = `${params.filenamePrefix}_${Date.now()}_${new Date()
                 .toISOString()
                 .slice(0, 10)}.xlsx`;
 

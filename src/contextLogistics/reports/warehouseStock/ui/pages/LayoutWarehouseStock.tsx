@@ -46,9 +46,21 @@ export default function LayoutWarehouseStock() {
 	}
 
 	const handleExportExcelClick = () => {
-		if (!apiRef.current) return
+		if (!apiRef.current || !data) return
 		const csv = apiRef.current.getDataAsCsv()
-		exportExcel(csv, 'Stock_Almacen')
+		const state = apiRef.current.state
+		const filteredLookup = state.filter.filteredRowsLookup
+		const visibleRows = data.filter(el => filteredLookup[el._id] !== false)
+
+		console.log(visibleRows)
+
+		exportExcel({
+			filenamePrefix: 'Stock_Almacen',
+			data: [
+				{ csvString: csv, name: 'StockAlmacen' },
+				{ csvString: [], name: 'Series' }
+			]
+		})
 	}
 
 	if (isError) return <CustomViewError />
