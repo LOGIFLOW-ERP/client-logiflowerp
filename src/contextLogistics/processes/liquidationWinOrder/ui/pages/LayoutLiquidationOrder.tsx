@@ -29,8 +29,12 @@ export default function LayoutLiquidationOrder() {
     const [finalizeOrder, { isLoading: isFinalizing }] = useFinalizeLiquidationWINOrderMutation()
     const [
         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
+        PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID,
+        PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID
     ] = usePermissions([
         PERMISSIONS.PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
+        PERMISSIONS.PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID,
+        PERMISSIONS.PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID,
     ])
 
     useEffect(() => {
@@ -100,7 +104,9 @@ export default function LayoutLiquidationOrder() {
                         handleInventoryClick,
                         handleSendReviewClick,
                         handleFinalizeOrderClick,
-                        PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
+                        PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
+                        PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID,
+                        PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID
                     })}
                     disableRowSelectionOnClick
                     showToolbar

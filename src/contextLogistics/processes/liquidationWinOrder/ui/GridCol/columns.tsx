@@ -12,6 +12,8 @@ interface IParams {
     handleSendReviewClick: (row: WINOrderENTITY) => void
     handleFinalizeOrderClick: (row: WINOrderENTITY) => void
     PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID: boolean
+    PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID: boolean
+    PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
@@ -20,7 +22,9 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
         handleInventoryClick,
         handleSendReviewClick,
         handleFinalizeOrderClick,
-        PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
+        PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
+        PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID,
+        PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID
     } = params
     return [
         {
@@ -48,7 +52,7 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
                         showInMenu
                     />
                 )
-                if (true) {
+                if (PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID) {
                     actions.push(
                         <GridActionsCellItem
                             key='send-review'
@@ -59,7 +63,7 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
                         />
                     )
                 }
-                if (true) {
+                if (PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID) {
                     actions.push(
                         <GridActionsCellItem
                             key='finalize-order'
