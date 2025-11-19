@@ -16,3 +16,4 @@ export * from './liquidationWinOrderApi';
 export * from './winOrderApi';
 export * from './warehouseStockSerialApi';
 export * from './cmsOrderApi';
+export * from './employeeStockSerialApi';
