@@ -14,7 +14,6 @@ import { useExportExcel } from '@shared/ui/hooks'
 
 const EmployeeStockSerialDialog = lazy(() => import('../components/EmployeeStockSerialDialog').then(m => ({ default: m.EmployeeStockSerialDialog })))
 
-
 export default function LayoutEmployeeStock() {
 
     const [openEmployeeStockSerialDialog, setOpenEmployeeStockSerialDialog] = useState(false)
@@ -22,7 +21,7 @@ export default function LayoutEmployeeStock() {
     const [_selectedRow, setSelectedRow] = useState<EmployeeStockENTITYFlat>()
 
     const apiRef = useGridApiRef()
-    const { exportExcel } = useExportExcel()
+    const { exportExcel, getCsvString } = useExportExcel()
     const { enqueueSnackbar } = useSnackbar()
 
     const pipeline = [{ $match: {} }]
@@ -35,7 +34,8 @@ export default function LayoutEmployeeStock() {
         })
     }, [
         data,
-        isLoading
+        isLoading,
+        openEmployeeStockSerialDialog
     ])
 
     const handleScannClick = (row: EmployeeStockENTITYFlat) => {
@@ -49,13 +49,19 @@ export default function LayoutEmployeeStock() {
     }
 
     const handleExportExcelClick = () => {
-        if (!apiRef.current) return
-        const csv = apiRef.current.getDataAsCsv()
-        exportExcel(csv, 'Stock_Almacen')
+        try {
+            const { csvString } = getCsvString(apiRef)
+            exportExcel({
+                filenamePrefix: 'Stock_Personal',
+                data: [{ sheetName: 'StockPersonal', source: csvString }]
+            })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
     }
 
     if (isError) return <CustomViewError error={error} />
-
 
     return (
         <>

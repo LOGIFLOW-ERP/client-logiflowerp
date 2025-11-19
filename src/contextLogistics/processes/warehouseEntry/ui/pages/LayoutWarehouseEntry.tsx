@@ -33,7 +33,7 @@ export default function LayoutWarehouseEntry() {
 	const [deleteWarehouseEntry, { isLoading: isLoadingDelete }] = useDeleteWarehouseEntryMutation()
 
 	const apiRef = useGridApiRef()
-	const { exportExcel } = useExportExcel()
+	const { exportExcel, getCsvString } = useExportExcel<WarehouseEntryENTITY>()
 
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
@@ -41,13 +41,13 @@ export default function LayoutWarehouseEntry() {
 			includeOutliers: true,
 		})
 		if (selectedDocument) {
-			const exist = data?.find(d => d._id === selectedDocument._id)
-			if (exist) {
-				setState({ selectedDocument: exist })
+			const existDoc = data?.find(d => d._id === selectedDocument._id)
+			if (existDoc) {
+				setState({ selectedDocument: existDoc })
 				if (selectedDetail) {
-					const exist = selectedDocument.detail?.find(d => d.keyDetail === selectedDetail.keyDetail && d.keySearch === selectedDetail.keySearch)
-					if (exist) {
-						setState({ selectedDetail: exist })
+					const existDet = existDoc.detail?.find(d => d.keyDetail === selectedDetail.keyDetail && d.keySearch === selectedDetail.keySearch)
+					if (existDet) {
+						setState({ selectedDetail: existDet })
 					}
 				}
 			}
@@ -87,9 +87,18 @@ export default function LayoutWarehouseEntry() {
 	const _columns = columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID })
 
 	const handleExportExcelClick = () => {
-		if (!apiRef.current) return
-		const csv = apiRef.current.getDataAsCsv()
-		exportExcel(csv, 'Ingreso_Almacen')
+		try {
+			const { csvString } = getCsvString(apiRef)
+			exportExcel({
+				filenamePrefix: 'Ingreso_Almacen',
+				data: [
+					{ sheetName: 'IngresoAlmacen', source: csvString }
+				]
+			})
+		} catch (error) {
+			console.error(error)
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+		}
 	}
 
 	if (error) return <CustomViewError />
@@ -129,6 +138,7 @@ export default function LayoutWarehouseEntry() {
 						<AddDialog
 							open={openAdd}
 							setOpen={setOpenAdd}
+							isFetching={isFetching}
 						/>
 					)
 				}

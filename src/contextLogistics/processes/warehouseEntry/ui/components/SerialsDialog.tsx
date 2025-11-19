@@ -19,12 +19,13 @@ const resolver = classValidatorResolver(StockSerialDTO)
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
+    isFetching: boolean
 }
 
 export function SerialsDialog(props: IProps) {
 
-    const { open, setOpen } = props
-    const { setState, state: { selectedDetail, selectedDocument } } = useStore('warehouseEntry')
+    const { open, setOpen, isFetching } = props
+    const { state: { selectedDetail, selectedDocument } } = useStore('warehouseEntry')
 
     const {
         handleSubmit,
@@ -46,14 +47,13 @@ export function SerialsDialog(props: IProps) {
             if (!selectedDetail) {
                 throw new Error('¡No hay un detalle seleccionado!')
             }
-            const document = await addSerial({
+            await addSerial({
                 _id: selectedDocument._id,
                 keyDetail: selectedDetail.keyDetail,
                 data
             }).unwrap()
             reset(new StockSerialDTO())
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
-            setState({ selectedDocument: document })
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -70,12 +70,11 @@ export function SerialsDialog(props: IProps) {
             if (!selectedDetail) {
                 throw new Error('¡No hay un detalle seleccionado!')
             }
-            const document = await deleteSerial({
+            await deleteSerial({
                 _id: selectedDocument._id,
                 keyDetail: selectedDetail.keyDetail,
                 serial: row.serial
             }).unwrap()
-            setState({ selectedDocument: document })
             enqueueSnackbar({ message: '¡Serie eliminado!', variant: 'success' })
             setTimeout(() => setFocus('serial'), 1)
         } catch (error: any) {
@@ -139,7 +138,7 @@ export function SerialsDialog(props: IProps) {
                                     color='primary'
                                     fullWidth
                                     sx={{ marginTop: 1 }}
-                                    loading={isLoadingAddSerial}
+                                    loading={isLoadingAddSerial || isFetching}
                                     loadingIndicator={<CircularProgress size={24} color='warning' />}
                                     loadingPosition='center'
                                 >
@@ -156,7 +155,7 @@ export function SerialsDialog(props: IProps) {
                     columns={columnsSerial({ handleDeleteClick })}
                     disableRowSelectionOnClick
                     getRowId={row => row.serial}
-                    loading={isLoadingDeleteSerial}
+                    loading={isLoadingDeleteSerial || isFetching}
                     autoPageSize
                     columnVisibilityModel={{
                         actions: canWarehouseEntryDeleteSerialByID

@@ -1,10 +1,11 @@
+import { GridApiCommunity } from "@mui/x-data-grid/internals";
 import { useSnackbar } from "notistack";
+import { RefObject } from "react";
 import * as XLSX from "xlsx";
 
 interface Data {
-    csvString: string | Record<string, number | string>[]
-    name: string
-    headers?: string[]
+    source: string | Record<string, number | string>[]
+    sheetName: string
 }
 
 interface ExportExcelProps {
@@ -12,7 +13,7 @@ interface ExportExcelProps {
     data: Data[]
 }
 
-export function useExportExcel() {
+export function useExportExcel<T extends { _id: string }>() {
     const { enqueueSnackbar } = useSnackbar();
 
     // 🔹 Función que exporta un CSV a Excel
@@ -20,15 +21,27 @@ export function useExportExcel() {
         try {
             const workbook = XLSX.utils.book_new()
             for (const element of params.data) {
-                if (typeof element.csvString === 'string') {
-                    const json = parseCSV(element.csvString);
+                if (typeof element.source === 'string') {
+                    const json = parseCSV(element.source);
                     if (!json || json.length === 0) throw new Error('No hay datos para exportar');
                     const headers = Object.keys(json[0]);
                     const rows = json.map((obj) => headers.map((key) => obj[key]))
                     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
-                    XLSX.utils.book_append_sheet(workbook, worksheet, element.name)
-                } else {
 
+                    formatWorksheet(worksheet, headers, rows)
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, element.sheetName)
+                } else if (Array.isArray(element.source)) {
+                    const worksheet = XLSX.utils.json_to_sheet(element.source)
+
+                    const headers = Object.keys(element.source[0] || {})
+                    const rows = element.source.map(obj => headers.map(key => obj[key]))
+
+                    formatWorksheet(worksheet, headers, rows)
+
+                    XLSX.utils.book_append_sheet(workbook, worksheet, element.sheetName)
+                } else {
+                    throw new Error('Fuente de datos no válida para exportar a Excel')
                 }
             }
 
@@ -52,10 +65,33 @@ export function useExportExcel() {
 
             enqueueSnackbar("Archivo Excel generado correctamente", { variant: "success" });
         } catch (error) {
-            console.error(error);
-            enqueueSnackbar((error as Error).message, { variant: "error" });
+            throw error;
         }
-    };
+    }
+
+    function formatWorksheet(
+        worksheet: XLSX.WorkSheet,
+        headers: string[],
+        rows: any[][]
+    ) {
+        // Ajustar ancho de columnas
+        const colWidths = headers.map((_, colIndex) => {
+            const maxLength = Math.max(
+                headers[colIndex].toString().length,
+                ...rows.map(r => (r[colIndex] ? r[colIndex].toString().length : 0))
+            );
+            return { wch: maxLength + 2 }
+        })
+        worksheet['!cols'] = colWidths
+
+        // Activar auto-filter
+        worksheet['!autofilter'] = {
+            ref: XLSX.utils.encode_range({
+                s: { r: 0, c: 0 },
+                e: { r: 0, c: headers.length - 1 }
+            })
+        }
+    }
 
     // 🔹 Parser CSV → JSON
     function parseCSV(csvString: string) {
@@ -96,5 +132,36 @@ export function useExportExcel() {
         );
     }
 
-    return { exportExcel }
+    function getCsvString(
+        apiRef: RefObject<GridApiCommunity | null>,
+    ) {
+        if (!apiRef.current) {
+            throw new Error('apiRef.current is null')
+        }
+        const csvString = apiRef.current.getDataAsCsv()
+        return { csvString }
+    }
+
+    function getCsvStringAndFilteredRows(
+        apiRef: RefObject<GridApiCommunity | null>,
+        rows: T[] | undefined
+    ) {
+        if (!apiRef.current) {
+            throw new Error('apiRef.current is null')
+        }
+        if (!rows) {
+            throw new Error('rows is undefined')
+        }
+        const csvString = apiRef.current.getDataAsCsv()
+        const state = apiRef.current.state
+        const filteredLookup = state.filter.filteredRowsLookup
+        const filteredRows = rows.filter(el => filteredLookup[el._id] !== false)
+        return { csvString, filteredRows }
+    }
+
+    return {
+        exportExcel,
+        getCsvString,
+        getCsvStringAndFilteredRows
+    }
 }
