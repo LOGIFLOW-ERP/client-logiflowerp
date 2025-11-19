@@ -1,6 +1,10 @@
 import Box from '@mui/material/Box'
 import { DataGrid } from '@mui/x-data-grid/DataGrid'
-import { useGetLiquidationWINOrdersQuery, useSendReviewWINOrderMutation } from '@shared/infrastructure/redux/api'
+import {
+    useFinalizeLiquidationWINOrderMutation,
+    useGetLiquidationWINOrdersQuery,
+    useSendReviewWINOrderMutation
+} from '@shared/infrastructure/redux/api'
 import { WINOrderENTITY } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { CustomViewError } from '@shared/ui/ui-library'
@@ -22,6 +26,7 @@ export default function LayoutLiquidationOrder() {
     const [openInventory, setOpenInventory] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
     const [sendReview, { isLoading }] = useSendReviewWINOrderMutation()
+    const [finalizeOrder, { isLoading: isFinalizing }] = useFinalizeLiquidationWINOrderMutation()
     const [
         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
     ] = usePermissions([
@@ -39,7 +44,7 @@ export default function LayoutLiquidationOrder() {
                 setSelectedRow(row)
             }
         }
-    }, [data, selectedRow, openAdd, openInventory, isLoading, isFetching])
+    }, [data, selectedRow, openAdd, openInventory, isLoading, isFetching, isFinalizing])
 
     const handleLiquidationClick = (row: WINOrderENTITY) => {
         try {
@@ -71,6 +76,16 @@ export default function LayoutLiquidationOrder() {
         }
     }
 
+    const handleFinalizeOrderClick = async (row: WINOrderENTITY) => {
+        try {
+            await finalizeOrder(row._id).unwrap()
+            enqueueSnackbar({ message: '¡Orden Finalizada!', variant: 'success' })
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
+    }
+
     if (isError) return <CustomViewError error={error} />
 
     return (
@@ -84,6 +99,7 @@ export default function LayoutLiquidationOrder() {
                         handleLiquidationClick,
                         handleInventoryClick,
                         handleSendReviewClick,
+                        handleFinalizeOrderClick,
                         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
                     })}
                     disableRowSelectionOnClick
@@ -91,7 +107,7 @@ export default function LayoutLiquidationOrder() {
                     getRowId={row => row._id}
                     density='compact'
                     apiRef={apiRef}
-                    loading={isFetching || isLoading}
+                    loading={isFetching || isLoading || isFinalizing}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>

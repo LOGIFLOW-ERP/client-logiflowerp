@@ -4,11 +4,13 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { ReactElement } from 'react'
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import TaskIcon from '@mui/icons-material/Task';
 
 interface IParams {
     handleLiquidationClick: (row: WINOrderENTITY) => void
     handleInventoryClick: (row: WINOrderENTITY) => void
     handleSendReviewClick: (row: WINOrderENTITY) => void
+    handleFinalizeOrderClick: (row: WINOrderENTITY) => void
     PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID: boolean
 }
 
@@ -17,6 +19,7 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
         handleLiquidationClick,
         handleInventoryClick,
         handleSendReviewClick,
+        handleFinalizeOrderClick,
         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID
     } = params
     return [
@@ -52,6 +55,17 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
                             icon={<BookmarkAddedIcon color='warning' />}
                             label='Enviar a Revisión'
                             onClick={() => handleSendReviewClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                if (true) {
+                    actions.push(
+                        <GridActionsCellItem
+                            key='finalize-order'
+                            icon={<TaskIcon color='success' />}
+                            label='Finalizar Orden'
+                            onClick={() => handleFinalizeOrderClick(params.row)}
                             showInMenu
                         />
                     )

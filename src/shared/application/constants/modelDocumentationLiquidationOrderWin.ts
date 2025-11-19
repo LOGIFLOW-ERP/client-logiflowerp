@@ -19,6 +19,11 @@ export const modelDocumentationLiquidationOrderWin: TreeViewBaseItem<ExtendedTre
                 id: '267f8438-69b3-4433-9df1-915d6372928e',
                 label: 'Fachada',
                 fileType: 'image'
+            },
+            {
+                id: '6f9ccb03-da49-4560-bbfa-62ed91c80e14',
+                label: 'Plantilla',
+                fileType: 'image'
             }
         ]
     }
