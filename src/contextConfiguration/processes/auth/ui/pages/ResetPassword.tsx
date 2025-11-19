@@ -33,8 +33,8 @@ export function ResetPassword() {
             setTimeout(() => {
                 navigate('/sign-in')
             }, 2500)
-        } catch (error: any) {
-            setError(error.message)
+        } catch (error) {
+            setError((error as Error).message)
             console.error(error)
         }
     }

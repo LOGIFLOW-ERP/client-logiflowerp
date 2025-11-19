@@ -44,9 +44,9 @@ export function AddDialog(props: IProps) {
             const document = await create(data).unwrap()
             enqueueSnackbar({ message: '¡Creado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -58,9 +58,9 @@ export function AddDialog(props: IProps) {
             await validate(selectedDocument._id).unwrap()
             setOpen(false)
             enqueueSnackbar({ message: '¡Validado correctamente!', variant: 'success' })
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

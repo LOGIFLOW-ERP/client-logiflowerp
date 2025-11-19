@@ -33,9 +33,9 @@ export function CustomFilters({ fetchProducts }: IProps) {
             ]
             await fetchProducts(pipeline).unwrap()
             enqueueSnackbar({ message: 'Reporte generado!', variant: 'success' })
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

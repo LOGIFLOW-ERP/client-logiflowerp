@@ -42,9 +42,9 @@ export default function LayoutToaOrder() {
         try {
             setSelectedRow(row)
             setOpenInventory(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -52,9 +52,9 @@ export default function LayoutToaOrder() {
         try {
             setSelectedRow(row)
             setOpenProductsServices(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

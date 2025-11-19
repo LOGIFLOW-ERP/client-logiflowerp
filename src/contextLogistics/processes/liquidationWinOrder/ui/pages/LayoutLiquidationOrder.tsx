@@ -54,9 +54,9 @@ export default function LayoutLiquidationOrder() {
         try {
             setSelectedRow(row)
             setOpenAdd(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -64,9 +64,9 @@ export default function LayoutLiquidationOrder() {
         try {
             setSelectedRow(row)
             setOpenInventory(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -74,9 +74,9 @@ export default function LayoutLiquidationOrder() {
         try {
             await sendReview(row._id).unwrap()
             enqueueSnackbar({ message: '¡Enviado a revisión!', variant: 'success' })
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -84,9 +84,9 @@ export default function LayoutLiquidationOrder() {
         try {
             await finalizeOrder(row._id).unwrap()
             enqueueSnackbar({ message: '¡Orden Finalizada!', variant: 'success' })
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

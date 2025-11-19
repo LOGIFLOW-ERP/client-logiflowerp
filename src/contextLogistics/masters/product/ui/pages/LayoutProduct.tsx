@@ -48,9 +48,9 @@ export default function LayoutProduct() {
 		try {
 			setSelectedRow(row)
 			setOpenEdit(true)
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -61,9 +61,9 @@ export default function LayoutProduct() {
 			dto.state = dto.state === State.ACTIVO ? State.INACTIVO : State.ACTIVO
 			await updateStore({ id: row._id, data: dto }).unwrap()
 			enqueueSnackbar({ message: 'Estado actualizado con éxito', variant: 'success' })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 

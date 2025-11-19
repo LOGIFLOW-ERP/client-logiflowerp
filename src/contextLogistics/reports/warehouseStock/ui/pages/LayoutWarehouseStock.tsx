@@ -37,9 +37,9 @@ export default function LayoutWarehouseStock() {
 		try {
 			setSelectedRow(row)
 			setOpenWarehouseStockSerialDialog(true)
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 

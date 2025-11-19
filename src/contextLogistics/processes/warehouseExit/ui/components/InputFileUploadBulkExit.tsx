@@ -52,7 +52,7 @@ export function InputFileUploadBulkExit() {
                     obj[header.name] = row[header.i].trim()
                 } else if (typeof row[header.i] === 'number') {
                     if (header.name === 'Tecnico') {
-                        obj[header.name] = row[header.i].toString().padStart(8, '0')
+                        obj[header.name] = row[header.i].toString()
                     } else {
                         obj[header.name] = row[header.i]
                     }
@@ -79,9 +79,9 @@ export function InputFileUploadBulkExit() {
             await bulkExit({ store, data }).unwrap()
             setOpen(false)
             enqueueSnackbar({ message: '¡Solicitud presentada, recibirá una notificación!', variant: 'info' });
-        } catch (error: any) {
-            console.log(error);
-            enqueueSnackbar({ message: error.message, variant: 'error' });
+        } catch (error) {
+            console.error(error);
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' });
         }
     }
 

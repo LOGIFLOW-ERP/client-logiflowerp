@@ -34,7 +34,7 @@ export default function LayoutPersonnel() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, isError, isLoading } = useGetPersonnelsQuery()
+	const { data, isError, isFetching } = useGetPersonnelsQuery()
 	const [updatePersonnel, { isLoading: isLoadingUpdate }] = useUpdatePersonnelMutation()
 	const [deletePersonnel, { isLoading: isLoadingDelete }] = useDeletePersonnelMutation()
 	const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
@@ -50,9 +50,9 @@ export default function LayoutPersonnel() {
 		try {
 			setSelectedRow(row)
 			setOpenEdit(true)
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -63,9 +63,9 @@ export default function LayoutPersonnel() {
 			dto.state = dto.state === State.ACTIVO ? State.INACTIVO : State.ACTIVO
 			await updatePersonnel({ id: row._id, data: dto }).unwrap()
 			enqueueSnackbar({ message: 'Estado actualizado con éxito', variant: 'success' })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -73,9 +73,9 @@ export default function LayoutPersonnel() {
 		try {
 			await deletePersonnel(row._id).unwrap()
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -97,7 +97,7 @@ export default function LayoutPersonnel() {
 					disableRowSelectionOnClick
 					slots={{ toolbar: () => <CustomToolbar setOpenAdd={setOpenAdd} AGREGAR_NUEVO_REGISTRO={POST_PERSONNEL} /> }}
 					getRowId={row => row._id}
-					loading={isLoading || isLoadingUpdate || isLoadingDelete || isLoadingProfiles}
+					loading={isFetching || isLoadingUpdate || isLoadingDelete || isLoadingProfiles}
 					density='compact'
 					showToolbar
 					autoPageSize

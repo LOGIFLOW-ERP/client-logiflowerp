@@ -54,9 +54,9 @@ export function SerialsDialog(props: IProps) {
             reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         } finally {
             setTimeout(() => setFocus('serial'), 1)
         }
@@ -78,9 +78,9 @@ export function SerialsDialog(props: IProps) {
             setState({ selectedDocument: document })
             enqueueSnackbar({ message: '¡Serie eliminado!', variant: 'success' })
             setTimeout(() => setFocus('serial'), 1)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

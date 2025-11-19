@@ -52,9 +52,9 @@ export default function LayoutProductGroup() {
 		try {
 			setSelectedRow(row)
 			setOpenEdit(true)
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -62,9 +62,9 @@ export default function LayoutProductGroup() {
 		try {
 			await deleteProductGroup(row._id).unwrap()
 			enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 

@@ -58,9 +58,9 @@ export default function LayoutWinOrder() {
         try {
             setSelectedRow(row)
             setOpenInventory(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -68,9 +68,9 @@ export default function LayoutWinOrder() {
         try {
             setSelectedRow(row)
             setOpenEstados(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -78,9 +78,9 @@ export default function LayoutWinOrder() {
         try {
             setSelectedRow(row)
             setOpenEstadosInterno(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -88,18 +88,18 @@ export default function LayoutWinOrder() {
         try {
             setSelectedRow(row)
             setOpenDireccionCliente(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
     const handleExportExcelClick = () => {
         try {
             exportExcelWinOrder(apiRef, rows)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

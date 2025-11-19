@@ -45,9 +45,9 @@ export default function LayoutWarehouseReturn() {
 		try {
 			setOpenAdd(true)
 			setState({ selectedDocument: null })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -55,9 +55,9 @@ export default function LayoutWarehouseReturn() {
 		try {
 			setState({ selectedDocument: row })
 			setOpenAdd(true)
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -65,9 +65,9 @@ export default function LayoutWarehouseReturn() {
 		try {
 			await deleteWarehouseReturn(row._id).unwrap()
 			enqueueSnackbar({ message: '¡Documento eliminado!', variant: 'success' })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
