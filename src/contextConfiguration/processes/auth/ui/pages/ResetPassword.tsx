@@ -34,7 +34,7 @@ export function ResetPassword() {
                 navigate('/sign-in')
             }, 2500)
         } catch (error) {
-            setError(error.message)
+            setError((error as Error).message)
             console.error(error)
         }
     }
