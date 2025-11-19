@@ -21,11 +21,12 @@ const resolver = classValidatorResolver(CreateWarehouseEntryDTO)
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
+    isFetching: boolean
 }
 
 export function AddDialog(props: IProps) {
 
-    const { open, setOpen } = props
+    const { open, setOpen, isFetching } = props
     const { state: { selectedDocument }, setState } = useStore('warehouseEntry')
     const {
         handleSubmit,
@@ -93,7 +94,7 @@ export function AddDialog(props: IProps) {
                 <CabeceraForm
                     control={control}
                     errors={errors}
-                    isLoading={isLoading}
+                    isLoading={isLoading || isFetching}
                     readOnly={!!selectedDocument}
                     register={register}
                 />
@@ -105,7 +106,7 @@ export function AddDialog(props: IProps) {
                             <Chip label='Agregar Detalle' size='small' />
                         </Divider>
                         <Suspense fallback={<Fallback />}>
-                            <DetalleForm setOpen={setOpen} />
+                            <DetalleForm setOpen={setOpen} isFetching={isFetching || isLoadingValidate} />
                         </Suspense>
                         {
                             !!selectedDocument.detail.length && (
@@ -113,7 +114,7 @@ export function AddDialog(props: IProps) {
                                     <Divider textAlign='left'>
                                         <Chip label='Detalle' size='small' />
                                     </Divider>
-                                    <DetalleTable />
+                                    <DetalleTable isFetching={isFetching || isLoadingValidate} />
                                 </>
                             )
                         }

@@ -14,11 +14,12 @@ const resolver = classValidatorResolver(CreateOrderDetailDTO)
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    isFetching: boolean
 }
 
-export function DetalleForm({ setOpen }: IProps) {
+export function DetalleForm({ setOpen, isFetching }: IProps) {
 
-    const { setState, state: { selectedDocument } } = useStore('warehouseEntry')
+    const { state: { selectedDocument } } = useStore('warehouseEntry')
 
     const {
         handleSubmit,
@@ -39,10 +40,9 @@ export function DetalleForm({ setOpen }: IProps) {
             if (!selectedDocument) {
                 throw new Error('¡No hay un documento seleccionado!')
             }
-            const document = await addDetail({ _id: selectedDocument._id, data }).unwrap()
+            await addDetail({ _id: selectedDocument._id, data }).unwrap()
             reset({ lot: '' })
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
-            setState({ selectedDocument: document })
         } catch (error: any) {
             console.log(error)
             enqueueSnackbar({ message: error.message, variant: 'error' })
@@ -112,7 +112,7 @@ export function DetalleForm({ setOpen }: IProps) {
                                 color='primary'
                                 fullWidth
                                 sx={{ marginTop: 1 }}
-                                loading={isLoadingAddDetail}
+                                loading={isLoadingAddDetail || isFetching}
                                 loadingIndicator={<CircularProgress size={24} color='warning' />}
                                 loadingPosition='center'
                             >

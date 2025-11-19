@@ -50,7 +50,8 @@ export function Header() {
             setNotification(option)
             setOpenDialog(true)
             const data: UpdateNotificationDTO = {
-                estado: StateNotification.VIEWED
+                estado: StateNotification.VIEWED,
+                fechaVisto: new Date(),
             }
             if (option.estado === StateNotification.PENDING) {
                 await updateNotification({ id: option._id, data }).unwrap()

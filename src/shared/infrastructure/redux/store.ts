@@ -25,6 +25,7 @@ import {
     warehouseStockSerialApi,
     cmsOrderApi,
     notificationApi,
+    employeeStockSerialApi
 } from '@shared/api'
 import { authReducer } from './auth'
 import { warehouseEntryReducer } from './warehouseEntry'
@@ -62,6 +63,7 @@ export const store = configureStore({
         [warehouseStockSerialApi.reducerPath]: warehouseStockSerialApi.reducer as Reducer,
         [cmsOrderApi.reducerPath]: cmsOrderApi.reducer as Reducer,
         [notificationApi.reducerPath]: notificationApi.reducer as Reducer,
+        [employeeStockSerialApi.reducerPath]: employeeStockSerialApi.reducer as Reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({ serializableCheck: false })
@@ -90,6 +92,7 @@ export const store = configureStore({
             .concat(warehouseStockSerialApi.middleware)
             .concat(cmsOrderApi.middleware)
             .concat(notificationApi.middleware)
+            .concat(employeeStockSerialApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>

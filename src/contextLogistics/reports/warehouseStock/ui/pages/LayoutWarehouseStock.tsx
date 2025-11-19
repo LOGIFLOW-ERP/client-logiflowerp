@@ -14,19 +14,17 @@ import { useExportExcel } from '@shared/ui/hooks'
 
 const WarehouseStockSerialDialog = lazy(() => import('../components/WarehouseStockSerialDialog').then(m => ({ default: m.WarehouseStockSerialDialog })))
 
-
 export default function LayoutWarehouseStock() {
 	const [openWarehouseStockSerialDialog, setOpenWarehouseStockSerialDialog] = useState(false)
 
 	const [_selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
 
 	const apiRef = useGridApiRef()
-	const { exportExcel } = useExportExcel()
+	const { exportExcel, getCsvStringAndFilteredRows } = useExportExcel<WarehouseStockENTITYFlat>()
 
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: {} }]
 	const { data, isLoading, isError } = useReportWarehouseStockQuery(pipeline)
-
 
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
@@ -46,9 +44,19 @@ export default function LayoutWarehouseStock() {
 	}
 
 	const handleExportExcelClick = () => {
-		if (!apiRef.current) return
-		const csv = apiRef.current.getDataAsCsv()
-		exportExcel(csv, 'Stock_Almacen')
+		try {
+			const { csvString } = getCsvStringAndFilteredRows(apiRef, data)
+			exportExcel({
+				filenamePrefix: 'Stock_Almacen',
+				data: [
+					{ source: csvString, sheetName: 'StockAlmacen' },
+					{ source: [], sheetName: 'Series' }
+				]
+			})
+		} catch (error) {
+			console.error(error)
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+		}
 	}
 
 	if (isError) return <CustomViewError />

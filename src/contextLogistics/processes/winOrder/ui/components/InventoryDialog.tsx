@@ -5,10 +5,11 @@ import { DataGrid } from '@mui/x-data-grid/DataGrid'
 import { columnsInventory } from '../GridCol/columnsInventory'
 import { useGridApiRef } from '@mui/x-data-grid'
 import { Box, Button, CircularProgress, Tooltip } from '@mui/material'
-import { modelDocumentationLiquidationOrderWin } from '@shared/application/constants'
+import { modelDocumentationLiquidationOrderWin, PERMISSIONS } from '@shared/application/constants'
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import { useFinalizeOrderWinOrderMutation } from '@shared/infrastructure/redux/api'
 import { useSnackbar } from 'notistack'
+import { usePermissions } from '@shared/ui/hooks'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -22,6 +23,12 @@ export function InventoryDialog(props: IProps) {
     const apiRef = useGridApiRef()
     const [finalizeOrder, { isLoading }] = useFinalizeOrderWinOrderMutation()
     const { enqueueSnackbar } = useSnackbar()
+
+    const [
+        PUT_WIN_ORDER_FINALIZE_ORDER_BY_ID,
+    ] = usePermissions([
+        PERMISSIONS.PUT_WIN_ORDER_FINALIZE_ORDER_BY_ID,
+    ])
 
     const handleFinalizeOrderClick = async () => {
         try {
@@ -79,7 +86,7 @@ export function InventoryDialog(props: IProps) {
                         }}
                     >
                         {
-                            selectedRow.estado_interno === StateInternalOrderWin.REVISION
+                            (selectedRow.estado_interno === StateInternalOrderWin.REVISION && PUT_WIN_ORDER_FINALIZE_ORDER_BY_ID)
                                 ? <Tooltip title='Finalizar orden'>
                                     <Button
                                         variant='contained'

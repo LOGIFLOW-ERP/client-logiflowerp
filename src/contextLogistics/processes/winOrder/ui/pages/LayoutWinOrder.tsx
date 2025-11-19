@@ -9,6 +9,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { useSnackbar } from 'notistack'
 import { Fallback } from '@app/ui/pages'
 import { getMonthDateRange } from '@shared/utils/getMonthDateRange'
+import { useExportExcelWinOrder } from '../hooks/useExportExcel'
 
 const CustomFilters = lazy(() => import('../components/CustomFilters').then(m => ({ default: m.CustomFilters })))
 const InventoryDialog = lazy(() => import('../components/InventoryDialog').then(m => ({ default: m.InventoryDialog })))
@@ -23,12 +24,14 @@ export default function LayoutWinOrder() {
     const { data, isError, error, isLoading } = useGetWinOrderPipelineQuery(pipeline)
     const [fetchOrders, { data: pipelineData, isFetching: isFetchingPipeline, isError: isErrorPipeline, error: errorPipeline }] = useLazyGetWinOrderPipelineQuery()
     const apiRef = useGridApiRef()
+    const { exportExcelWinOrder } = useExportExcelWinOrder()
     const { enqueueSnackbar } = useSnackbar()
     const [openDireccionCliente, setOpenDireccionCliente] = useState(false)
     const [openInventory, setOpenInventory] = useState(false)
     const [openEstados, setOpenEstados] = useState(false)
     const [openEstadosInterno, setOpenEstadosInterno] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
+    const rows = pipelineData ?? data ?? []
 
     useEffect(() => {
         apiRef.current?.autosizeColumns({
@@ -36,7 +39,7 @@ export default function LayoutWinOrder() {
             includeOutliers: true,
         })
     }, [
-        data,
+        rows,
         selectedRow,
         openInventory,
         pipelineData,
@@ -91,9 +94,16 @@ export default function LayoutWinOrder() {
         }
     }
 
-    if (isError || isErrorPipeline) return <CustomViewError error={error ?? errorPipeline} />
+    const handleExportExcelClick = () => {
+        try {
+            exportExcelWinOrder(apiRef, rows)
+        } catch (error: any) {
+            console.error(error)
+            enqueueSnackbar({ message: error.message, variant: 'error' })
+        }
+    }
 
-    const rows = pipelineData ?? data ?? []
+    if (isError || isErrorPipeline) return <CustomViewError error={error ?? errorPipeline} />
 
     return (
         <>
@@ -124,6 +134,7 @@ export default function LayoutWinOrder() {
                                         isLoadingPipeline={isFetchingPipeline}
                                     />
                                 }
+                                handleExportExcelClick={handleExportExcelClick}
                             />
                         ),
                     }}

@@ -10,7 +10,11 @@ import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
 
-export function DetalleTable() {
+interface IProps {
+    isFetching: boolean
+}
+
+export function DetalleTable({ isFetching }: IProps) {
 
     const { setState, state: { selectedDetail, selectedDocument } } = useStore('warehouseEntry')
 
@@ -32,15 +36,14 @@ export function DetalleTable() {
             includeOutliers: true,
             disableColumnVirtualization: true
         })
-    }, [open, selectedDocument])
+    }, [open, isFetching])
 
     const handleDeleteClick = async (row: OrderDetailENTITY) => {
         try {
             if (!selectedDocument) {
                 throw new Error('¡No hay un documento seleccionado!')
             }
-            const document = await deleteDetail({ _id: selectedDocument._id, keyDetail: row.keyDetail }).unwrap()
-            setState({ selectedDocument: document })
+            await deleteDetail({ _id: selectedDocument._id, keyDetail: row.keyDetail }).unwrap()
             enqueueSnackbar({ message: '¡Detalle eliminado!', variant: 'success' })
         } catch (error: any) {
             console.error(error)
@@ -69,7 +72,7 @@ export function DetalleTable() {
                     columns={columnsDetail({ handleScannClick, handleDeleteClick })}
                     disableRowSelectionOnClick
                     getRowId={row => row.keyDetail}
-                    loading={isLoadingDeleteDetail}
+                    loading={isLoadingDeleteDetail || isFetching}
                     autoPageSize={false}
                     columnVisibilityModel={{
                         actions: canWarehouseEntryDeleteDetailByID
@@ -89,6 +92,7 @@ export function DetalleTable() {
                         <SerialsDialog
                             open={open}
                             setOpen={setOpen}
+                            isFetching={isFetching}
                         />
                     )
                 }
