@@ -55,7 +55,7 @@ export function EditAmountDetailDialog(props: IProps) {
             setState({ selectedDocument: document })
             handleClose()
         } catch (error) {
-            console.log(error)
+            console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }

@@ -51,9 +51,9 @@ export function AddDialog(props: IProps) {
             await addInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setOpen(false)
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

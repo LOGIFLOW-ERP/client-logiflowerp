@@ -36,7 +36,7 @@ export function InventoryDialog(props: IProps) {
             setOpen(false)
             enqueueSnackbar({ message: '¡Orden finalizada!', variant: 'success' })
         } catch (error) {
-            console.log(error)
+            console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }

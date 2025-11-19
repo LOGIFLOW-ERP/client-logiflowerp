@@ -39,9 +39,9 @@ export default function LayoutLiquidationOrder() {
         try {
             setSelectedRow(row)
             setOpenAdd(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -49,9 +49,9 @@ export default function LayoutLiquidationOrder() {
         try {
             setSelectedRow(row)
             setOpenInventory(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

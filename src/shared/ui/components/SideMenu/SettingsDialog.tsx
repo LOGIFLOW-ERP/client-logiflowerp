@@ -41,9 +41,9 @@ export const SettingsDialog = ({ open, onClose, }: { open: boolean; onClose: Rea
             reset()
             setTimeout(() => setFocus('password'), 1)
             enqueueSnackbar({ message: '¡Actualizado correctamente!', variant: 'success' })
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

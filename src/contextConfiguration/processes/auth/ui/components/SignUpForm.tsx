@@ -35,9 +35,9 @@ export function SignUpForm() {
             await signUp(data).unwrap()
             enqueueSnackbar({ message: '¡Registrado correctamente. Revisa tu correo para verificar tu cuenta!', variant: 'success' })
             navigate('/sign-in')
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

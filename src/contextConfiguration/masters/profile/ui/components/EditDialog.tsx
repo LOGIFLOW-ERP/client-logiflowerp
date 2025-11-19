@@ -36,9 +36,9 @@ export function EditDialog(props: IProps) {
             await update({ id: row._id, data }).unwrap()
             enqueueSnackbar({ message: 'Actualizado correctamente!', variant: 'success' })
             setOpen(false)
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

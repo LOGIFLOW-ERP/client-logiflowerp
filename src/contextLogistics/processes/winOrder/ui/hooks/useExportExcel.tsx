@@ -22,8 +22,6 @@ export function useExportExcelWinOrder() {
             Actividad: row.subtipo_de_actividad,
         })))
 
-        console.log(dataExport)
-
         exportExcel({
             filenamePrefix: 'WinOrdenes',
             data: [

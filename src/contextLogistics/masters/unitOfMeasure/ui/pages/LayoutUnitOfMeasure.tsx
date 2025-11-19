@@ -63,9 +63,9 @@ export default function LayoutUnitOfMeasure() {
 			// setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
 			enqueueSnackbar({ message: '¡Éxito 🚀!', variant: 'success' })
 			return updatedRow
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -74,9 +74,9 @@ export default function LayoutUnitOfMeasure() {
 	// 		await deleteUnitOfMeasure(id as string).unwrap()
 	// 		// setRows(rows.filter((row) => row.id !== id))
 	// 		enqueueSnackbar({ message: '¡Eliminado 🚀!', variant: 'info' })
-	// 	} catch (error: any) {
+	// 	} catch (error) {
 	// 		console.error(error)
-	// 		enqueueSnackbar({ message: error.message, variant: 'error' })
+	// 		enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 	// 	}
 	// }
 

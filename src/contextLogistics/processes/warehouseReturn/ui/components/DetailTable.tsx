@@ -33,9 +33,9 @@ export function DetailTable() {
             const document = await deleteDetail({ _id: selectedDocument._id, keyDetail: row.keyDetail }).unwrap()
             setState({ selectedDocument: document })
             enqueueSnackbar({ message: '¡Detalle eliminado!', variant: 'success' })
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -46,9 +46,9 @@ export function DetailTable() {
             }
             setState({ selectedDetail: row })
             setOpen(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

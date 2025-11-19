@@ -24,9 +24,9 @@ export function ResourceSystemDialog(props: Props) {
 		try {
 			setResourceSystem(resourceSystem.filter((row) => row._id !== id))
 			enqueueSnackbar({ message: '¡Pre eliminado 🚀, por favor cierre el modal y guarde cambios!', variant: 'info' })
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
@@ -37,9 +37,9 @@ export function ResourceSystemDialog(props: Props) {
 			setResourceSystem(resourceSystem.map((row) => (row._id === newRow._id ? newRow : row)))
 			enqueueSnackbar({ message: 'Pre actualizado 🚀, por favor cierre el modal y guarde cambios!', variant: 'success' })
 			return updatedRow
-		} catch (error: any) {
+		} catch (error) {
 			console.error(error)
-			enqueueSnackbar({ message: error.message, variant: 'error' })
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 

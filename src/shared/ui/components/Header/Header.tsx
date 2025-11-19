@@ -57,7 +57,7 @@ export function Header() {
                 await updateNotification({ id: option._id, data }).unwrap()
             }
         } catch (error) {
-            console.log(error)
+            console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }

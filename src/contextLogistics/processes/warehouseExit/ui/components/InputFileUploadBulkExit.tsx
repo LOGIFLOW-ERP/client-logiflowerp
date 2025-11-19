@@ -79,9 +79,9 @@ export function InputFileUploadBulkExit() {
             await bulkExit({ store, data }).unwrap()
             setOpen(false)
             enqueueSnackbar({ message: '¡Solicitud presentada, recibirá una notificación!', variant: 'info' });
-        } catch (error: any) {
-            console.log(error);
-            enqueueSnackbar({ message: error.message, variant: 'error' });
+        } catch (error) {
+            console.error(error);
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' });
         }
     }
 

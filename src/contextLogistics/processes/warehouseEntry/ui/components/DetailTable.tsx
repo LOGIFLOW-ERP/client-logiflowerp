@@ -45,9 +45,9 @@ export function DetalleTable({ isFetching }: IProps) {
             }
             await deleteDetail({ _id: selectedDocument._id, keyDetail: row.keyDetail }).unwrap()
             enqueueSnackbar({ message: '¡Detalle eliminado!', variant: 'success' })
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
@@ -58,9 +58,9 @@ export function DetalleTable({ isFetching }: IProps) {
             }
             setState({ selectedDetail: row })
             setOpen(true)
-        } catch (error: any) {
+        } catch (error) {
             console.error(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 

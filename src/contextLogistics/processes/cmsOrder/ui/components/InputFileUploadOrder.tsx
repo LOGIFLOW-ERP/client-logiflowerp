@@ -53,7 +53,8 @@ export function InputFileUploadOrder() {
 
                 const [headers, ...dataRows] = rows
 
-                const jsonArray = dataRows.map((row) => {
+                dataRows.map((row) => {
+                    // const jsonArray = dataRows.map((row) => {
                     const obj: Record<string, any> = {}
                     headers.forEach((header: string, i: number) => {
                         if ([
@@ -78,7 +79,7 @@ export function InputFileUploadOrder() {
                     return obj
                 })
 
-                console.log('✅ JSON final:', jsonArray)
+                // console.log('✅ JSON final:', jsonArray)
             }
             reader.readAsArrayBuffer(file)
 

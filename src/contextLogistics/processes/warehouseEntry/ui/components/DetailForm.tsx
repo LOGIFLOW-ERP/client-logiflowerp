@@ -43,9 +43,9 @@ export function DetalleForm({ setOpen, isFetching }: IProps) {
             await addDetail({ _id: selectedDocument._id, data }).unwrap()
             reset({ lot: '' })
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
-        } catch (error: any) {
-            console.log(error)
-            enqueueSnackbar({ message: error.message, variant: 'error' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
