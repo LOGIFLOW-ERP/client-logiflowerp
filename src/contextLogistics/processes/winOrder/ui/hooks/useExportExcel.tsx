@@ -19,6 +19,7 @@ export function useExportExcelWinOrder() {
             Serie: inv.invsn,
             Tipo: inv.invpool,
             'Número de Peticion': row.numero_de_peticion,
+            Cuadrilla: row.resource_id,
             Actividad: row.subtipo_de_actividad,
         })))
 
