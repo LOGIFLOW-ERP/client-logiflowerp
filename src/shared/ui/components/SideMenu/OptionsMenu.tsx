@@ -20,6 +20,8 @@ import { useSnackbar } from 'notistack'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '@shared/ui/hooks'
 import { AuthUserDTO } from 'logiflowerp-sdk'
+import { useDispatch } from 'react-redux'
+import { apiSlices } from '@shared/infrastructure/redux'
 const SettingsDialog = lazy(() => import('./SettingsDialog').then(m => ({ default: m.SettingsDialog })))
 const ProfileDialog = lazy(() => import('./ProfileDialog').then(m => ({ default: m.ProfileDialog })))
 
@@ -34,8 +36,9 @@ export function OptionsMenu() {
     const navigate = useNavigate()
     const { setState } = useStore('auth')
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-    const [openProfile, setOpenProfile] = useState(false);
-    const [openSettings, setOpenSettings] = useState(false);
+    const [openProfile, setOpenProfile] = useState(false)
+    const [openSettings, setOpenSettings] = useState(false)
+    const dispatch = useDispatch()
     const open = Boolean(anchorEl)
 
     const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -49,6 +52,9 @@ export function OptionsMenu() {
         try {
             await signOut().unwrap()
             // setAnchorEl(null)
+            apiSlices.forEach(api => {
+                dispatch(api.util.resetApiState())
+            })
             setState({ isAuthenticated: false, user: new AuthUserDTO() })
             navigate('/sign-in', { replace: true })
         } catch (error: any) {

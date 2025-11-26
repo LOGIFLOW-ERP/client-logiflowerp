@@ -10,7 +10,7 @@ import { WarehouseStockENTITYFlat } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { Paper, Typography } from '@mui/material'
 import { Fallback } from '@app/ui/pages'
-import { useExportExcel } from '@shared/ui/hooks'
+import { useExportExcelWarehouseStock } from '../hooks/useExportExcel'
 
 const WarehouseStockSerialDialog = lazy(() => import('../components/WarehouseStockSerialDialog').then(m => ({ default: m.WarehouseStockSerialDialog })))
 
@@ -20,18 +20,23 @@ export default function LayoutWarehouseStock() {
 	const [_selectedRow, setSelectedRow] = useState<WarehouseStockENTITYFlat>()
 
 	const apiRef = useGridApiRef()
-	const { exportExcel, getCsvStringAndFilteredRows } = useExportExcel<WarehouseStockENTITYFlat>()
 
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: {} }]
 	const { data, isLoading, isError } = useReportWarehouseStockQuery(pipeline)
+	const { exportExcelWarehouseStock, isLoadingExportExcel, isErrorExportExcel, errorExportExcel } = useExportExcelWarehouseStock()
 
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openWarehouseStockSerialDialog, isLoading])
+	}, [
+		data,
+		openWarehouseStockSerialDialog,
+		isLoading,
+		isLoadingExportExcel
+	])
 
 	const handleScannClick = (row: WarehouseStockENTITYFlat) => {
 		try {
@@ -43,23 +48,16 @@ export default function LayoutWarehouseStock() {
 		}
 	}
 
-	const handleExportExcelClick = () => {
+	const handleExportExcelClick = async () => {
 		try {
-			const { csvString } = getCsvStringAndFilteredRows(apiRef, data)
-			exportExcel({
-				filenamePrefix: 'Stock_Almacen',
-				data: [
-					{ source: csvString, sheetName: 'StockAlmacen' },
-					{ source: [], sheetName: 'Series' }
-				]
-			})
+			await exportExcelWarehouseStock(apiRef, data || [])
 		} catch (error) {
 			console.error(error)
 			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
 		}
 	}
 
-	if (isError) return <CustomViewError />
+	if (isError || isErrorExportExcel) return <CustomViewError error={errorExportExcel} />
 
 	return (
 		<>
@@ -74,7 +72,7 @@ export default function LayoutWarehouseStock() {
 						disableRowSelectionOnClick
 						showToolbar
 						getRowId={row => row._id}
-						loading={isLoading}
+						loading={isLoading || isLoadingExportExcel}
 						autoPageSize
 						density='compact'
 						apiRef={apiRef}

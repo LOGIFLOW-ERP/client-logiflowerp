@@ -15,6 +15,8 @@ import { MenuContent } from '../SideMenu/MenuContent';
 import { useSignOutMutation } from '@shared/infrastructure/redux/api';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { apiSlices } from '@shared/infrastructure/redux';
+import { useDispatch } from 'react-redux';
 
 interface SideMenuMobileProps {
 	open: boolean | undefined;
@@ -30,11 +32,15 @@ export function SideMenuMobile({ open, toggleDrawer, setSelectedNode, selectedNo
 	const [signOut, { isLoading }] = useSignOutMutation()
 	const navigate = useNavigate()
 	const { enqueueSnackbar } = useSnackbar()
+	const dispatch = useDispatch()
 
 	const handleClickLogout = async () => {
 		try {
 			await signOut().unwrap()
 			// setAnchorEl(null)
+			apiSlices.forEach(api => {
+				dispatch(api.util.resetApiState())
+			})
 			setState({ isAuthenticated: false, user: new AuthUserDTO() })
 			navigate('/sign-in', { replace: true })
 		} catch (error: any) {
