@@ -2,9 +2,10 @@ import { Button, CircularProgress } from '@mui/material';
 
 interface IProps {
     isLoading: boolean;
+    size?: 'small' | 'medium' | 'large'
 }
 
-export function CustomButtonSearch({ isLoading }: IProps) {
+export function CustomButtonSearch({ isLoading, size = 'medium' }: IProps) {
     return (
         <Button
             type='submit'
@@ -15,6 +16,7 @@ export function CustomButtonSearch({ isLoading }: IProps) {
             loading={isLoading}
             loadingIndicator={<CircularProgress size={24} color='inherit' />}
             loadingPosition='center'
+            size={size}
         >
             Buscar
         </Button>

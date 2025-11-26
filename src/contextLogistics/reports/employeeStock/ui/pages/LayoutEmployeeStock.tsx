@@ -82,6 +82,7 @@ export default function LayoutEmployeeStock() {
                                 <CustomToolbar
                                     AGREGAR_NUEVO_REGISTRO={false}
                                     handleExportExcelClick={handleExportExcelClick}
+                                    btnSerialTracking
                                 />
                             )
                         }}

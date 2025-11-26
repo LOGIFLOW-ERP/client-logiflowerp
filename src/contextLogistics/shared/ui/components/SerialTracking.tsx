@@ -1,12 +1,12 @@
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid"
-import { CustomButtonSave, CustomDialog, CustomViewError } from "@shared/ui/ui-library"
-import { OrderENTITY, SerialTrackingDTO } from "logiflowerp-sdk"
+import { CustomButtonSearch, CustomDialog, CustomViewError } from "@shared/ui/ui-library"
+import { DataSerialTracking, SerialTrackingDTO } from "logiflowerp-sdk"
 import { columnsOrder } from "../GridCol/columnsWarehouseStockSerial"
 import { useEffect } from "react"
 import { useLazySerialTrackingQuery } from "@shared/infrastructure/redux/api"
 import { classValidatorResolver } from "@hookform/resolvers/class-validator"
 import { useForm } from "react-hook-form"
-import { TextField } from "@mui/material"
+import { Box, TextField } from "@mui/material"
 import { useSnackbar } from "notistack"
 
 const resolver = classValidatorResolver(SerialTrackingDTO)
@@ -20,7 +20,7 @@ export function SerialTracking(props: IProps) {
     const { open, setOpen } = props
 
     const apiRef = useGridApiRef()
-    const [triggerSerialTracking, { data, isLoading, isError, error }] = useLazySerialTrackingQuery()
+    const [triggerSerialTracking, { data, isFetching, isError, error }] = useLazySerialTrackingQuery()
     const {
         handleSubmit,
         formState: { errors },
@@ -33,7 +33,7 @@ export function SerialTracking(props: IProps) {
             includeHeaders: true,
             includeOutliers: true,
         })
-    }, [data])
+    }, [isFetching])
 
     const onSubmit = async (data: SerialTrackingDTO) => {
         try {
@@ -50,6 +50,7 @@ export function SerialTracking(props: IProps) {
             open={open}
             setOpen={setOpen}
             title='Seguimiento en serie'
+            maxWidth='xl'
         >
             {
                 isError
@@ -57,20 +58,27 @@ export function SerialTracking(props: IProps) {
                         <CustomViewError error={error} />
                     )
                     : <>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                            <TextField
-                                label='Serie'
-                                variant='outlined'
-                                fullWidth
-                                margin='normal'
-                                size='small'
-                                {...register('serial')}
-                                error={!!errors.serial}
-                                helperText={errors.serial?.message}
-                            />
-                            <CustomButtonSave isLoading={isLoading} />
+                        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', gap: 8 }}>
+                            <Box>
+                                <TextField
+                                    label='Serie'
+                                    variant='outlined'
+                                    fullWidth
+                                    margin='normal'
+                                    size='small'
+                                    {...register('serial')}
+                                    error={!!errors.serial}
+                                    helperText={errors.serial?.message}
+                                />
+                            </Box>
+                            <Box>
+                                <CustomButtonSearch
+                                    isLoading={isFetching}
+                                    size='medium'
+                                />
+                            </Box>
                         </form>
-                        <DataGrid<OrderENTITY>
+                        <DataGrid<DataSerialTracking>
                             rows={data}
                             columns={columnsOrder()}
                             disableRowSelectionOnClick
@@ -78,7 +86,7 @@ export function SerialTracking(props: IProps) {
                             getRowId={row => row._id}
                             density='compact'
                             apiRef={apiRef}
-                            loading={isLoading}
+                            loading={isFetching}
                         />
                     </>
             }

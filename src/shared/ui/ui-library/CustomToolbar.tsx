@@ -2,9 +2,11 @@ import { Toolbar, ToolbarButton } from '@mui/x-data-grid'
 import { Box, CircularProgress, ClickAwayListener, Divider, Paper, Popper, Stack, Tooltip } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Dispatch, SetStateAction, Suspense, useRef, useState } from 'react'
+import { Dispatch, lazy, SetStateAction, Suspense, useRef, useState } from 'react'
 import { ToolbarButtonExportSearch } from '../components/ToolbarButtonExportSearch';
 import { ToolbarButtonColumnsFilter } from '../components/ToolbarButtonColumnsFilter';
+import { Fallback } from '@app/ui/pages';
+const ToolbarButtonSerialTracking = lazy(() => import('../components/ToolbarButtonSerialTracking').then(m => ({ default: m.ToolbarButtonSerialTracking })))
 
 interface IProps {
     setOpenAdd?: Dispatch<SetStateAction<boolean>>
@@ -12,6 +14,7 @@ interface IProps {
     customInputFileUpload1?: React.ReactNode
     children?: React.ReactNode;
     handleAddClick?: () => void
+    btnSerialTracking?: boolean
     handleExportExcelClick?: () => void
 }
 
@@ -22,7 +25,8 @@ export function CustomToolbar(props: IProps) {
         customInputFileUpload1,
         children,
         handleAddClick,
-        handleExportExcelClick
+        handleExportExcelClick,
+        btnSerialTracking
     } = props
 
     const [filtersPanelOpen, setFiltersPanelOpen] = useState(false)
@@ -38,9 +42,9 @@ export function CustomToolbar(props: IProps) {
         <Toolbar>
             {
                 AGREGAR_NUEVO_REGISTRO && (
-                    <Tooltip title="Agregar nuevo registro">
+                    <Tooltip title='Agregar nuevo registro'>
                         <ToolbarButton
-                            aria-describedby="new-panel-add"
+                            aria-describedby='new-panel-add'
                             onClick={() => {
                                 if (setOpenAdd) {
                                     setOpenAdd(true)
@@ -50,11 +54,18 @@ export function CustomToolbar(props: IProps) {
                                 }
                             }}
                         >
-                            <AddIcon fontSize="small" color='success' />
+                            <AddIcon fontSize='small' color='success' />
                         </ToolbarButton>
                     </Tooltip>
                 )
             }
+            <Suspense fallback={<Fallback />}>
+                {
+                    btnSerialTracking && (
+                        <ToolbarButtonSerialTracking />
+                    )
+                }
+            </Suspense>
             {
                 customInputFileUpload1
                     ? customInputFileUpload1
@@ -69,21 +80,21 @@ export function CustomToolbar(props: IProps) {
             {
                 children && (
                     <>
-                        <Tooltip title="Filtrar en base de datos">
+                        <Tooltip title='Filtrar en base de datos'>
                             <ToolbarButton
                                 ref={newPanelTriggerRef}
-                                aria-describedby="new-panel"
+                                aria-describedby='new-panel'
                                 onClick={() => setFiltersPanelOpen((prev) => !prev)}
                             >
-                                <FilterAltIcon fontSize="small" color='primary' />
+                                <FilterAltIcon fontSize='small' color='primary' />
                             </ToolbarButton>
                         </Tooltip>
 
                         <Popper
                             open={filtersPanelOpen}
                             anchorEl={newPanelTriggerRef.current}
-                            placement="bottom-end"
-                            id="new-panel"
+                            placement='bottom-end'
+                            id='new-panel'
                             onKeyDown={handleKeyDown}
                         >
                             <ClickAwayListener onClickAway={() => setFiltersPanelOpen(false)}>
@@ -122,7 +133,7 @@ export function CustomToolbar(props: IProps) {
                 )
             }
 
-            <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.5 }} />
+            <Divider orientation='vertical' variant='middle' flexItem sx={{ mx: 0.5 }} />
 
             <ToolbarButtonExportSearch
                 handleExportExcelClick={handleExportExcelClick}

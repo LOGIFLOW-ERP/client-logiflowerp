@@ -103,4 +103,5 @@ export const PERMISSIONS = {
     GET_USER: 'get_user',
     GET_USER_BY_IDENTITY: 'get_user_by_identity',
     PUT_USER_BY_ID: 'put_user_by_id',
+    POST_WAREHOUSE_STOCK_SERIAL_SERIAL_TRACKING: 'post_warehouse_stock_serial_serial_tracking',
 } as const;

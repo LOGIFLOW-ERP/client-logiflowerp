@@ -62,8 +62,8 @@ export default function LayoutWarehouseStock() {
 	return (
 		<>
 			<Paper elevation={2} sx={{ height: '89vh', width: '100%', p: 2, position: 'relative' }}>
-				<Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-					<Typography variant="h6">Stock Almacen</Typography>
+				<Box display='flex' justifyContent='space-between' alignItems='center' mb={2}>
+					<Typography variant='h6'>Stock Almacen</Typography>
 				</Box>
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseStockENTITYFlat>
@@ -81,6 +81,7 @@ export default function LayoutWarehouseStock() {
 								<CustomToolbar
 									AGREGAR_NUEVO_REGISTRO={false}
 									handleExportExcelClick={handleExportExcelClick}
+									btnSerialTracking
 								/>
 							)
 						}}
