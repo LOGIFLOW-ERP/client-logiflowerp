@@ -32,6 +32,35 @@ import { warehouseEntryReducer } from './warehouseEntry'
 import { warehouseExitReducer } from './warehouseExit'
 import { warehouseReturnReducer } from './warehouseReturn'
 
+export const apiSlices = [
+    authApi,
+    movementApi,
+    productApi,
+    productGroupApi,
+    productPriceApi,
+    storeApi,
+    unitOfMeasureApi,
+    companyApi,
+    systemOptionApi,
+    profileApi,
+    personnelApi,
+    userApi,
+    warehouseEntryApi,
+    warehouseExitApi,
+    warehouseReturnApi,
+    warehouseStockApi,
+    employeeStockApi,
+    employeeStockPexApi,
+    liquidationCmsOrderApi,
+    toaOrderApi,
+    liquidationWinOrderApi,
+    winOrderApi,
+    warehouseStockSerialApi,
+    cmsOrderApi,
+    notificationApi,
+    employeeStockSerialApi,
+]
+
 export const store = configureStore({
     reducer: {
         auth: authReducer,
