@@ -10,7 +10,7 @@ import { columns } from '../GridCol/columns'
 import { Paper, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { Fallback } from '@app/ui/pages'
-import { useExportExcel } from '@shared/ui/hooks'
+import { useExportExcelEmployeeStock } from '../hooks/useExportExcel'
 
 const EmployeeStockSerialDialog = lazy(() => import('../components/EmployeeStockSerialDialog').then(m => ({ default: m.EmployeeStockSerialDialog })))
 
@@ -21,8 +21,8 @@ export default function LayoutEmployeeStock() {
     const [_selectedRow, setSelectedRow] = useState<EmployeeStockENTITYFlat>()
 
     const apiRef = useGridApiRef()
-    const { exportExcel, getCsvString } = useExportExcel()
     const { enqueueSnackbar } = useSnackbar()
+    const { exportExcelEmployeeStock, isLoadingExportExcel, isErrorExportExcel, errorExportExcel } = useExportExcelEmployeeStock()
 
     const pipeline = [{ $match: {} }]
     const { data, isLoading, isError, error } = useReportEmployeeStockQuery(pipeline)
@@ -35,7 +35,8 @@ export default function LayoutEmployeeStock() {
     }, [
         data,
         isLoading,
-        openEmployeeStockSerialDialog
+        openEmployeeStockSerialDialog,
+        isLoadingExportExcel
     ])
 
     const handleScannClick = (row: EmployeeStockENTITYFlat) => {
@@ -48,20 +49,16 @@ export default function LayoutEmployeeStock() {
         }
     }
 
-    const handleExportExcelClick = () => {
+    const handleExportExcelClick = async () => {
         try {
-            const { csvString } = getCsvString(apiRef)
-            exportExcel({
-                filenamePrefix: 'Stock_Personal',
-                data: [{ sheetName: 'StockPersonal', source: csvString }]
-            })
+            await exportExcelEmployeeStock(apiRef, data ?? [])
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
 
-    if (isError) return <CustomViewError error={error} />
+    if (isError || isErrorExportExcel) return <CustomViewError error={error ?? errorExportExcel} />
 
     return (
         <>
@@ -76,7 +73,7 @@ export default function LayoutEmployeeStock() {
                         disableRowSelectionOnClick
                         showToolbar
                         getRowId={row => row._id}
-                        loading={isLoading}
+                        loading={isLoading || isLoadingExportExcel}
                         autoPageSize
                         density='compact'
                         apiRef={apiRef}
