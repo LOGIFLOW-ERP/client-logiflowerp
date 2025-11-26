@@ -26,7 +26,7 @@ interface IProps {
 
 export function AddDialog(props: IProps) {
 
-    const { open, setOpen } = props
+    const { open, setOpen, selectedRow } = props
     const {
         handleSubmit,
         formState: { errors },
@@ -75,7 +75,7 @@ export function AddDialog(props: IProps) {
         <CustomDialog
             open={open}
             setOpen={setOpen}
-            title='AGREGAR'
+            title={`AGREGAR - ${selectedRow.numero_de_peticion}`}
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Controller

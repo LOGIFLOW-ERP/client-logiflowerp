@@ -40,7 +40,7 @@ export function InventoryDialog(props: IProps) {
         <CustomDialog
             open={open}
             setOpen={setOpen}
-            title='Inventario'
+            title={`Inventario - ${selectedRow.numero_de_peticion}`}
             slotProps={{
                 transition: {
                     onEntered: () => {
