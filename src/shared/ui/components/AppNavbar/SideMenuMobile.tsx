@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { apiSlices } from '@shared/infrastructure/redux';
 import { useDispatch } from 'react-redux';
+import { OptionsMenu } from '../SideMenu/OptionsMenu';
 
 interface SideMenuMobileProps {
 	open: boolean | undefined;
@@ -95,10 +96,10 @@ export function SideMenuMobile({ open, toggleDrawer, setSelectedNode, selectedNo
 					<SelectContent setSelectedNode={setSelectedNode} />
 					<Divider />
 					<MenuContent selectedNode={selectedNode} toggleDrawer={toggleDrawer} />
-					<Divider />
 				</Stack>
 				{/* <CardAlert /> */}
-				<Stack sx={{ p: 2 }}>
+				<Stack sx={{ p: 2, display: 'flex', flexDirection: 'row', gap: 1 }}>
+					<OptionsMenu />
 					<Button
 						onClick={handleClickLogout}
 						variant="outlined"

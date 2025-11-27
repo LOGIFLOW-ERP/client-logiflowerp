@@ -8,7 +8,7 @@ import CategoryRounded from '@mui/icons-material/CategoryRounded'
 import MonetizationOnRounded from '@mui/icons-material/MonetizationOnRounded'
 import LocalOfferRounded from '@mui/icons-material/LocalOfferRounded'
 import ScaleRounded from '@mui/icons-material/ScaleRounded'
-import HelpOutline from '@mui/icons-material/HelpOutline'
+// import HelpOutline from '@mui/icons-material/HelpOutline'
 import LocalConvenienceStoreRounded from '@mui/icons-material/LocalConvenienceStoreRounded'
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded'
 import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded'
@@ -66,7 +66,8 @@ interface IProps {
     toggleDrawer?: (newOpen: boolean) => () => void
 }
 
-const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline
+// const getIcon = (iconName: string) => iconMap[iconName] || HelpOutline
+const getIcon = (iconName: string) => iconMap[iconName] || null
 
 export function MenuContent({ selectedNode, toggleDrawer }: IProps) {
 
@@ -93,6 +94,7 @@ export function MenuContent({ selectedNode, toggleDrawer }: IProps) {
                         selectedNode
                             ? selectedNode.children.map((item, index) => {
                                 const IconComponent = getIcon(item.systemOption.name);
+                                if (!IconComponent) return null;
                                 return (
                                     <ListItem
                                         key={index}

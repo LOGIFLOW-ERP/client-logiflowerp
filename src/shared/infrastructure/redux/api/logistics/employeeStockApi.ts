@@ -29,8 +29,12 @@ export const employeeStockApi = createRepository<EmployeeStockENTITY, string>(pa
                     result ? [provideTagReportEmployeeStock] : [],
                 transformErrorResponse
             }),
-            reportIndividual: builder.query<EmployeeStockENTITY[], void>({
-                query: () => `${path}/report-individual`,
+            reportIndividual: builder.query<EmployeeStockENTITYFlat[], any[]>({
+                query: (pipeline) => ({
+                    url: `${path}/report-individual`,
+                    method: 'POST',
+                    body: pipeline
+                }),
                 providesTags: (result) =>
                     result ? [provideTagReportIndividualEmployeeStock] : [],
                 transformErrorResponse

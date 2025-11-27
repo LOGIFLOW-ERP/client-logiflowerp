@@ -3,6 +3,7 @@ import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import {
     useReportEmployeeStockQuery,
+    useReportIndividualEmployeeStockQuery,
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { EmployeeStockENTITYFlat } from 'logiflowerp-sdk'
@@ -11,6 +12,8 @@ import { Paper, Typography } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import { Fallback } from '@app/ui/pages'
 import { useExportExcelEmployeeStock } from '../hooks/useExportExcel'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 const EmployeeStockSerialDialog = lazy(() => import('../components/EmployeeStockSerialDialog').then(m => ({ default: m.EmployeeStockSerialDialog })))
 
@@ -23,9 +26,12 @@ export default function LayoutEmployeeStock() {
     const apiRef = useGridApiRef()
     const { enqueueSnackbar } = useSnackbar()
     const { exportExcelEmployeeStock, isLoadingExportExcel, isErrorExportExcel, errorExportExcel } = useExportExcelEmployeeStock()
+    const [POST_EMPLOYEE_STOCK_REPORT] = usePermissions([PERMISSIONS.POST_EMPLOYEE_STOCK_REPORT])
 
     const pipeline = [{ $match: {} }]
-    const { data, isLoading, isError, error } = useReportEmployeeStockQuery(pipeline)
+    const { data, isLoading, isError, error } = POST_EMPLOYEE_STOCK_REPORT
+        ? useReportEmployeeStockQuery(pipeline)
+        : useReportIndividualEmployeeStockQuery(pipeline);
 
     useEffect(() => {
         apiRef.current?.autosizeColumns({
@@ -82,6 +88,7 @@ export default function LayoutEmployeeStock() {
                                 <CustomToolbar
                                     AGREGAR_NUEVO_REGISTRO={false}
                                     handleExportExcelClick={handleExportExcelClick}
+                                    btnSerialTracking
                                 />
                             )
                         }}

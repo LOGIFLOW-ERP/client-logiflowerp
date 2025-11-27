@@ -2,9 +2,10 @@ import { Button, CircularProgress } from '@mui/material';
 
 interface IProps {
     isLoading: boolean;
+    label?: string;
 }
 
-export function CustomButtonSave({ isLoading }: IProps) {
+export function CustomButtonSave({ isLoading, label = 'Guardar' }: IProps) {
     return (
         <Button
             type='submit'
@@ -16,7 +17,7 @@ export function CustomButtonSave({ isLoading }: IProps) {
             loadingIndicator={<CircularProgress size={24} color='inherit' />}
             loadingPosition='center'
         >
-            Guardar
+            {label}
         </Button>
     )
 }
