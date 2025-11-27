@@ -18,7 +18,8 @@ export function useExportExcelWinOrder() {
             Cantidad: inv.quantity,
             Serie: inv.invsn,
             Tipo: inv.invpool,
-            'Número de Peticion': row.numero_de_peticion,
+            'N° de Petición': row.numero_de_peticion,
+            Fecha: new Date(row.fecha_solicitud).toLocaleString(),
             Cuadrilla: row.resource_id,
             Actividad: row.subtipo_de_actividad,
         })))

@@ -28,11 +28,6 @@ export const columnsOrder = (): GridColDef<DataSerialTracking>[] => {
             valueGetter: (value: StoreDTO) => value.code,
         },
         {
-            field: 'item',
-            headerName: 'Producto',
-            valueGetter: (value: ProductOrderDTO) => `${value.itemCode} - ${value.itemName}`,
-        },
-        {
             field: 'serial',
             headerName: 'Serie',
         },
@@ -50,6 +45,11 @@ export const columnsOrder = (): GridColDef<DataSerialTracking>[] => {
             headerName: 'Fecha Actualización',
             valueGetter: (value: string) => new Date(value),
             type: 'dateTime'
+        },
+        {
+            field: 'item',
+            headerName: 'Producto',
+            valueGetter: (value: ProductOrderDTO) => `${value.itemCode} - ${value.itemName}`,
         },
     ]
 }

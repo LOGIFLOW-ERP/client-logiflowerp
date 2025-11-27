@@ -7,13 +7,14 @@ import {
 	useGetWarehouseExitPipelineQuery,
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
-import { WarehouseExitENTITY, StateOrder } from 'logiflowerp-sdk'
+import { WarehouseExitENTITY } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { Box, Typography } from '@mui/material'
 import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
 import { InputFileUploadBulkExit } from '../components/InputFileUploadBulkExit'
+import { useSalidaAlmacenPDF } from '../hooks/useWarehouseExitPDF'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseExit() {
@@ -29,7 +30,11 @@ export default function LayoutWarehouseExit() {
 		PERMISSIONS.DELETE_WAREHOUSE_EXIT_BY_ID,
 	])
 	const { enqueueSnackbar } = useSnackbar()
-	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
+	const { generatePDF } = useSalidaAlmacenPDF()
+	const pipeline = [
+		{ $limit: 200 },
+		{ $sort: { 'workflow.register.date': -1 } }
+	]
 	const { data, error, isLoading } = useGetWarehouseExitPipelineQuery(pipeline)
 	const [deleteWarehouseExit, { isLoading: isLoadingDelete }] = useDeleteWarehouseExitMutation()
 
@@ -62,6 +67,15 @@ export default function LayoutWarehouseExit() {
 		}
 	}
 
+	const handleViewPdfClick = async (row: WarehouseExitENTITY) => {
+		try {
+			await generatePDF(row)
+		} catch (error) {
+			console.error(error)
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+		}
+	}
+
 	const handleDeleteClick = async (row: WarehouseExitENTITY) => {
 		try {
 			await deleteWarehouseExit(row._id).unwrap()
@@ -83,7 +97,11 @@ export default function LayoutWarehouseExit() {
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseExitENTITY>
 						rows={data}
-						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseExitByID })}
+						columns={columns({
+							handleEditClick,
+							handleDeleteClick,
+							handleViewPdfClick, canDeleteWarehouseExitByID
+						})}
 						disableRowSelectionOnClick
 						slots={{
 							toolbar: () => (

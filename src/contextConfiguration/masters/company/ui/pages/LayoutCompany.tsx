@@ -35,7 +35,7 @@ export default function LayoutCompany() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetCompaniesQuery()
+	const { data, error, isFetching } = useGetCompaniesQuery()
 	const [updateCompany, { isLoading: isLoadingUpdate }] = useUpdateCompanyMutation()
 	const [deleteCompany, { isLoading: isLoadingDelete }] = useDeleteCompanyMutation()
 
@@ -44,7 +44,7 @@ export default function LayoutCompany() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openAdd, openEdit])
+	}, [data, openAdd, openEdit, isFetching])
 
 	const handleEditClick = (row: CompanyENTITY) => {
 		try {
@@ -97,7 +97,7 @@ export default function LayoutCompany() {
 						)
 					}}
 					getRowId={row => row._id}
-					loading={isLoading || isLoadingUpdate || isLoadingDelete}
+					loading={isFetching || isLoadingUpdate || isLoadingDelete}
 					density='compact'
 					showToolbar
 					apiRef={apiRef}

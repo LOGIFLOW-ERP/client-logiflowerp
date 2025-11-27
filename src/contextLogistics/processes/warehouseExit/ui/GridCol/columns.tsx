@@ -1,19 +1,62 @@
 import { GridActionsCellItem, GridActionsCellItemProps, GridColDef } from '@mui/x-data-grid'
-import { getDataState, WarehouseExitENTITY } from 'logiflowerp-sdk'
+import { getDataState, StateOrder, WarehouseExitENTITY } from 'logiflowerp-sdk'
 import { CustomStatusOrder } from '@shared/ui-library'
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import EditIcon from '@mui/icons-material/Edit'
 import { ReactElement } from 'react';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 interface IParams {
     handleDeleteClick: (row: WarehouseExitENTITY) => void
     handleEditClick: (row: WarehouseExitENTITY) => void
+    handleViewPdfClick: (row: WarehouseExitENTITY) => void
     canDeleteWarehouseExitByID: boolean
 }
 
 export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
-    const { handleEditClick, handleDeleteClick, canDeleteWarehouseExitByID } = params
+    const {
+        handleEditClick,
+        handleDeleteClick,
+        handleViewPdfClick,
+        canDeleteWarehouseExitByID
+    } = params
     return [
+        {
+            field: 'Acciones',
+            type: 'actions',
+            getActions: (params) => {
+                const actions: ReactElement<GridActionsCellItemProps>[] = []
+                actions.push(
+                    <GridActionsCellItem
+                        icon={<EditIcon color='info' />}
+                        label='Editar'
+                        onClick={() => handleEditClick(params.row)}
+                        showInMenu
+                    />
+                )
+                if (params.row.state == StateOrder.VALIDADO) {
+                    actions.push(
+                        <GridActionsCellItem
+                            icon={<PictureAsPdfIcon color='info' />}
+                            label='Ver guía PDF'
+                            onClick={() => handleViewPdfClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                if (canDeleteWarehouseExitByID) {
+                    actions.push(
+                        <GridActionsCellItem
+                            icon={<DeleteForeverRoundedIcon color='error' />}
+                            label='Eliminar'
+                            onClick={() => handleDeleteClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                return actions
+            }
+        },
         {
             field: 'documentNumber',
             headerName: 'Nro. Documento',
@@ -58,32 +101,6 @@ export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
             renderCell: CustomStatusOrder,
             type: 'singleSelect',
             valueOptions: getDataState(),
-        },
-        {
-            field: 'Acciones',
-            type: 'actions',
-            getActions: (params) => {
-                const actions: ReactElement<GridActionsCellItemProps>[] = []
-                actions.push(
-                    <GridActionsCellItem
-                        icon={<EditIcon color='info' />}
-                        label='Editar'
-                        onClick={() => handleEditClick(params.row)}
-                        showInMenu
-                    />
-                )
-                if (canDeleteWarehouseExitByID) {
-                    actions.push(
-                        <GridActionsCellItem
-                            icon={<DeleteForeverRoundedIcon color='error' />}
-                            label='Eliminar'
-                            onClick={() => handleDeleteClick(params.row)}
-                            showInMenu
-                        />
-                    )
-                }
-                return actions
-            }
         }
     ]
 }

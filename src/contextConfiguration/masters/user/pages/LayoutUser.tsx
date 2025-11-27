@@ -22,7 +22,7 @@ export default function LayoutUser() {
     ])
 
     const { enqueueSnackbar } = useSnackbar()
-    const { data, isError, isLoading } = useGetUsersQuery()
+    const { data, isError, isFetching } = useGetUsersQuery()
     const [updateUser, { isLoading: isLoadingUpdate }] = useUpdateUserMutation()
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export default function LayoutUser() {
             includeHeaders: true,
             includeOutliers: true,
         })
-    }, [data, isLoadingUpdate, isLoading])
+    }, [data, isLoadingUpdate, isFetching])
 
     const handleChangeStatusClick = async (row: UserENTITY) => {
         try {
@@ -59,7 +59,7 @@ export default function LayoutUser() {
                     disableRowSelectionOnClick
                     slots={{ toolbar: () => <CustomToolbar AGREGAR_NUEVO_REGISTRO={false} /> }}
                     getRowId={row => row._id}
-                    loading={isLoading || isLoadingUpdate}
+                    loading={isFetching || isLoadingUpdate}
                     density='compact'
                     showToolbar
                     autoPageSize
