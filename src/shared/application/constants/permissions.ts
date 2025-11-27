@@ -73,7 +73,6 @@ export const PERMISSIONS = {
     PUT_WIN_ORDER_FINALIZE_ORDER_BY_ID: 'put_win_order_finalize_order_by_id',
     POST_EMPLOYEE_STOCK_FIND: 'post_employee_stock_find',
     POST_EMPLOYEE_STOCK_REPORT: 'post_employee_stock_report',
-    GET_EMPLOYEE_STOCK_REPORT_INDIVIDUAL: 'get_employee_stock_report_individual',
     GET_EMPLOYEE_STOCK_GET_DATA_LIQUIDATION_ORDER: 'get_employee_stock_get_data_liquidation_order',
     POST_EMPLOYEE_STOCK_P_E_X_FIND: 'post_employee_stock_p_e_x_find',
     POST_EMPLOYEE_STOCK_P_E_X_REPORT: 'post_employee_stock_p_e_x_report',
@@ -104,4 +103,6 @@ export const PERMISSIONS = {
     GET_USER_BY_IDENTITY: 'get_user_by_identity',
     PUT_USER_BY_ID: 'put_user_by_id',
     POST_WAREHOUSE_STOCK_SERIAL_SERIAL_TRACKING: 'post_warehouse_stock_serial_serial_tracking',
+    POST_EMPLOYEE_STOCK_REPORT_INDIVIDUAL: 'post_employee_stock_report_individual',
+    POST_EMPLOYEE_STOCK_SERIAL_FIND_INDIVIDUAL: 'post_employee_stock_serial_find_individual',
 } as const;

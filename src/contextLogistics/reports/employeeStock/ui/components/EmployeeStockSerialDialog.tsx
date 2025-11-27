@@ -3,7 +3,12 @@ import React, { useEffect } from 'react'
 import { EmployeeStockSerialENTITY, StateStockSerialEmployee, EmployeeStockENTITYFlat } from 'logiflowerp-sdk'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columnsEmployeeStockSerial } from '../GridCol/columnsEmployeeStockSerial'
-import { useGetEmployeeStockSerialPipelineQuery } from '@shared/infrastructure/redux/api'
+import {
+    useGetEmployeeStockSerialPipelineIndividualQuery,
+    useGetEmployeeStockSerialPipelineQuery
+} from '@shared/infrastructure/redux/api'
+import { usePermissions } from '@shared/ui/hooks'
+import { PERMISSIONS } from '@shared/application'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -15,6 +20,7 @@ export function EmployeeStockSerialDialog(props: IProps) {
 
     const { open, setOpen, selectedRow } = props
     const apiRef = useGridApiRef()
+    const [POST_EMPLOYEE_STOCK_SERIAL_FIND] = usePermissions([PERMISSIONS.POST_EMPLOYEE_STOCK_SERIAL_FIND])
     const pipeline = [{
         $match: {
             identity: selectedRow.employee_identity,
@@ -23,7 +29,9 @@ export function EmployeeStockSerialDialog(props: IProps) {
             state: StateStockSerialEmployee.POSESION
         }
     }]
-    const { data, error, isLoading, isError } = useGetEmployeeStockSerialPipelineQuery(pipeline)
+    const { data, error, isLoading, isError } = POST_EMPLOYEE_STOCK_SERIAL_FIND
+        ? useGetEmployeeStockSerialPipelineQuery(pipeline)
+        : useGetEmployeeStockSerialPipelineIndividualQuery(pipeline)
 
     useEffect(() => {
         apiRef.current?.autosizeColumns({
