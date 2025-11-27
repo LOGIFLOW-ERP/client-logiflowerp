@@ -10,7 +10,7 @@ import {
 } from '@shared/api'
 import { CabeceraForm } from './HeaderForm'
 import { lazy, Suspense } from 'react'
-import { usePermissions, useStore } from '@shared/ui/hooks'
+import { usePermissions, useResetApiState, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
@@ -34,6 +34,7 @@ export function AddDialog(props: IProps) {
         control,
     } = useForm({ resolver, defaultValues: { ...selectedDocument } })
     const { enqueueSnackbar } = useSnackbar()
+    const resetApiState = useResetApiState()
     const [canValidateByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_VALIDATE_BY_ID])
 
     const [create, { isLoading }] = useCreateWarehouseReturnMutation()
@@ -56,6 +57,7 @@ export function AddDialog(props: IProps) {
                 throw new Error('¡No hay un documento seleccionado!')
             }
             await validate(selectedDocument._id).unwrap()
+            resetApiState(['employeeStockApi', 'warehouseStockApi'])
             setOpen(false)
             enqueueSnackbar({ message: '¡Validado correctamente!', variant: 'success' })
         } catch (error) {

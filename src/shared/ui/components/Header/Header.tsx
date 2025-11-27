@@ -2,25 +2,29 @@ import { Box, ListItemIcon, Menu, MenuItem, Stack, Typography } from '@mui/mater
 import { NavbarBreadcrumbs } from './NavbarBreadcrumbs'
 import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded'
 import MenuButton from './MenuButton'
-import { useSocketEvent } from '@shared/infrastructure/socket/useSocket';
+import { useSocketEvent } from '@shared/infrastructure/socket/useSocket'
 import {
     notificationApi,
-    pathNotificationApi,
     useGetAllNotificationsQuery,
     useUpdateNotificationMutation,
-} from '@shared/infrastructure/redux/api';
-import { NotificationENTITY, StateNotification, TypeNotification, UpdateNotificationDTO } from 'logiflowerp-sdk';
-import { useDispatch } from 'react-redux';
-import { useInvalidatesTags, useSound } from '@shared/ui/hooks';
-import { useState } from 'react';
+} from '@shared/infrastructure/redux/api'
+import {
+    NotificationENTITY,
+    StateNotification,
+    TypeNotification,
+    UpdateNotificationDTO
+} from 'logiflowerp-sdk'
+import { useDispatch } from 'react-redux'
+import { useResetApiState, useSound } from '@shared/ui/hooks'
+import { useState } from 'react'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import DangerousIcon from '@mui/icons-material/Dangerous'
 import InfoIcon from '@mui/icons-material/Info'
 import DoneIcon from '@mui/icons-material/Done'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone'
-import { NotificationDialog } from './NotificationDialog';
-import { useSnackbar } from 'notistack';
+import { NotificationDialog } from './NotificationDialog'
+import { useSnackbar } from 'notistack'
 
 export function Header() {
     const { data, isFetching } = useGetAllNotificationsQuery()
@@ -31,16 +35,14 @@ export function Header() {
     const [notification, setNotification] = useState<NotificationENTITY>()
     const [openDialog, setOpenDialog] = useState<boolean>(false)
     const { enqueueSnackbar } = useSnackbar()
-    const [updateNotification, { isLoading }] = useUpdateNotificationMutation() 
-    const invalidateTags = useInvalidatesTags()
+    const [updateNotification, { isLoading }] = useUpdateNotificationMutation()
+    const resetApiState = useResetApiState()
 
     useSocketEvent('notification:insertOne', (noti) => {
         playNotification()
-        invalidateTags(noti.invalidatesTags)
+        resetApiState(noti.invalidatesTags)
         dispatch(
-            notificationApi.util.invalidateTags([
-                { type: pathNotificationApi, id: `LIST${pathNotificationApi}` }
-            ])
+            notificationApi.util.resetApiState()
         )
     })
 
