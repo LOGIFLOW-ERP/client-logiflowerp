@@ -33,7 +33,7 @@ export default function LayoutProfile() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, isError, error, isLoading } = useGetProfilesQuery()
+	const { data, isError, error, isFetching } = useGetProfilesQuery()
 	const [updateProfile, { isLoading: isLoadingUpdate }] = useUpdateProfileMutation()
 	const [deleteProfile, { isLoading: isLoadingDelete }] = useDeleteProfileMutation()
 
@@ -90,7 +90,7 @@ export default function LayoutProfile() {
 					showToolbar
 					autoPageSize
 					getRowId={row => row._id}
-					loading={isLoading || isLoadingUpdate || isLoadingDelete}
+					loading={isFetching || isLoadingUpdate || isLoadingDelete}
 					density='compact'
 					apiRef={apiRef}
 				/>
