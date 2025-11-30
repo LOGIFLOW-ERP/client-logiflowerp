@@ -4,8 +4,8 @@ import React, { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import {
     CreateInventoryDTO,
+    EmployeeStockENTITY,
     EmployeeStockSerialENTITY,
-    ProductOrderDTO,
     ProducType,
     WINOrderENTITY
 } from 'logiflowerp-sdk'
@@ -57,9 +57,9 @@ export function AddDialog(props: IProps) {
         }
     }
 
-    const code = useWatch({ control, name: "code" })
-    const selectedProduct = dataES?.map(d => d.item).find((opt) => opt.itemCode === code)
-    const isSerie = selectedProduct?.producType === ProducType.SERIE
+    const _id_stock = useWatch({ control, name: "_id_stock" })
+    const selectedProduct = dataES?.map(d => d.item).find((opt) => opt._id === _id_stock)
+    const isSerie = selectedProduct?.item?.producType === ProducType.SERIE
 
     useEffect(() => {
         if (!isSerie) {
@@ -79,19 +79,19 @@ export function AddDialog(props: IProps) {
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Controller
-                    name='code'
+                    name='_id_stock'
                     control={control}
                     render={({ field }) => (
-                        <CustomAutocomplete<ProductOrderDTO>
+                        <CustomAutocomplete<EmployeeStockENTITY>
                             loading={isLoadingES}
                             options={dataES?.map(d => d.item) ?? []}
-                            error={!!errors.code || isErrorES}
-                            helperText={errors.code?.message || (errorES as Error)?.message}
-                            value={dataES?.map(d => d.item).find((opt) => opt.itemCode === field.value) || null}
-                            onChange={(_, newValue) => field.onChange(newValue ? newValue.itemCode : undefined)}
+                            error={!!errors._id_stock || isErrorES}
+                            helperText={errors._id_stock?.message || (errorES as Error)?.message}
+                            value={dataES?.map(d => d.item).find((opt) => opt._id === field.value) || null}
+                            onChange={(_, newValue) => field.onChange(newValue ? newValue._id : undefined)}
                             label='Producto'
-                            getOptionLabel={(option) => `${option.itemCode} - ${option.itemName}`}
-                            isOptionEqualToValue={(option, value) => option.itemCode === value.itemCode}
+                            getOptionLabel={(option) => `${option.item.itemCode} - ${option.item.itemName} ${option.lot ? `- Lote: ${option.lot}` : ''}`.trim()}
+                            isOptionEqualToValue={(option, value) => option._id === value._id}
                             margin='dense'
                         />
                     )}
@@ -102,12 +102,12 @@ export function AddDialog(props: IProps) {
                             name='invsn'
                             control={control}
                             render={({ field }) => (
-                                <CustomAutocomplete<Pick<EmployeeStockSerialENTITY, 'serial' | 'itemCode'>>
+                                <CustomAutocomplete<EmployeeStockSerialENTITY>
                                     loading={isLoadingES}
-                                    options={dataES?.find((opt) => opt.item.itemCode === getValues('code'))?.serials ?? []}
+                                    options={dataES?.find((opt) => opt.item._id === getValues('_id_stock'))?.serials ?? []}
                                     error={!!errors.invsn}
                                     helperText={errors.invsn?.message}
-                                    value={dataES?.find((opt) => opt.item.itemCode === getValues('code'))?.serials?.find((opt) => opt.serial === field.value) || null}
+                                    value={dataES?.find((opt) => opt.item._id === getValues('_id_stock'))?.serials?.find((opt) => opt.serial === field.value) || null}
                                     onChange={(_, newValue) => field.onChange(newValue ? newValue.serial : undefined)}
                                     label='Serie'
                                     getOptionLabel={(option) => option.serial}

@@ -3,7 +3,6 @@ import {
     EmployeeStockENTITY,
     EmployeeStockENTITYFlat,
     EmployeeStockSerialENTITY,
-    ProductOrderDTO
 } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
@@ -39,7 +38,7 @@ export const employeeStockApi = createRepository<EmployeeStockENTITY, string>(pa
                     result ? [provideTagReportIndividualEmployeeStock] : [],
                 transformErrorResponse
             }),
-            getDataLiquidationOrder: builder.query<{ item: ProductOrderDTO, serials: Pick<EmployeeStockSerialENTITY, 'serial' | 'itemCode'>[] }[], void>({
+            getDataLiquidationOrder: builder.query<{ item: EmployeeStockENTITY, serials: EmployeeStockSerialENTITY[] }[], void>({
                 query: () => `${path}/get-data-liquidation-order`,
                 providesTags: (result) =>
                     result ? [provideTagGetDataLiquidationOrderEmployeeStock] : [],
