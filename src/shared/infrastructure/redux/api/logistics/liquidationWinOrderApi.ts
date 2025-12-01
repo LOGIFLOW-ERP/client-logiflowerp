@@ -1,5 +1,5 @@
 import { createRepository } from '../baseRepository'
-import { CreateInventoryDTO, WINOrderENTITY } from 'logiflowerp-sdk'
+import { CreateInventoryDTO, DeleteInventoryDTO, WINOrderENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
 import { instanceToPlain } from 'class-transformer';
@@ -16,6 +16,21 @@ export const liquidationWinOrderApi = createRepository<WINOrderENTITY, string>(p
             addInventory: builder.mutation<void, { _id: string, data: CreateInventoryDTO }>({
                 query: ({ _id, data }) => ({
                     url: `${path}/add-inventory/${_id}`,
+                    method: 'PUT',
+                    body: instanceToPlain(data),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                    provideTagGetDataLiquidationOrderEmployeeStock
+                ],
+                transformErrorResponse
+            }),
+            deleteInventory: builder.mutation<void, { _id: string, data: DeleteInventoryDTO }>({
+                query: ({ _id, data }) => ({
+                    url: `${path}/delete-inventory/${_id}`,
                     method: 'PUT',
                     body: instanceToPlain(data),
                 }),
@@ -89,6 +104,7 @@ export const liquidationWinOrderApi = createRepository<WINOrderENTITY, string>(p
 export const {
     useGetAllQuery: useGetLiquidationWINOrdersQuery,
     useAddInventoryMutation: useAddInventoryWINOrderMutation,
+    useDeleteInventoryMutation: useDeleteInventoryWINOrderMutation,
     useUploadFileMutation: useUploadFileWINOrderMutation,
     useDeleteFileMutation: useDeleteFileWINOrderMutation,
     useSendReviewMutation: useSendReviewWINOrderMutation,

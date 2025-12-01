@@ -1,8 +1,38 @@
+import { Box, Tooltip } from '@mui/material'
 import { GridColDef } from '@mui/x-data-grid'
 import { InventoryWinDTO } from 'logiflowerp-sdk'
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded'
 
-export const columnsInventory = (): GridColDef<InventoryWinDTO>[] => {
+interface IParams {
+    handleDeleteClick: (row: InventoryWinDTO) => void
+}
+
+export const columnsInventory = ({ handleDeleteClick }: IParams): GridColDef<InventoryWinDTO>[] => {
     return [
+        {
+            field: 'Acciones',
+            type: 'actions',
+            width: 60,
+            renderCell: ({ row }) => (
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        height: '100%'
+                    }}
+                >
+                    <Tooltip title='Eliminar inventario' onClick={() => handleDeleteClick(row)}>
+                        <DeleteForeverRoundedIcon
+                            cursor='pointer'
+                            sx={{
+                                color: '#FF0000',
+                                alignSelf: 'center',
+                            }}
+                        />
+                    </Tooltip>
+                </Box>
+            )
+        },
         {
             field: 'code',
             headerName: 'Código',
@@ -13,7 +43,7 @@ export const columnsInventory = (): GridColDef<InventoryWinDTO>[] => {
         },
         {
             field: 'quantity',
-            headerName: 'Cantidad',
+            headerName: 'Cant',
             type: 'number',
         },
         {

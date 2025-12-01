@@ -1,29 +1,41 @@
 import { CustomDialog, CustomFileExplorer } from '@shared/ui-library'
-import React from 'react'
-import { InventoryWinDTO, WINOrderENTITY } from 'logiflowerp-sdk'
+import React, { useEffect } from 'react'
+import { DeleteInventoryDTO, InventoryWinDTO, WINOrderENTITY } from 'logiflowerp-sdk'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columnsInventory } from '../GridCol/columnsInventory'
 import { Box } from '@mui/material'
 import { TreeViewBaseItem } from '@mui/x-tree-view'
 import {
     useDeleteFileWINOrderMutation,
+    useDeleteInventoryWINOrderMutation,
     useUploadFileWINOrderMutation
 } from '@shared/infrastructure/redux/api'
 import { modelDocumentationLiquidationOrderWin } from '@shared/application/constants'
+import { useSnackbar } from 'notistack'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
     selectedRow: WINOrderENTITY
     loadingData: boolean
+    isFetching: boolean
 }
 
 export function InventoryDialog(props: IProps) {
 
-    const { open, setOpen, selectedRow, loadingData } = props
+    const { open, setOpen, selectedRow, loadingData, isFetching } = props
     const apiRef = useGridApiRef()
+    const { enqueueSnackbar } = useSnackbar()
     const [uploadFile, { isLoading }] = useUploadFileWINOrderMutation()
     const [deleteFile, { isLoading: isLoadingDeleteFile }] = useDeleteFileWINOrderMutation()
+    const [deleteInventoryOrder, { isLoading: isLoadingDelete }] = useDeleteInventoryWINOrderMutation()
+
+    useEffect(() => {
+        apiRef.current?.autosizeColumns({
+            includeHeaders: true,
+            includeOutliers: true,
+        })
+    }, [isLoadingDelete])
 
     const handleFileChange = async (file: File, selectedItem: TreeViewBaseItem<ExtendedTreeItemProps>) => {
         const formData = new FormData()
@@ -34,6 +46,19 @@ export function InventoryDialog(props: IProps) {
 
     const handleFileDelete = async (key: string) => {
         await deleteFile({ _id: selectedRow._id, key: key }).unwrap()
+    }
+
+    const handleDeleteClick = async (row: InventoryWinDTO) => {
+        try {
+            const data = new DeleteInventoryDTO()
+            data._id_stock = row._id_stock
+            data.invsn = row.invsn
+            await deleteInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
+            enqueueSnackbar({ message: '¡Inventario eliminado!', variant: 'info' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
     }
 
     return (
@@ -62,12 +87,13 @@ export function InventoryDialog(props: IProps) {
                 />
                 <DataGrid<InventoryWinDTO>
                     rows={selectedRow.inventory}
-                    columns={columnsInventory()}
+                    columns={columnsInventory({ handleDeleteClick })}
                     disableRowSelectionOnClick
                     showToolbar
                     getRowId={row => `${row.code}${row.invsn}`}
                     density='compact'
                     apiRef={apiRef}
+                    loading={isLoadingDelete || isFetching}
                 />
             </Box>
         </CustomDialog>
