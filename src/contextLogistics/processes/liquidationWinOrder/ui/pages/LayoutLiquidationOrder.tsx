@@ -17,12 +17,14 @@ import { PERMISSIONS } from '@shared/application'
 
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 const InventoryDialog = lazy(() => import('../components/InventoryDialog').then(m => ({ default: m.InventoryDialog })))
+const CustomConfirmationDialog = lazy(() => import('@shared/ui/ui-library').then(m => ({ default: m.CustomConfirmationDialog })))
 
 export default function LayoutLiquidationOrder() {
     const { data, isError, error, isFetching } = useGetLiquidationWINOrdersQuery()
     const apiRef = useGridApiRef()
     const { enqueueSnackbar } = useSnackbar()
     const [openAdd, setOpenAdd] = useState(false)
+    const [openConfirm, setOpenConfirm] = useState(false)
     const [openInventory, setOpenInventory] = useState(false)
     const [selectedRow, setSelectedRow] = useState<WINOrderENTITY>()
     const [sendReview, { isLoading }] = useSendReviewWINOrderMutation()
@@ -48,7 +50,7 @@ export default function LayoutLiquidationOrder() {
                 setSelectedRow(row)
             }
         }
-    }, [data, selectedRow, openAdd, openInventory, isLoading, isFetching, isFinalizing])
+    }, [openConfirm, openAdd, openInventory, isLoading, isFetching, isFinalizing])
 
     const handleLiquidationClick = (row: WINOrderENTITY) => {
         try {
@@ -90,6 +92,16 @@ export default function LayoutLiquidationOrder() {
         }
     }
 
+    const handleOpenDialogConfirmClick = (row: WINOrderENTITY) => {
+        try {
+            setSelectedRow(row)
+            setOpenConfirm(true)
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
     if (isError) return <CustomViewError error={error} />
 
     return (
@@ -103,7 +115,7 @@ export default function LayoutLiquidationOrder() {
                         handleLiquidationClick,
                         handleInventoryClick,
                         handleSendReviewClick,
-                        handleFinalizeOrderClick,
+                        handleOpenDialogConfirmClick,
                         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
                         PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID,
                         PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID
@@ -123,6 +135,7 @@ export default function LayoutLiquidationOrder() {
                             open={openAdd}
                             setOpen={setOpenAdd}
                             selectedRow={selectedRow!}
+                            isFetching={isFetching}
                         />
                     )
                 }
@@ -133,6 +146,30 @@ export default function LayoutLiquidationOrder() {
                             setOpen={setOpenInventory}
                             selectedRow={selectedRow!}
                             loadingData={isFetching}
+                            isFetching={isFetching}
+                        />
+                    )
+                }
+                {
+                    selectedRow && (
+                        <CustomConfirmationDialog
+                            open={openConfirm}
+                            setOpen={setOpenConfirm}
+                            title={`Confirmar orden ${selectedRow.numero_de_peticion}`}
+                            description={
+                                <>
+                                    <span>¿Está seguro de finalizar la orden {selectedRow.numero_de_peticion}? </span>
+                                    <span style={{ color: 'red', fontWeight: 'bold' }}>ESTE PROCESO NO SE PUEDE DESHACER. </span>
+                                    <span>Revise los materiales y fotos agregadas antes de finalizar.</span>
+                                    <br />
+                                    <br />
+                                    <span>Cliente: <span style={{ fontWeight: 'bold' }}>{selectedRow.cliente}</span></span>
+                                    <br />
+                                    <br />
+                                    <span>Dirección: <span style={{ fontWeight: 'bold' }}>{selectedRow.direccion_cliente.direccion}</span></span>
+                                </>
+                            }
+                            handleConfirmDialog={() => handleFinalizeOrderClick(selectedRow)}
                         />
                     )
                 }

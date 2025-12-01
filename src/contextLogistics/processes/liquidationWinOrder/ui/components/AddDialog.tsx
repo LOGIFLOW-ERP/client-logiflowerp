@@ -4,29 +4,37 @@ import React, { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import {
     CreateInventoryDTO,
+    DeleteInventoryDTO,
     EmployeeStockENTITY,
     EmployeeStockSerialENTITY,
+    InventoryWinDTO,
     ProducType,
     WINOrderENTITY
 } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import {
     useAddInventoryWINOrderMutation,
+    useDeleteInventoryWINOrderMutation,
     useGetDataLiquidationOrderEmployeeStockQuery
 } from '@shared/api'
 import TextField from '@mui/material/TextField'
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
+import { columnsInventory } from '../GridCol/columnsInventory'
+import { Box } from '@mui/material'
 
 const resolver = classValidatorResolver(CreateInventoryDTO)
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
+    isFetching: boolean
     selectedRow: WINOrderENTITY
 }
 
 export function AddDialog(props: IProps) {
 
-    const { open, setOpen, selectedRow } = props
+    const { open, setOpen, selectedRow, isFetching } = props
+    const apiRef = useGridApiRef()
     const {
         handleSubmit,
         formState: { errors },
@@ -34,6 +42,7 @@ export function AddDialog(props: IProps) {
         control,
         getValues,
         setValue,
+        reset,
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
 
@@ -45,17 +54,7 @@ export function AddDialog(props: IProps) {
     } = useGetDataLiquidationOrderEmployeeStockQuery()
 
     const [addInventoryOrder, { isLoading }] = useAddInventoryWINOrderMutation()
-
-    const onSubmit = async (data: CreateInventoryDTO) => {
-        try {
-            await addInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
-            enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
-            setOpen(false)
-        } catch (error) {
-            console.error(error)
-            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
-        }
-    }
+    const [deleteInventoryOrder, { isLoading: isLoadingDelete }] = useDeleteInventoryWINOrderMutation()
 
     const _id_stock = useWatch({ control, name: "_id_stock" })
     const selectedProduct = dataES?.map(d => d.item).find((opt) => opt._id === _id_stock)
@@ -71,11 +70,53 @@ export function AddDialog(props: IProps) {
         }
     }, [isSerie, setValue])
 
+    useEffect(() => {
+        apiRef.current?.autosizeColumns({
+            includeHeaders: true,
+            includeOutliers: true,
+        })
+    }, [isLoadingDelete, isLoading, isFetching, _id_stock])
+
+
+    const onSubmit = async (data: CreateInventoryDTO) => {
+        try {
+            await addInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
+            reset()
+            enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
+    const handleDeleteClick = async (row: InventoryWinDTO) => {
+        try {
+            const data = new DeleteInventoryDTO()
+            data._id_stock = row._id_stock
+            data.invsn = row.invsn
+            await deleteInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
+            enqueueSnackbar({ message: '¡Inventario eliminado!', variant: 'info' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
     return (
         <CustomDialog
             open={open}
             setOpen={setOpen}
-            title={`AGREGAR - ${selectedRow.numero_de_peticion}`}
+            title={`Agregar - ${selectedRow.numero_de_peticion}`}
+            slotProps={{
+                transition: {
+                    onEntered: () => {
+                        apiRef.current?.autosizeColumns({
+                            includeHeaders: true,
+                            includeOutliers: true,
+                        })
+                    }
+                }
+            }}
         >
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Controller
@@ -139,8 +180,24 @@ export function AddDialog(props: IProps) {
                         />
                     )
                 }
-                <CustomButtonSave isLoading={isLoading} />
+                <CustomButtonSave isLoading={isLoading || isLoadingDelete || isFetching} />
             </form>
+            {
+                selectedRow.inventory.length ? (
+                    <Box sx={{ mt: 2 }}>
+                        <DataGrid<InventoryWinDTO>
+                            rows={selectedRow.inventory}
+                            columns={columnsInventory({ handleDeleteClick })}
+                            disableRowSelectionOnClick
+                            getRowId={row => `${row.code}${row.invsn}`}
+                            density='compact'
+                            apiRef={apiRef}
+                            loading={isLoading || isLoadingDelete || isFetching}
+                            disableColumnMenu
+                        />
+                    </Box>
+                ) : null
+            }
         </CustomDialog>
     )
 }

@@ -10,7 +10,7 @@ interface IParams {
     handleLiquidationClick: (row: WINOrderENTITY) => void
     handleInventoryClick: (row: WINOrderENTITY) => void
     handleSendReviewClick: (row: WINOrderENTITY) => void
-    handleFinalizeOrderClick: (row: WINOrderENTITY) => void
+    handleOpenDialogConfirmClick: (row: WINOrderENTITY) => void
     PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID: boolean
     PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID: boolean
     PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID: boolean
@@ -21,7 +21,7 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
         handleLiquidationClick,
         handleInventoryClick,
         handleSendReviewClick,
-        handleFinalizeOrderClick,
+        handleOpenDialogConfirmClick,
         PUT_LIQUIDATION_WIN_ORDER_ADD_INVENTORY_BY_ID,
         PUT_LIQUIDATION_WIN_ORDER_FINALIZE_ORDER_BY_ID,
         PUT_LIQUIDATION_WIN_ORDER_SEND_REVIEW_BY_ID
@@ -69,7 +69,7 @@ export const columns = (params: IParams): GridColDef<WINOrderENTITY>[] => {
                             key='finalize-order'
                             icon={<TaskIcon color='success' />}
                             label='Finalizar Orden'
-                            onClick={() => handleFinalizeOrderClick(params.row)}
+                            onClick={() => handleOpenDialogConfirmClick(params.row)}
                             showInMenu
                         />
                     )

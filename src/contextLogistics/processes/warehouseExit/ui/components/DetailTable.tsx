@@ -84,7 +84,7 @@ export function DetailTable() {
 
     return (
         <>
-            <Box sx={{ height: '100%' }}>
+            <Box>
                 <DataGrid<OrderDetailENTITY>
                     rows={selectedDocument?.detail}
                     columns={columnsDetail({
@@ -96,11 +96,16 @@ export function DetailTable() {
                     disableRowSelectionOnClick
                     getRowId={row => row.keyDetail}
                     loading={isLoadingDeleteDetail || isLoadingEditAmountDetail}
-                    autoPageSize
                     columnVisibilityModel={{
                         actions: canWarehouseExitDeleteDetailByID
                     }}
                     apiRef={apiRef}
+                    pageSizeOptions={[10]}
+                    initialState={{
+                        pagination: {
+                            paginationModel: { pageSize: 10 },
+                        },
+                    }}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>

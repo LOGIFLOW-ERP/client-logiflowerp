@@ -21,3 +21,5 @@ export * from './CustomCellEdit';
 export * from './CustomGridToolbarInputFileUpload';
 export * from './CustomInputFileUpload';
 export * from './CustomFileExplorer';
+export * from './CustomConfirmationDialog';
+

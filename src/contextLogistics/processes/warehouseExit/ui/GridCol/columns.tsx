@@ -26,15 +26,17 @@ export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
             type: 'actions',
             getActions: (params) => {
                 const actions: ReactElement<GridActionsCellItemProps>[] = []
-                actions.push(
-                    <GridActionsCellItem
-                        icon={<EditIcon color='info' />}
-                        label='Editar'
-                        onClick={() => handleEditClick(params.row)}
-                        showInMenu
-                    />
-                )
-                if (params.row.state == StateOrder.VALIDADO) {
+                if (params.row.state !== StateOrder.VALIDADO) {
+                    actions.push(
+                        <GridActionsCellItem
+                            icon={<EditIcon color='info' />}
+                            label='Editar'
+                            onClick={() => handleEditClick(params.row)}
+                            showInMenu
+                        />
+                    )
+                }
+                if (params.row.state === StateOrder.VALIDADO) {
                     actions.push(
                         <GridActionsCellItem
                             icon={<PictureAsPdfIcon color='info' />}
@@ -44,7 +46,7 @@ export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
                         />
                     )
                 }
-                if (canDeleteWarehouseExitByID) {
+                if (canDeleteWarehouseExitByID && params.row.state !== StateOrder.VALIDADO) {
                     actions.push(
                         <GridActionsCellItem
                             icon={<DeleteForeverRoundedIcon color='error' />}
