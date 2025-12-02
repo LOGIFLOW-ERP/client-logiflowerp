@@ -17,7 +17,7 @@ export function useResetApiState() {
         warehouseStockApi,
     } as const
 
-    return useCallback((tags: string[]) => {
+    return useCallback((tags: (keyof typeof mapApi)[]) => {
         for (const apiName of tags) {
             const api = mapApi[apiName as keyof typeof mapApi]
 

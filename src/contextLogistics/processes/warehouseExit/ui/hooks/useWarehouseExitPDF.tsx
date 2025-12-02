@@ -23,6 +23,8 @@ const styles = StyleSheet.create({
     tableRow: {
         flexDirection: 'row',
         marginBottom: 2,
+    },
+    tableRowAux: {
         borderBottom: '1px solid gray',
     },
     cellCodigo: {
@@ -47,12 +49,8 @@ export function useSalidaAlmacenPDF() {
 
                     <View style={styles.section}>
                         <Text>
-                            <Text style={{ fontWeight: 'bold' }}>Código: </Text>
+                            <Text style={{ fontWeight: 'bold' }}>Número de documento: </Text>
                             {salida.documentNumber}
-                        </Text>
-                        <Text>
-                            <Text style={{ fontWeight: 'bold' }}>Fecha: </Text>
-                            {new Date(salida.workflow.validation.date).toLocaleString()}
                         </Text>
                         <Text>
                             <Text style={{ fontWeight: 'bold' }}>Almacén: </Text>
@@ -61,6 +59,14 @@ export function useSalidaAlmacenPDF() {
                         <Text>
                             <Text style={{ fontWeight: 'bold' }}>Solicitado por: </Text>
                             {salida.carrier.identity} - {salida.carrier.names} {salida.carrier.surnames}
+                        </Text>
+                        <Text>
+                            <Text style={{ fontWeight: 'bold' }}>Atendido por: </Text>
+                            {salida.workflow.validation.user.identity} - {salida.workflow.validation.user.names} {salida.workflow.validation.user.surnames}
+                        </Text>
+                        <Text>
+                            <Text style={{ fontWeight: 'bold' }}>Fecha de atención: </Text>
+                            {new Date(salida.workflow.validation.date).toLocaleString()}
                         </Text>
                     </View>
 
@@ -74,7 +80,7 @@ export function useSalidaAlmacenPDF() {
                         </View>
 
                         {salida.detail.map((item, index) => (
-                            <View key={index}>
+                            <View key={index} style={styles.tableRowAux}>
                                 <View style={styles.tableRow}>
                                     <Text style={styles.cellCodigo}>{item.item.itemCode}</Text>
                                     <Text style={styles.cellDescripcion}>{item.item.itemName}</Text>

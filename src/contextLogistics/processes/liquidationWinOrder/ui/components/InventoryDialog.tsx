@@ -12,6 +12,7 @@ import {
 } from '@shared/infrastructure/redux/api'
 import { modelDocumentationLiquidationOrderWin } from '@shared/application/constants'
 import { useSnackbar } from 'notistack'
+import { useResetApiState } from '@shared/ui/hooks'
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -26,6 +27,7 @@ export function InventoryDialog(props: IProps) {
     const { open, setOpen, selectedRow, loadingData, isFetching } = props
     const apiRef = useGridApiRef()
     const { enqueueSnackbar } = useSnackbar()
+    const resetApiState = useResetApiState()
     const [uploadFile, { isLoading }] = useUploadFileWINOrderMutation()
     const [deleteFile, { isLoading: isLoadingDeleteFile }] = useDeleteFileWINOrderMutation()
     const [deleteInventoryOrder, { isLoading: isLoadingDelete }] = useDeleteInventoryWINOrderMutation()
@@ -54,6 +56,7 @@ export function InventoryDialog(props: IProps) {
             data._id_stock = row._id_stock
             data.invsn = row.invsn
             await deleteInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
+            resetApiState(['employeeStockApi'])
             enqueueSnackbar({ message: '¡Inventario eliminado!', variant: 'info' })
         } catch (error) {
             console.error(error)

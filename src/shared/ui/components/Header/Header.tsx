@@ -40,7 +40,7 @@ export function Header() {
 
     useSocketEvent('notification:insertOne', (noti) => {
         playNotification()
-        resetApiState(noti.invalidatesTags)
+        resetApiState(noti.invalidatesTags as any)
         dispatch(
             notificationApi.util.resetApiState()
         )
