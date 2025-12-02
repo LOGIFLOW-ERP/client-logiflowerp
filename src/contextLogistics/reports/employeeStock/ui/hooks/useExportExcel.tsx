@@ -31,10 +31,11 @@ export function useExportExcelEmployeeStock() {
         const dataExport = (data ?? []).map(s => {
             const row = filteredRows.find(r => r.employee_identity === s.identity && r.keySearch === s.keySearch && r.keyDetail === s.keyDetail)
             return {
-                Identificación: s.identity,
                 Código: s.itemCode,
                 Descripción: row?.item_itemName || '',
                 Lote: row?.lot || '',
+                'DNI/CE': s.identity,
+                Personal: `${row?.employee_names} ${row?.employee_surnames}`,
                 Serie: s.serial,
                 Estado: s.state,
                 Marca: s.brand,
