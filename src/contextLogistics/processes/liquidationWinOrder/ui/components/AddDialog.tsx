@@ -83,7 +83,9 @@ export function AddDialog(props: IProps) {
     const onSubmit = async (data: CreateInventoryDTO) => {
         try {
             await addInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
-            resetApiState(['employeeStockApi'])
+            if (data.invsn.length) {
+                resetApiState(['employeeStockApi'])
+            }
             reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
         } catch (error) {
@@ -98,7 +100,9 @@ export function AddDialog(props: IProps) {
             data._id_stock = row._id_stock
             data.invsn = row.invsn
             await deleteInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
-            resetApiState(['employeeStockApi'])
+            if (row.invsn.length) {
+                resetApiState(['employeeStockApi'])
+            }
             enqueueSnackbar({ message: '¡Inventario eliminado!', variant: 'info' })
         } catch (error) {
             console.error(error)
