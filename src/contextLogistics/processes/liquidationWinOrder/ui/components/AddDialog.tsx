@@ -21,6 +21,7 @@ import TextField from '@mui/material/TextField'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import { columnsInventory } from '../GridCol/columnsInventory'
 import { Box } from '@mui/material'
+import { useResetApiState } from '@shared/ui/hooks'
 
 const resolver = classValidatorResolver(CreateInventoryDTO)
 
@@ -45,6 +46,7 @@ export function AddDialog(props: IProps) {
         reset,
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
+    const resetApiState = useResetApiState()
 
     const {
         data: dataES,
@@ -81,6 +83,7 @@ export function AddDialog(props: IProps) {
     const onSubmit = async (data: CreateInventoryDTO) => {
         try {
             await addInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
+            resetApiState(['employeeStockApi'])
             reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
         } catch (error) {
@@ -95,6 +98,7 @@ export function AddDialog(props: IProps) {
             data._id_stock = row._id_stock
             data.invsn = row.invsn
             await deleteInventoryOrder({ _id: props.selectedRow._id, data }).unwrap()
+            resetApiState(['employeeStockApi'])
             enqueueSnackbar({ message: '¡Inventario eliminado!', variant: 'info' })
         } catch (error) {
             console.error(error)
