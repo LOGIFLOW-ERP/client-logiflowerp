@@ -49,7 +49,7 @@ export function SerialTracking(props: IProps) {
         <CustomDialog
             open={open}
             setOpen={setOpen}
-            title='Seguimiento en serie'
+            title='Seguimiento de serie'
             maxWidth='xl'
         >
             {

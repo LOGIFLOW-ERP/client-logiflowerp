@@ -1,4 +1,4 @@
-import { NotificationENTITY } from "logiflowerp-sdk";
+import { NotificationENTITY, WarehouseExitENTITY } from "logiflowerp-sdk";
 import { io, Socket } from "socket.io-client";
 
 // URL base de tu API (ajústala según tu entorno)
@@ -6,8 +6,16 @@ const API_URL = import.meta.env.VITE_SOCKET_URL || "https://api.tuapp.com";
 
 // Define los eventos personalizados que el backend puede emitir
 export interface AppSocketEvents {
-    'notification:insertOne': NotificationENTITY;
-    // "inventory:updated": { code: string; qty: number };
+    'notification:insertOne': NotificationENTITY
+
+    // Almacenero envía solicitud al técnico
+    'warehouseExit:requestTechApproval': { document: WarehouseExitENTITY }
+    // Técnico recibe la solicitud
+    'warehouseExit:techApprovalRequest': { document: WarehouseExitENTITY; requesterId: string }
+    // Técnico envía respuesta
+    'warehouseExit:techApprovalSubmit': { document: WarehouseExitENTITY; approved: boolean; requesterId: string }
+    // Almacenero recibe respuesta final
+    'warehouseExit:techApprovalResult': { document: WarehouseExitENTITY; approved: boolean }
 }
 
 // Combina con eventos reservados de Socket.IO

@@ -15,6 +15,7 @@ import { lazy, Suspense, useState } from 'react'
 import { usePermissions, useResetApiState, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
+import { useTechApproval } from '../hooks/useTechApproval'
 const DetalleForm = lazy(() => import('./DetailForm').then(m => ({ default: m.DetalleForm })))
 const DetailTable = lazy(() => import('./DetailTable').then(m => ({ default: m.DetailTable })))
 
@@ -39,6 +40,7 @@ export function AddDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: { ...selectedDocument } })
     const { enqueueSnackbar } = useSnackbar()
     const resetApiState = useResetApiState()
+    const { requestApproval, loading: loadingTechApproval } = useTechApproval()
     const [canWarehouseExitValidateByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_VALIDATE_BY_ID])
 
     const [create, { isLoading }] = useCreateWarehouseExitMutation()
@@ -77,6 +79,16 @@ export function AddDialog(props: IProps) {
             if (!selectedDocument) {
                 throw new Error('¡No hay un documento seleccionado!')
             }
+
+            enqueueSnackbar({ message: 'Validando la solicitud por el solicitante...', variant: 'info' })
+
+            const approved = await requestApproval(selectedDocument)
+
+            if (!approved) {
+                enqueueSnackbar({ message: 'El solicitante no aprobó a tiempo o rechazó la solicitud.', variant: 'warning' })
+                return
+            }
+
             await validate(selectedDocument._id).unwrap()
             resetApiState(['employeeStockApi', 'warehouseStockApi'])
             setOpen(false)
@@ -98,8 +110,8 @@ export function AddDialog(props: IProps) {
                         variant='contained'
                         color='success'
                         sx={{ marginTop: 1 }}
-                        loading={isLoadingValidate}
-                        loadingIndicator={<CircularProgress size={24} color='inherit' />}
+                        loading={isLoadingValidate || loadingTechApproval}
+                        loadingIndicator={<CircularProgress size={24} color='warning' />}
                         loadingPosition='center'
                         onClick={handleValidateClick}
                     >
