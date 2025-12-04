@@ -48,6 +48,16 @@ export const createRepository = <T, ID>(
                     result ? [{ type: resource, id: `PIPELINE${resource}` }] : [],
                 transformErrorResponse
             }),
+            getPipelineIndividual: builder.query<T[], any[]>({
+                query: (pipeline) => ({
+                    url: `${resource}/find-individual`,
+                    method: 'POST',
+                    body: pipeline
+                }),
+                providesTags: (result) =>
+                    result ? [{ type: resource, id: `PIPELINE_INDIVIDUAL${resource}` }] : [],
+                transformErrorResponse
+            }),
             getStaticPipeline: builder.query<T[], void>({
                 query: () => ({
                     url: `${resource}/find`,
@@ -70,6 +80,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                     { type: resource, id: `PIPELINE${resource}` },
                     { type: resource, id: `REPORT${resource}` },
+                    { type: resource, id: `PIPELINE_INDIVIDUAL${resource}` },
                 ],
                 transformErrorResponse
             }),
@@ -85,6 +96,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                     { type: resource, id: `PIPELINE${resource}` },
                     { type: resource, id: `REPORT${resource}` },
+                    { type: resource, id: `PIPELINE_INDIVIDUAL${resource}` },
                 ],
                 transformErrorResponse
             }),
@@ -99,6 +111,7 @@ export const createRepository = <T, ID>(
                     { type: resource, id: `STATIC_PIPELINE${resource}` },
                     { type: resource, id: `PIPELINE${resource}` },
                     { type: resource, id: `REPORT${resource}` },
+                    { type: resource, id: `PIPELINE_INDIVIDUAL${resource}` },
                 ],
                 transformErrorResponse
             }),

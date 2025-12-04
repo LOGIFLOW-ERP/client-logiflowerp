@@ -5,6 +5,7 @@ import { CreateWarehouseReturnDTO } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { Box, Button, Chip, CircularProgress, Divider } from '@mui/material'
 import {
+    useCreateDraftWarehouseReturnMutation,
     useCreateWarehouseReturnMutation,
     useValidateWarehouseReturnMutation
 } from '@shared/api'
@@ -21,11 +22,12 @@ const resolver = classValidatorResolver(CreateWarehouseReturnDTO)
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     open: boolean
+    isFetching: boolean
 }
 
 export function AddDialog(props: IProps) {
 
-    const { open, setOpen } = props
+    const { open, setOpen, isFetching } = props
     const { state: { selectedDocument }, setState } = useStore('warehouseReturn')
     const {
         handleSubmit,
@@ -35,9 +37,17 @@ export function AddDialog(props: IProps) {
     } = useForm({ resolver, defaultValues: { ...selectedDocument } })
     const { enqueueSnackbar } = useSnackbar()
     const resetApiState = useResetApiState()
-    const [canValidateByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_VALIDATE_BY_ID])
+    const [
+        canValidateByID,
+        canCreate
+    ] = usePermissions([
+        PERMISSIONS.PUT_WAREHOUSE_RETURN_VALIDATE_BY_ID,
+        PERMISSIONS.POST_WAREHOUSE_RETURN
+    ])
 
-    const [create, { isLoading }] = useCreateWarehouseReturnMutation()
+    const [create, { isLoading }] = canCreate
+        ? useCreateWarehouseReturnMutation()
+        : useCreateDraftWarehouseReturnMutation()
     const [validate, { isLoading: isLoadingValidate }] = useValidateWarehouseReturnMutation()
 
     const onSubmit = async (data: CreateWarehouseReturnDTO) => {
@@ -115,7 +125,7 @@ export function AddDialog(props: IProps) {
                                     <Divider textAlign='left'>
                                         <Chip label='Detalle' size='small' />
                                     </Divider>
-                                    <DetailTable />
+                                    <DetailTable isFetching={isFetching || isLoadingValidate} />
                                 </Suspense>
                             )
                         }

@@ -92,9 +92,9 @@ export function SerialsDialog(props: IProps) {
         >
             {
                 (!!selectedDetail && selectedDetail.amount !== selectedDetail.serials.length) && (
-                    <Box component='form' onSubmit={handleSubmit(onSubmit)} paddingBottom={2}>
-                        <Grid container columnSpacing={2}>
-                            <Grid size={{ md: 6 }} component='div'>
+                    <Box component='form' onSubmit={handleSubmit(onSubmit)} paddingBottom={2} sx={{ padding: 1 }}>
+                        <Grid container columnSpacing={1}>
+                            <Grid size={{ md: 6, xs: 12 }} component='div'>
                                 <TextField
                                     label='Marca'
                                     variant='outlined'
@@ -106,7 +106,7 @@ export function SerialsDialog(props: IProps) {
                                     helperText={errors.brand?.message}
                                 />
                             </Grid>
-                            <Grid size={{ md: 6 }} component='div'>
+                            <Grid size={{ md: 6, xs: 12 }} component='div'>
                                 <TextField
                                     label='Modelo'
                                     variant='outlined'
@@ -118,7 +118,7 @@ export function SerialsDialog(props: IProps) {
                                     helperText={errors.model?.message}
                                 />
                             </Grid>
-                            <Grid size={{ md: 8 }} component='div'>
+                            <Grid size={{ md: 8, xs: 12 }} component='div'>
                                 <TextField
                                     label='Serie'
                                     variant='outlined'
@@ -132,7 +132,7 @@ export function SerialsDialog(props: IProps) {
                                     autoComplete='off'
                                 />
                             </Grid>
-                            <Grid size={{ md: 4 }} component='div'>
+                            <Grid size={{ md: 4, xs: 12 }} component='div'>
                                 <Button
                                     type='submit'
                                     variant='contained'

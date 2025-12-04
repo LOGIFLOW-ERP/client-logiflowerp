@@ -105,4 +105,11 @@ export const PERMISSIONS = {
     POST_WAREHOUSE_STOCK_SERIAL_SERIAL_TRACKING: 'post_warehouse_stock_serial_serial_tracking',
     POST_EMPLOYEE_STOCK_REPORT_INDIVIDUAL: 'post_employee_stock_report_individual',
     POST_EMPLOYEE_STOCK_SERIAL_FIND_INDIVIDUAL: 'post_employee_stock_serial_find_individual',
+    PUT_LIQUIDATION_WIN_ORDER_DELETE_INVENTORY_BY_ID: 'put_liquidation_win_order_delete_inventory_by_id',
+    POST_WAREHOUSE_RETURN_FIND_INDIVIDUAL: 'post_warehouse_return_find_individual',
+    POST_PERSONNEL_FIND_INDIVIDUAL: 'post_personnel_find_individual',
+    POST_EMPLOYEE_STOCK_FIND_INDIVIDUAL: 'post_employee_stock_find_individual',
+    POST_WIN_REPORTS_PRODUCTION: 'post_win_reports_production',
+    POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD: 'post_warehouse_return_create_draft_record',
+    PUT_WAREHOUSE_RETURN_REGISTER_BY_ID: 'put_warehouse_return_register_by_id',
 } as const;

@@ -4,13 +4,15 @@ import Paper from '@mui/material/Paper'
 import { useSnackbar } from 'notistack'
 import {
 	useDeleteWarehouseReturnMutation,
+	useGetWarehouseReturnPipelineIndividualQuery,
 	useGetWarehouseReturnPipelineQuery,
+	useRegisterWarehouseReturnMutation,
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
 import { WarehouseReturnENTITY, StateOrder } from 'logiflowerp-sdk'
 import { columns } from '../GridCol'
 import { Box, Typography } from '@mui/material'
-import { usePermissions, useStore } from '@shared/ui/hooks'
+import { usePermissions, useResetApiState, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
@@ -22,15 +24,21 @@ export default function LayoutWarehouseReturn() {
 
 	const [
 		POST_WAREHOUSE_RETURN,
-		canDeleteWarehouseReturnByID
+		POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD,
+		POST_WAREHOUSE_RETURN_FIND,
 	] = usePermissions([
 		PERMISSIONS.POST_WAREHOUSE_RETURN,
-		PERMISSIONS.DELETE_WAREHOUSE_RETURN_BY_ID,
+		PERMISSIONS.POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD,
+		PERMISSIONS.POST_WAREHOUSE_RETURN_FIND,
 	])
 	const { enqueueSnackbar } = useSnackbar()
-	const pipeline = [{ $match: { state: StateOrder.REGISTRADO } }]
-	const { data, error, isLoading } = useGetWarehouseReturnPipelineQuery(pipeline)
+	const resetApiState = useResetApiState()
+	const pipeline = [{ $match: { state: POST_WAREHOUSE_RETURN ? StateOrder.REGISTRADO : StateOrder.BORRADOR } }]
+	const { data, error, isFetching, isError } = POST_WAREHOUSE_RETURN_FIND
+		? useGetWarehouseReturnPipelineQuery(pipeline)
+		: useGetWarehouseReturnPipelineIndividualQuery(pipeline)
 	const [deleteWarehouseReturn, { isLoading: isLoadingDelete }] = useDeleteWarehouseReturnMutation()
+	const [registerWarehouseReturn, { isLoading: isLoadingRegister }] = useRegisterWarehouseReturnMutation()
 
 	const apiRef = useGridApiRef()
 
@@ -39,7 +47,7 @@ export default function LayoutWarehouseReturn() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openAdd])
+	}, [openAdd, isLoadingRegister, isLoadingDelete, isFetching])
 
 	const handleAddClick = () => {
 		try {
@@ -64,6 +72,7 @@ export default function LayoutWarehouseReturn() {
 	const handleDeleteClick = async (row: WarehouseReturnENTITY) => {
 		try {
 			await deleteWarehouseReturn(row._id).unwrap()
+			resetApiState(['employeeStockApi', 'warehouseStockApi'])
 			enqueueSnackbar({ message: '¡Documento eliminado!', variant: 'success' })
 		} catch (error) {
 			console.error(error)
@@ -71,7 +80,17 @@ export default function LayoutWarehouseReturn() {
 		}
 	}
 
-	if (error) return <CustomViewError />
+	const handleRegisterClick = async (row: WarehouseReturnENTITY) => {
+		try {
+			await registerWarehouseReturn(row._id).unwrap()
+			enqueueSnackbar({ message: '¡Documento registrado!', variant: 'success' })
+		} catch (error) {
+			console.error(error)
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+		}
+	}
+
+	if (isError) return <CustomViewError error={error} />
 
 	return (
 		<>
@@ -82,14 +101,21 @@ export default function LayoutWarehouseReturn() {
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseReturnENTITY>
 						rows={data}
-						columns={columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseReturnByID })}
+						columns={columns({ handleEditClick, handleDeleteClick, handleRegisterClick })}
 						disableRowSelectionOnClick
-						slots={{ toolbar: () => <CustomToolbar handleAddClick={handleAddClick} AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_RETURN} /> }}
+						slots={{
+							toolbar: () => (
+								<CustomToolbar
+									handleAddClick={handleAddClick}
+									AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_RETURN || POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD}
+								/>
+							)
+						}}
 						showToolbar
 						density='compact'
 						apiRef={apiRef}
 						getRowId={row => row._id}
-						loading={isLoading || isLoadingDelete}
+						loading={isFetching || isLoadingDelete || isLoadingRegister}
 						autoPageSize
 					/>
 				</Box>
@@ -100,6 +126,7 @@ export default function LayoutWarehouseReturn() {
 						<AddDialog
 							open={openAdd}
 							setOpen={setOpenAdd}
+							isFetching={isFetching}
 						/>
 					)
 				}

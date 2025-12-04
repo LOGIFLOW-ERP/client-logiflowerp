@@ -15,5 +15,6 @@ export const {
     useCreateMutation: useCreatePersonnelMutation,
     useUpdateMutation: useUpdatePersonnelMutation,
     useDeleteMutation: useDeletePersonnelMutation,
-    useGetPipelineQuery: useGetPersonnelPipelineQuery
+    useGetPipelineQuery: useGetPersonnelPipelineQuery,
+    useGetPipelineIndividualQuery: useGetPersonnelPipelineIndividualQuery
 } = personnelApi;

@@ -80,13 +80,13 @@ export function AddDialog(props: IProps) {
                 throw new Error('¡No hay un documento seleccionado!')
             }
 
-            enqueueSnackbar({ message: 'Validando la solicitud por el solicitante...', variant: 'info' })
-
-            const approved = await requestApproval(selectedDocument)
-
-            if (!approved) {
-                enqueueSnackbar({ message: 'El solicitante no aprobó a tiempo o rechazó la solicitud.', variant: 'warning' })
-                return
+            if (false) {
+                enqueueSnackbar({ message: 'Validando la solicitud por el solicitante...', variant: 'info' })
+                const approved = await requestApproval(selectedDocument!)
+                if (!approved) {
+                    enqueueSnackbar({ message: 'El solicitante no aprobó a tiempo o rechazó la solicitud.', variant: 'warning' })
+                    return
+                }
             }
 
             await validate(selectedDocument._id).unwrap()

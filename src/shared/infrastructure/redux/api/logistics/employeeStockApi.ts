@@ -57,5 +57,6 @@ export const {
     useLazyReportQuery: useLazyReportEmployeeStockQuery,
     useReportQuery: useReportEmployeeStockQuery,
     useReportIndividualQuery: useReportIndividualEmployeeStockQuery,
-    useGetDataLiquidationOrderQuery: useGetDataLiquidationOrderEmployeeStockQuery
+    useGetDataLiquidationOrderQuery: useGetDataLiquidationOrderEmployeeStockQuery,
+    useGetPipelineIndividualQuery: useGetEmployeeStockPipelineIndividualQuery
 } = employeeStockApi;

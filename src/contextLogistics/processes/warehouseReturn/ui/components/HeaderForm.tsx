@@ -1,6 +1,7 @@
 import { Button, CircularProgress, Grid, TextField } from '@mui/material'
 import {
     useGetMovementPipelineQuery,
+    useGetPersonnelPipelineIndividualQuery,
     useGetPersonnelPipelineQuery,
     useGetStorePipelineQuery
 } from '@shared/api'
@@ -22,18 +23,28 @@ export function CabeceraForm(props: Props) {
 
     const { control, errors, readOnly, isLoading, register } = props
 
-    const [canCreateWarehouseReturn] = usePermissions([PERMISSIONS.POST_WAREHOUSE_RETURN])
+    const [
+        canCreateWarehouseReturn,
+        canCreateDraftWarehouseReturn,
+        canFindPersonnel
+    ] = usePermissions([
+        PERMISSIONS.POST_WAREHOUSE_RETURN,
+        PERMISSIONS.POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD,
+        PERMISSIONS.POST_PERSONNEL_FIND,
+    ])
 
     const pipelineMovement = [{ $match: { movement: MovementOrder.DEVOLUCION } }]
     const { data: dataMovements, isLoading: isLoadingMovements, isError: isErrorMovements } = useGetMovementPipelineQuery(pipelineMovement)
     const pipelineStore = [{ $match: { state: State.ACTIVO } }]
     const { data: dataStores, isLoading: isLoadingStores, isError: isErrorStores } = useGetStorePipelineQuery(pipelineStore)
     const pipelinePersonnel = [{ $match: { state: State.ACTIVO } }]
-    const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = useGetPersonnelPipelineQuery(pipelinePersonnel)
+    const { data: dataPersonnel, isLoading: isLoadingPersonnel, isError: isErrorPersonnel } = canFindPersonnel
+        ? useGetPersonnelPipelineQuery(pipelinePersonnel)
+        : useGetPersonnelPipelineIndividualQuery(pipelinePersonnel)
 
     return (
-        <Grid container spacing={2} columns={16}>
-            <Grid size={{ md: 2 }} component='div'>
+        <Grid container spacing={1} columns={16}>
+            <Grid size={{ md: 2, xs: 16 }} component='div'>
                 <Controller
                     name='movement'
                     control={control}
@@ -55,7 +66,7 @@ export function CabeceraForm(props: Props) {
                     )}
                 />
             </Grid>
-            <Grid size={{ md: 2 }} component='div'>
+            <Grid size={{ md: 2, xs: 16 }} component='div'>
                 <Controller
                     name='store'
                     control={control}
@@ -76,7 +87,7 @@ export function CabeceraForm(props: Props) {
                     )}
                 />
             </Grid>
-            <Grid size={{ md: 2 }} component='div'>
+            <Grid size={{ md: 2, xs: 16 }} component='div'>
                 <Controller
                     name='carrier'
                     control={control}
@@ -98,7 +109,7 @@ export function CabeceraForm(props: Props) {
                     )}
                 />
             </Grid>
-            <Grid size={{ md: 2.5 }} component='div'>
+            <Grid size={{ md: 2.5, xs: 16 }} component='div'>
                 <TextField
                     label='Dirección'
                     variant='outlined'
@@ -111,9 +122,9 @@ export function CabeceraForm(props: Props) {
                     slotProps={{ input: { readOnly: readOnly } }}
                 />
             </Grid>
-            <Grid size={{ md: 1 }} component='div'>
+            <Grid size={{ md: 1, xs: 16 }} component='div'>
                 {
-                    (!readOnly && canCreateWarehouseReturn) && (
+                    (!readOnly && (canCreateWarehouseReturn || canCreateDraftWarehouseReturn)) && (
                         <Button
                             type='submit'
                             variant='contained'

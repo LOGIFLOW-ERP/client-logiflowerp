@@ -1,5 +1,5 @@
 import { createRepository } from '../baseRepository'
-import { CreateWarehouseReturnDetailDTO, StockSerialDTO, WarehouseReturnENTITY } from 'logiflowerp-sdk'
+import { CreateWarehouseReturnDetailDTO, CreateWarehouseReturnDTO, StockSerialDTO, WarehouseReturnENTITY } from 'logiflowerp-sdk'
 import { getBaseApiLogistics } from './baseApi';
 import { transformErrorResponse } from '../transformErrorResponse';
 import { instanceToPlain } from 'class-transformer';
@@ -14,6 +14,22 @@ const path = `${schema}/${resource}`
 export const warehouseReturnApi = createRepository<WarehouseReturnENTITY, string>(path, getBaseApiLogistics(path))
     .injectEndpoints({
         endpoints: (builder) => ({
+            createDraft: builder.mutation<WarehouseReturnENTITY, CreateWarehouseReturnDTO>({
+                query: (newItem) => ({
+                    url: `${path}/create-draft-record`,
+                    method: 'POST',
+                    body: instanceToPlain(newItem),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `REPORT${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
+                ],
+                transformErrorResponse
+            }),
             validate: builder.mutation<void, string>({
                 query: (id) => ({
                     url: `${path}/validate/${id}`,
@@ -24,6 +40,23 @@ export const warehouseReturnApi = createRepository<WarehouseReturnENTITY, string
                     { type: path, id: `LIST1${path}` },
                     { type: path, id: `STATIC_PIPELINE${path}` },
                     { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
+                    provideTagReportWarehouseStock,
+                    provideTagReportEmployeeStock,
+                ],
+                transformErrorResponse
+            }),
+            register: builder.mutation<void, string>({
+                query: (id) => ({
+                    url: `${path}/register/${id}`,
+                    method: 'PUT'
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
                     provideTagReportWarehouseStock,
                     provideTagReportEmployeeStock,
                 ],
@@ -40,6 +73,7 @@ export const warehouseReturnApi = createRepository<WarehouseReturnENTITY, string
                     { type: path, id: `LIST1${path}` },
                     { type: path, id: `STATIC_PIPELINE${path}` },
                     { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
                 ],
                 transformErrorResponse
             }),
@@ -53,6 +87,7 @@ export const warehouseReturnApi = createRepository<WarehouseReturnENTITY, string
                     { type: path, id: `LIST1${path}` },
                     { type: path, id: `STATIC_PIPELINE${path}` },
                     { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
                 ],
                 transformErrorResponse
             }),
@@ -67,6 +102,7 @@ export const warehouseReturnApi = createRepository<WarehouseReturnENTITY, string
                     { type: path, id: `LIST1${path}` },
                     { type: path, id: `STATIC_PIPELINE${path}` },
                     { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
                 ],
                 transformErrorResponse
             }),
@@ -80,6 +116,7 @@ export const warehouseReturnApi = createRepository<WarehouseReturnENTITY, string
                     { type: path, id: `LIST1${path}` },
                     { type: path, id: `STATIC_PIPELINE${path}` },
                     { type: path, id: `PIPELINE${path}` },
+                    { type: path, id: `PIPELINE_INDIVIDUAL${path}` },
                 ],
                 transformErrorResponse
             }),
@@ -90,10 +127,13 @@ export const {
     useGetAllQuery: useGetWarehouseReturnsQuery,
     useGetByIdQuery: useGetWarehouseReturnByIdQuery,
     useCreateMutation: useCreateWarehouseReturnMutation,
+    useCreateDraftMutation: useCreateDraftWarehouseReturnMutation,
     useUpdateMutation: useUpdateWarehouseReturnMutation,
     useDeleteMutation: useDeleteWarehouseReturnMutation,
     useGetPipelineQuery: useGetWarehouseReturnPipelineQuery,
+    useGetPipelineIndividualQuery: useGetWarehouseReturnPipelineIndividualQuery,
     useValidateMutation: useValidateWarehouseReturnMutation,
+    useRegisterMutation: useRegisterWarehouseReturnMutation,
     useAddDetailMutation: useAddDetailWarehouseReturnMutation,
     useDeleteDetailMutation: useDeleteDetailWarehouseReturnMutation,
     useAddSerialMutation: useAddSerialWarehouseReturnMutation,

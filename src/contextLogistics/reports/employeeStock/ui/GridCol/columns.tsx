@@ -48,6 +48,10 @@ export const columns = (params: IParams): GridColDef<EmployeeStockENTITYFlat>[] 
             headerName: 'UM',
         },
         {
+            field: 'lot',
+            headerName: 'Lote',
+        },
+        {
             field: 'item_producType',
             headerName: 'SB',
             valueGetter: (_value, row) => {
