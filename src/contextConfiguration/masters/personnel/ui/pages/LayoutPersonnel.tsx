@@ -34,7 +34,7 @@ export default function LayoutPersonnel() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, isError, isFetching } = useGetPersonnelsQuery()
+	const { data, isError, isFetching, error } = useGetPersonnelsQuery()
 	const [updatePersonnel, { isLoading: isLoadingUpdate }] = useUpdatePersonnelMutation()
 	const [deletePersonnel, { isLoading: isLoadingDelete }] = useDeletePersonnelMutation()
 	const { data: dataProfiles, isError: isErrorProfiles, isLoading: isLoadingProfiles } = useGetProfilesQuery()
@@ -79,7 +79,7 @@ export default function LayoutPersonnel() {
 		}
 	}
 
-	if (isError || isErrorProfiles) return <CustomViewError />
+	if (isError || isErrorProfiles) return <CustomViewError error={error} />
 
 	return (
 		<>

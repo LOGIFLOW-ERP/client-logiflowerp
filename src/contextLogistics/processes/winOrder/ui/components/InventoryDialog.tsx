@@ -7,9 +7,13 @@ import { useGridApiRef } from '@mui/x-data-grid'
 import { Box, Button, CircularProgress, Tooltip } from '@mui/material'
 import { modelDocumentationLiquidationOrderWin, PERMISSIONS } from '@shared/application/constants'
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
-import { useFinalizeOrderWinOrderMutation } from '@shared/infrastructure/redux/api'
+import {
+    useFinalizeOrderWinOrderMutation,
+    usePendingOrderWinOrderMutation
+} from '@shared/infrastructure/redux/api'
 import { useSnackbar } from 'notistack'
 import { usePermissions } from '@shared/ui/hooks'
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -21,13 +25,16 @@ export function InventoryDialog(props: IProps) {
 
     const { open, setOpen, selectedRow } = props
     const apiRef = useGridApiRef()
-    const [finalizeOrder, { isLoading }] = useFinalizeOrderWinOrderMutation()
+    const [finalizeOrder, { isLoading: isLoadingFinalizeOrder }] = useFinalizeOrderWinOrderMutation()
+    const [pendingOrder, { isLoading: isLoadingPendingOrder }] = usePendingOrderWinOrderMutation()
     const { enqueueSnackbar } = useSnackbar()
 
     const [
         PUT_WIN_ORDER_FINALIZE_ORDER_BY_ID,
+        PUT_WIN_ORDER_PENDING_ORDER_BY_ID,
     ] = usePermissions([
         PERMISSIONS.PUT_WIN_ORDER_FINALIZE_ORDER_BY_ID,
+        PERMISSIONS.PUT_WIN_ORDER_PENDING_ORDER_BY_ID,
     ])
 
     const handleFinalizeOrderClick = async () => {
@@ -35,6 +42,17 @@ export function InventoryDialog(props: IProps) {
             await finalizeOrder(selectedRow._id).unwrap()
             setOpen(false)
             enqueueSnackbar({ message: '¡Orden finalizada!', variant: 'success' })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
+    const handlePendingOrderClick = async () => {
+        try {
+            await pendingOrder(selectedRow._id).unwrap()
+            setOpen(false)
+            enqueueSnackbar({ message: '¡Orden rechazada!', variant: 'success' })
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
@@ -83,6 +101,7 @@ export function InventoryDialog(props: IProps) {
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'flex-start',
+                            gap: 1
                         }}
                     >
                         {
@@ -92,7 +111,7 @@ export function InventoryDialog(props: IProps) {
                                         variant='contained'
                                         color='success'
                                         sx={{ width: '100%' }}
-                                        loading={isLoading}
+                                        loading={isLoadingFinalizeOrder || isLoadingPendingOrder}
                                         loadingIndicator={<CircularProgress size={24} color='inherit' />}
                                         loadingPosition='center'
                                         size='small'
@@ -104,9 +123,27 @@ export function InventoryDialog(props: IProps) {
                                 </Tooltip>
                                 : null
                         }
+                        {
+                            (selectedRow.estado_interno === StateInternalOrderWin.REVISION && PUT_WIN_ORDER_PENDING_ORDER_BY_ID)
+                                ? <Tooltip title='Finalizar orden'>
+                                    <Button
+                                        variant='contained'
+                                        color='error'
+                                        sx={{ width: '100%' }}
+                                        loading={isLoadingFinalizeOrder || isLoadingPendingOrder}
+                                        loadingIndicator={<CircularProgress size={24} color='inherit' />}
+                                        loadingPosition='center'
+                                        size='small'
+                                        startIcon={<ThumbDownAltIcon fontSize='small' />}
+                                        onClick={handlePendingOrderClick}
+                                    >
+                                        RECHAZAR
+                                    </Button>
+                                </Tooltip>
+                                : null
+                        }
                     </Box>
                 </Box>
-
                 <DataGrid<InventoryWinDTO>
                     rows={selectedRow.inventory}
                     columns={columnsInventory()}
@@ -115,6 +152,7 @@ export function InventoryDialog(props: IProps) {
                     getRowId={row => `${row.code}${row.invsn}`}
                     density='compact'
                     apiRef={apiRef}
+                    loading={isLoadingFinalizeOrder || isLoadingPendingOrder}
                 />
             </Box>
         </CustomDialog>

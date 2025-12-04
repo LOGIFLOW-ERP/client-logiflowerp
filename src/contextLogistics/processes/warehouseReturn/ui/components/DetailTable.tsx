@@ -4,17 +4,24 @@ import { Box } from '@mui/material'
 import { columnsDetail } from '../GridCol'
 import { useSnackbar } from 'notistack'
 import { useDeleteDetailWarehouseReturnMutation } from '@shared/api'
-import { lazy, Suspense, useState } from 'react'
-import { usePermissions, useStore } from '@shared/ui/hooks'
+import { lazy, Suspense, useEffect, useState } from 'react'
+import { usePermissions, useResetApiState, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
+import { useGridApiRef } from '@mui/x-data-grid'
 const SerialsDialog = lazy(() => import('./SerialsDialog').then(m => ({ default: m.SerialsDialog })))
 
-export function DetailTable() {
+interface IProps {
+    isFetching: boolean
+}
+
+export function DetailTable({ isFetching }: IProps) {
 
     const { setState, state: { selectedDetail, selectedDocument } } = useStore('warehouseReturn')
 
     const { enqueueSnackbar } = useSnackbar()
+    const resetApiState = useResetApiState()
+    const apiRef = useGridApiRef()
     const [deleteDetail, { isLoading: isLoadingDeleteDetail }] = useDeleteDetailWarehouseReturnMutation()
     const [open, setOpen] = useState(false)
     const [
@@ -25,6 +32,14 @@ export function DetailTable() {
         PERMISSIONS.PUT_WAREHOUSE_RETURN_DELETE_DETAIL_BY_ID
     ])
 
+    useEffect(() => {
+        apiRef.current?.autosizeColumns({
+            includeHeaders: true,
+            includeOutliers: true,
+            disableColumnVirtualization: true
+        })
+    }, [open, isFetching])
+
     const handleDeleteClick = async (row: OrderDetailENTITY) => {
         try {
             if (!selectedDocument) {
@@ -33,6 +48,7 @@ export function DetailTable() {
             const document = await deleteDetail({ _id: selectedDocument._id, keyDetail: row.keyDetail }).unwrap()
             setState({ selectedDocument: document })
             enqueueSnackbar({ message: '¡Detalle eliminado!', variant: 'success' })
+            resetApiState(['employeeStockApi'])
         } catch (error) {
             console.error(error)
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
@@ -70,6 +86,7 @@ export function DetailTable() {
                             paginationModel: { pageSize: 10 },
                         },
                     }}
+                    apiRef={apiRef}
                 />
             </Box>
             <Suspense fallback={<Fallback />}>

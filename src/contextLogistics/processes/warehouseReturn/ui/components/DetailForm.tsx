@@ -2,6 +2,7 @@ import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
 import {
     useAddDetailWarehouseReturnMutation,
+    useGetEmployeeStockPipelineIndividualQuery,
     useGetEmployeeStockPipelineQuery,
 } from '@shared/api';
 import { CustomAutocomplete } from '@shared/ui-library';
@@ -9,7 +10,7 @@ import { CreateWarehouseReturnDetailDTO, EmployeeStockENTITY, State } from 'logi
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import { usePermissions, useStore } from '@shared/ui/hooks';
+import { usePermissions, useResetApiState, useStore } from '@shared/ui/hooks';
 import { PERMISSIONS } from '@shared/application';
 
 const resolver = classValidatorResolver(CreateWarehouseReturnDetailDTO)
@@ -27,16 +28,26 @@ export function DetalleForm() {
         watch
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
-    const [canWarehouseReturnAddDetailByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_RETURN_ADD_DETAIL_BY_ID])
+    const resetApiState = useResetApiState()
+    const [
+        canWarehouseReturnAddDetailByID,
+        canEmployeeStockFind
+    ] = usePermissions([
+        PERMISSIONS.PUT_WAREHOUSE_RETURN_ADD_DETAIL_BY_ID,
+        PERMISSIONS.POST_EMPLOYEE_STOCK_FIND,
+    ])
 
     const pipelineES = [{
         $match: {
             state: State.ACTIVO,
             'store.code': selectedDocument?.store.code,
-            'employee.identity': selectedDocument?.carrier.identity
+            'employee.identity': selectedDocument?.carrier.identity,
+            stockType: selectedDocument?.movement.stockType
         }
     }]
-    const { data: dataES, isLoading: isLoadingES, isError: isErrorES, error: errorES } = useGetEmployeeStockPipelineQuery(pipelineES)
+    const { data: dataES, isLoading: isLoadingES, isError: isErrorES, error: errorES } = canEmployeeStockFind
+        ? useGetEmployeeStockPipelineQuery(pipelineES)
+        : useGetEmployeeStockPipelineIndividualQuery(pipelineES)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseReturnMutation()
 
     const onSubmit = async (data: CreateWarehouseReturnDetailDTO) => {
@@ -47,6 +58,7 @@ export function DetalleForm() {
             const document = await addDetail({ _id: selectedDocument._id, data }).unwrap()
             reset()
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
+            resetApiState(['employeeStockApi'])
             setState({ selectedDocument: document })
         } catch (error) {
             console.error(error)
@@ -55,26 +67,13 @@ export function DetalleForm() {
     }
 
     return (
-        <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }} >
-            <Grid container spacing={2} columns={16}>
-                <Grid size={{ md: 4 }} component='div'>
+        <Box component='form' onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%', marginY: 1 }} >
+            <Grid container spacing={1} columns={16}>
+                <Grid size={{ md: 4, xs: 16 }} component='div'>
                     <Controller
                         name='employeeStock'
                         control={control}
                         render={({ field }) => (
-                            // <CustomSelectDto
-                            //     label='Producto'
-                            //     options={dataES ?? []}
-                            //     {...field}
-                            //     labelKey={['item.itemCode', ' - ', 'item.itemName', ' ', 'lot', ' ']}
-                            //     valueKey='_id'
-                            //     margin='dense'
-                            //     error={!!errors.employeeStock}
-                            //     helperText={errors.employeeStock?.message}
-                            //     autoFocus
-                            //     isLoading={isLoadingES}
-                            //     isError={isErrorES}
-                            // />
                             <CustomAutocomplete<EmployeeStockENTITY>
                                 loading={isLoadingES}
                                 options={dataES}
@@ -90,7 +89,7 @@ export function DetalleForm() {
                         )}
                     />
                 </Grid>
-                <Grid size={{ md: 2 }} component='div'>
+                <Grid size={{ md: 2, xs: 8 }} component='div'>
                     <TextField
                         label='Lote'
                         variant='outlined'
@@ -101,7 +100,7 @@ export function DetalleForm() {
                         value={watch('employeeStock')?.lot ?? ''}
                     />
                 </Grid>
-                <Grid size={{ md: 1.5 }} component='div'>
+                <Grid size={{ md: 1.5, xs: 8 }} component='div'>
                     <TextField
                         label='Cantidad'
                         variant='outlined'
@@ -120,7 +119,7 @@ export function DetalleForm() {
                         helperText={errors.amount?.message}
                     />
                 </Grid>
-                <Grid size={{ md: 1 }} component='div'>
+                <Grid size={{ md: 1, xs: 16 }} component='div'>
                     {
                         canWarehouseReturnAddDetailByID && (
                             <Button

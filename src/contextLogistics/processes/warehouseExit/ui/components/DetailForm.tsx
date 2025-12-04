@@ -48,7 +48,13 @@ export function DetalleForm() {
         PERMISSIONS.POST_EMPLOYEE_STOCK_REPORT
     ])
 
-    const pipelineWS = [{ $match: { state: State.ACTIVO, 'store.code': selectedDocument?.store.code } }]
+    const pipelineWS = [{
+        $match: {
+            state: State.ACTIVO,
+            'store.code': selectedDocument?.store.code,
+            stockType: selectedDocument?.movement.stockType
+        }
+    }]
     const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS, error: errorWS } = useFindWithAvailableWarehouseStockQuery(pipelineWS)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseExitMutation()
 

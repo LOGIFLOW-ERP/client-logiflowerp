@@ -33,7 +33,7 @@ export default function LayoutStore() {
 	])
 
 	const { enqueueSnackbar } = useSnackbar()
-	const { data, error, isLoading } = useGetStoresQuery()
+	const { data, error, isFetching, isError } = useGetStoresQuery()
 	const [updateStore, { isLoading: isLoadingUpdate }] = useUpdateStoreMutation()
 	const [deleteStore, { isLoading: isLoadingDelete }] = useDeleteStoreMutation()
 
@@ -42,7 +42,7 @@ export default function LayoutStore() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openAdd, openEdit])
+	}, [data, openAdd, openEdit, isFetching])
 
 	const handleEditClick = (row: StoreENTITY) => {
 		try {
@@ -77,7 +77,7 @@ export default function LayoutStore() {
 		}
 	}
 
-	if (error) return <CustomViewError />
+	if (isError) return <CustomViewError error={error} />
 
 	return (
 		<>
@@ -90,7 +90,7 @@ export default function LayoutStore() {
 					showToolbar
 					autoPageSize
 					getRowId={row => row._id}
-					loading={isLoading || isLoadingUpdate || isLoadingDelete}
+					loading={isFetching || isLoadingUpdate || isLoadingDelete}
 					density='compact'
 					apiRef={apiRef}
 				/>

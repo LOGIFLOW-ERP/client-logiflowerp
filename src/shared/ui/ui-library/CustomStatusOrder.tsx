@@ -9,6 +9,7 @@ import {
 } from '@mui/x-data-grid'
 import LockResetIcon from '@mui/icons-material/LockReset';
 import { StateOrder } from 'logiflowerp-sdk'
+import DrawIcon from '@mui/icons-material/Draw';
 
 interface StatusProps {
     status: string
@@ -35,6 +36,10 @@ const StyledChip = styled(Chip)(({ }) => ({
         color: '#ffc107',
         border: `1px solid #ffc107`,
     },
+    '&.Borrador': {
+        color: '#ccbb26ff',
+        border: `1px solid #ccbb26ff`,
+    },
 }))
 
 const Status = React.memo((props: StatusProps) => {
@@ -49,6 +54,8 @@ const Status = React.memo((props: StatusProps) => {
         icon = <VerifiedIcon className='icon' />
     } else if (status === StateOrder.PROCESANDO) {
         icon = <LockResetIcon className='icon' />
+    } else if (status === StateOrder.BORRADOR) {
+        icon = <DrawIcon className='icon' />
     }
 
     return (

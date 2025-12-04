@@ -22,6 +22,19 @@ export const winOrderApi = createRepository<WINOrderENTITY, string>(path, getBas
                     { type: path, id: `PIPELINE${path}` }
                 ],
                 transformErrorResponse
+            }),
+            pendingOrder: builder.mutation<void, string>({
+                query: (_id) => ({
+                    url: `${path}/pending-order/${_id}`,
+                    method: 'PUT',
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` }
+                ],
+                transformErrorResponse
             })
         })
     })
@@ -29,5 +42,6 @@ export const winOrderApi = createRepository<WINOrderENTITY, string>(path, getBas
 export const {
     useGetPipelineQuery: useGetWinOrderPipelineQuery,
     useLazyGetPipelineQuery: useLazyGetWinOrderPipelineQuery,
-    useFinalizeOrderMutation: useFinalizeOrderWinOrderMutation
+    useFinalizeOrderMutation: useFinalizeOrderWinOrderMutation,
+    usePendingOrderMutation: usePendingOrderWinOrderMutation
 } = winOrderApi;

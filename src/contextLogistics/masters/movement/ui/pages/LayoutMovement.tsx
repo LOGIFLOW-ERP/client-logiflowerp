@@ -34,7 +34,7 @@ export default function LayoutMovement() {
     ])
 
     const { enqueueSnackbar } = useSnackbar()
-    const { data: movements, error, isLoading } = useGetMovementsQuery()
+    const { data: movements, error, isFetching, isError } = useGetMovementsQuery()
     const [createMovement, { isLoading: isLoadingCreate }] = useCreateMovementMutation()
     const [updateMovement, { isLoading: isLoadingUpdate }] = useUpdateMovementMutation()
     const [deleteMovement, { isLoading: isLoadingDelete }] = useDeleteMovementMutation()
@@ -76,7 +76,7 @@ export default function LayoutMovement() {
         return !(['code'] as (keyof MovementENTITY)[]).includes(p.field as keyof MovementENTITY) || row.isNew
     }
 
-    if (error) return <CustomViewError />
+    if (isError) return <CustomViewError error={error} />
 
     return (
         <CustomDataGrid
@@ -95,7 +95,7 @@ export default function LayoutMovement() {
             newRowTemplate={newRowTemplate}
             processRowUpdate={processRowUpdate}
             isCellEditable={isCellEditable}
-            loading={isLoading || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+            loading={isFetching || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
             buttonCreate={POST_MOVEMENT}
         />
     )
