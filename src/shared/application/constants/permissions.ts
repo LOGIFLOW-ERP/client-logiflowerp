@@ -112,4 +112,5 @@ export const PERMISSIONS = {
     POST_WIN_REPORTS_PRODUCTION: 'post_win_reports_production',
     POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD: 'post_warehouse_return_create_draft_record',
     PUT_WAREHOUSE_RETURN_REGISTER_BY_ID: 'put_warehouse_return_register_by_id',
+    PUT_WIN_ORDER_PENDING_ORDER_BY_ID: 'put_win_order_pending_order_by_id',
 } as const;
