@@ -1,5 +1,5 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
-import { Box, Button, CircularProgress, Grid, TextField } from "@mui/material";
+import { Box, Button, CircularProgress, Grid, InputAdornment, OutlinedInput, TextField, Tooltip } from "@mui/material";
 import {
     useAddDetailWarehouseExitMutation,
     useFindWithAvailableWarehouseStockQuery,
@@ -15,11 +15,13 @@ import {
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
 import { usePermissions, useStore } from '@shared/ui/hooks';
 import { PERMISSIONS } from '@shared/application';
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Fallback } from '@app/ui/pages';
+import Person2Icon from '@mui/icons-material/Person2';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+
 const EmployeeStockDialog = lazy(() => import('../components/EmployeeStockDialog').then(m => ({ default: m.EmployeeStockDialog })))
 
 const resolver = classValidatorResolver(CreateWarehouseExitDetailDTO)
@@ -29,6 +31,7 @@ export function DetalleForm() {
     const { setState, state: { selectedDocument } } = useStore('warehouseExit')
     const [dataES, setDataES] = useState<EmployeeStockENTITYFlat[]>([])
     const [open, setOpen] = useState<boolean>(false)
+    const [employeeStock, setEmployeeStock] = useState<number | null>(null)
 
     const {
         handleSubmit,
@@ -37,7 +40,8 @@ export function DetalleForm() {
         register,
         control,
         reset,
-        getValues
+        getValues,
+        setFocus
     } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
     const [
@@ -58,7 +62,14 @@ export function DetalleForm() {
     const { data: dataWS, isLoading: isLoadingWS, isError: isErrorWS, error: errorWS } = useFindWithAvailableWarehouseStockQuery(pipelineWS)
     const [addDetail, { isLoading: isLoadingAddDetail }] = useAddDetailWarehouseExitMutation()
 
-    const [fetchEmployeeStock, { isFetching: isFetchingES }] = useLazyReportEmployeeStockQuery()
+    const [fetchEmployeeStock, { isFetching: isFetchingES, data: employeeStockData }] = useLazyReportEmployeeStockQuery()
+
+    useEffect(() => {
+        if (employeeStockData) {
+            const stock = employeeStockData.reduce((acc, item) => acc + item.stock, 0)
+            setEmployeeStock(stock)
+        }
+    }, [employeeStockData])
 
     const onSubmit = async (data: CreateWarehouseExitDetailDTO) => {
         try {
@@ -113,7 +124,22 @@ export function DetalleForm() {
                                     error={!!errors.warehouseStock || isErrorWS}
                                     helperText={errors.warehouseStock?.message || (errorWS as Error)?.message}
                                     value={dataWS?.find((opt) => opt._id === field.value?._id) || null}
-                                    onChange={(_, newValue) => field.onChange(newValue ? newValue : undefined)}
+                                    onChange={async (_, newValue) => {
+                                        field.onChange(newValue ? newValue : undefined)
+                                        setFocus('amount')
+                                        if (selectedDocument && newValue) {
+                                            const pipeline = [{
+                                                $match: {
+                                                    state: State.ACTIVO,
+                                                    'store.code': selectedDocument.store.code,
+                                                    'employee.identity': selectedDocument.carrier.identity,
+                                                    'item.itemCode': newValue.item.itemCode,
+                                                    stockType: selectedDocument.movement.stockType
+                                                }
+                                            }]
+                                            await fetchEmployeeStock(pipeline).unwrap()
+                                        }
+                                    }}
                                     label='Producto'
                                     getOptionLabel={(option) => `${option.item.itemCode} - ${option.item.itemName} ${option.lot ? `- Lt. ${option.lot}` : ''}`.trim()}
                                     isOptionEqualToValue={(option, value) => option._id === value._id}
@@ -122,29 +148,67 @@ export function DetalleForm() {
                             )}
                         />
                     </Grid>
-                    <Grid size={{ md: 2 }} component='div'>
-                        <TextField
-                            label='Lote'
-                            variant='outlined'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            slotProps={{ input: { readOnly: true } }}
-                            value={watch('warehouseStock')?.lot ?? ''}
-                        />
-                    </Grid>
-                    <Grid size={{ md: 1 }} component='div'>
-                        <TextField
-                            label='Disponible'
-                            variant='outlined'
-                            type='number'
-                            fullWidth
-                            margin='dense'
-                            size='small'
-                            slotProps={{ input: { readOnly: true } }}
-                            value={watch('warehouseStock')?.available ?? ''}
-                        />
-                    </Grid>
+                    {
+                        getValues('warehouseStock.item.itemCode') &&
+                        <>
+                            <Grid size={{ md: 1.6 }} component='div'>
+                                <Tooltip title='Lote de producto seleccionado'>
+                                    <TextField
+                                        label='Lote'
+                                        variant='outlined'
+                                        fullWidth
+                                        margin='dense'
+                                        size='small'
+                                        slotProps={{ input: { readOnly: true } }}
+                                        value={watch('warehouseStock')?.lot ?? ''}
+                                    />
+                                </Tooltip>
+                            </Grid>
+                            <Grid size={{ md: 1.2 }} component='div'>
+                                <Tooltip title='Disponible stock almacén'>
+                                    <OutlinedInput
+                                        id="outlined-adornment-weight"
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <WarehouseIcon fontSize='small' />
+                                            </InputAdornment>
+                                        }
+                                        aria-describedby="outlined-weight-helper-text"
+                                        inputProps={{
+                                            'aria-label': 'weight',
+                                        }}
+                                        value={watch('warehouseStock')?.available ?? ''}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        size='small'
+                                        fullWidth
+                                        margin='dense'
+                                        sx={{ marginTop: 1 }}
+                                    />
+                                </Tooltip>
+                            </Grid>
+                            {
+                                POST_EMPLOYEE_STOCK_REPORT && (
+                                    <Grid size={{ md: 1.2 }} component='div'>
+                                        <Tooltip title='Disponible stock personal'>
+                                            <Button
+                                                variant='outlined'
+                                                color='warning'
+                                                fullWidth
+                                                sx={{ marginTop: 1, fontWeight: 'bold', gap: 1 }}
+                                                loading={isFetchingES}
+                                                loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                                loadingPosition='center'
+                                                onClick={onClickShowEmployeeStock}
+                                            >
+                                                {employeeStock}
+                                                <Person2Icon fontSize='small' />
+                                            </Button>
+                                        </Tooltip>
+                                    </Grid>
+                                )
+                            }
+                        </>
+                    }
                     <Grid size={{ md: 1.5 }} component='div'>
                         <TextField
                             label='Cantidad'
@@ -162,26 +226,9 @@ export function DetalleForm() {
                             })}
                             error={!!errors.amount}
                             helperText={errors.amount?.message}
+                            disabled={!getValues('warehouseStock.item.itemCode')}
                         />
                     </Grid>
-                    {
-                        (POST_EMPLOYEE_STOCK_REPORT && getValues('warehouseStock.item.itemCode')) && (
-                            <Grid size={{ md: 1 }} component='div'>
-                                <Button
-                                    variant='contained'
-                                    color='primary'
-                                    fullWidth
-                                    sx={{ marginTop: 1 }}
-                                    loading={isFetchingES}
-                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
-                                    loadingPosition='center'
-                                    onClick={onClickShowEmployeeStock}
-                                >
-                                    <Inventory2Icon />
-                                </Button>
-                            </Grid>
-                        )
-                    }
                     <Grid size={{ md: 1 }} component='div'>
                         {
                             canWarehouseExitAddDetailByID && (
@@ -194,6 +241,7 @@ export function DetalleForm() {
                                     loading={isLoadingAddDetail}
                                     loadingIndicator={<CircularProgress size={24} color='warning' />}
                                     loadingPosition='center'
+                                    disabled={!getValues('warehouseStock.item.itemCode')}
                                 >
                                     <AddRoundedIcon />
                                 </Button>
