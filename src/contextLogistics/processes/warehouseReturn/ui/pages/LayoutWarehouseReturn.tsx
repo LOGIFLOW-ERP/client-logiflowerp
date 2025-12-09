@@ -37,8 +37,14 @@ export default function LayoutWarehouseReturn() {
 	const { data, error, isFetching, isError } = POST_WAREHOUSE_RETURN_FIND
 		? useGetWarehouseReturnPipelineQuery(pipeline)
 		: useGetWarehouseReturnPipelineIndividualQuery(pipeline)
-	const [deleteWarehouseReturn, { isLoading: isLoadingDelete }] = useDeleteWarehouseReturnMutation()
-	const [registerWarehouseReturn, { isLoading: isLoadingRegister }] = useRegisterWarehouseReturnMutation()
+	const [
+		deleteWarehouseReturn,
+		{ isLoading: isLoadingDelete, isError: isErrorDelete, error: errorDelete }
+	] = useDeleteWarehouseReturnMutation()
+	const [
+		registerWarehouseReturn,
+		{ isLoading: isLoadingRegister, isError: isErrorRegister, error: errorRegister }
+	] = useRegisterWarehouseReturnMutation()
 
 	const apiRef = useGridApiRef()
 
@@ -90,7 +96,7 @@ export default function LayoutWarehouseReturn() {
 		}
 	}
 
-	if (isError) return <CustomViewError error={error} />
+	if (isError || isErrorDelete || isErrorRegister) return <CustomViewError error={error || errorDelete || errorRegister} />
 
 	return (
 		<>
