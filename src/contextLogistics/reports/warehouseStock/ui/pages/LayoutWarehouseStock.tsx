@@ -3,6 +3,7 @@ import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import { useSnackbar } from 'notistack'
 import {
+	useGetProductGroupsQuery,
 	useReportWarehouseStockQuery
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
@@ -23,7 +24,13 @@ export default function LayoutWarehouseStock() {
 
 	const { enqueueSnackbar } = useSnackbar()
 	const pipeline = [{ $match: {} }]
-	const { data, isLoading, isError } = useReportWarehouseStockQuery(pipeline)
+	const { data, isLoading, isError, error } = useReportWarehouseStockQuery(pipeline)
+	const {
+		data: dataProductGroups,
+		error: errorProductGroups,
+		isError: isErrorProductGroups,
+		isFetching: isFetchingProductGroups
+	} = useGetProductGroupsQuery()
 	const { exportExcelWarehouseStock, isLoadingExportExcel, isErrorExportExcel, errorExportExcel } = useExportExcelWarehouseStock()
 
 	useEffect(() => {
@@ -35,7 +42,8 @@ export default function LayoutWarehouseStock() {
 		data,
 		openWarehouseStockSerialDialog,
 		isLoading,
-		isLoadingExportExcel
+		isLoadingExportExcel,
+		isFetchingProductGroups
 	])
 
 	const handleScannClick = (row: WarehouseStockENTITYFlat) => {
@@ -57,7 +65,9 @@ export default function LayoutWarehouseStock() {
 		}
 	}
 
-	if (isError || isErrorExportExcel) return <CustomViewError error={errorExportExcel} />
+	if (isError || isErrorExportExcel || isErrorProductGroups) {
+		return <CustomViewError error={errorExportExcel || errorProductGroups || error} />
+	}
 
 	return (
 		<>
@@ -68,11 +78,11 @@ export default function LayoutWarehouseStock() {
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseStockENTITYFlat>
 						rows={data}
-						columns={columns({ handleScannClick })}
+						columns={columns({ handleScannClick, dataProductGroups: dataProductGroups || [] })}
 						disableRowSelectionOnClick
 						showToolbar
 						getRowId={row => row._id}
-						loading={isLoading || isLoadingExportExcel}
+						loading={isLoading || isLoadingExportExcel || isFetchingProductGroups}
 						autoPageSize
 						density='compact'
 						apiRef={apiRef}

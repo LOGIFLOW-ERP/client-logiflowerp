@@ -7,12 +7,14 @@ import {
 	useGetWarehouseEntryPipelineQuery,
 } from '@shared/api'
 import { CustomToolbar, CustomViewError } from '@shared/ui-library'
-import { WarehouseEntryENTITY, StateOrder } from 'logiflowerp-sdk'
+import { WarehouseEntryENTITY } from 'logiflowerp-sdk'
 import { columns } from '../GridCol/columns'
 import { Box, Typography } from '@mui/material'
-import { useExportExcel, usePermissions, useStore } from '@shared/ui/hooks'
+import { usePermissions, useStore } from '@shared/ui/hooks'
 import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
+import { useIngresoAlmacenPDF } from '../hooks/useWarehouseExitPDF'
+import { useExportExcelWarehouseEntry } from '../hooks/useExportExcel'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseEntry() {
@@ -28,12 +30,18 @@ export default function LayoutWarehouseEntry() {
 		PERMISSIONS.DELETE_WAREHOUSE_ENTRY_BY_ID,
 	])
 	const { enqueueSnackbar } = useSnackbar()
-	const pipeline = [{ $match: { state: { $in: [StateOrder.REGISTRADO, StateOrder.PROCESANDO] } } }]
+	// const pipeline = [{ $match: { state: { $in: [StateOrder.REGISTRADO, StateOrder.PROCESANDO] } } }]
+	const pipeline = [
+		{ $limit: 200 },
+		{ $sort: { 'workflow.register.date': -1 } }
+	]
 	const { data, error, isFetching } = useGetWarehouseEntryPipelineQuery(pipeline)
 	const [deleteWarehouseEntry, { isLoading: isLoadingDelete }] = useDeleteWarehouseEntryMutation()
 
 	const apiRef = useGridApiRef()
-	const { exportExcel, getCsvString } = useExportExcel<WarehouseEntryENTITY>()
+	// const { exportExcel, getCsvString } = useExportExcel<WarehouseEntryENTITY>()
+	const { exportExcelWarehouseEntry } = useExportExcelWarehouseEntry()
+	const { generatePDF } = useIngresoAlmacenPDF()
 
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({
@@ -84,17 +92,20 @@ export default function LayoutWarehouseEntry() {
 		}
 	}
 
-	const _columns = columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID })
+	const handleViewPdfClick = async (row: WarehouseEntryENTITY) => {
+		try {
+			await generatePDF(row)
+		} catch (error) {
+			console.error(error)
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+		}
+	}
+
+	const _columns = columns({ handleEditClick, handleDeleteClick, canDeleteWarehouseEntryByID, handleViewPdfClick })
 
 	const handleExportExcelClick = () => {
 		try {
-			const { csvString } = getCsvString(apiRef)
-			exportExcel({
-				filenamePrefix: 'Ingreso_Almacen',
-				data: [
-					{ sheetName: 'IngresoAlmacen', source: csvString }
-				]
-			})
+			exportExcelWarehouseEntry(apiRef, data ?? [])
 		} catch (error) {
 			console.error(error)
 			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
@@ -107,7 +118,7 @@ export default function LayoutWarehouseEntry() {
 		<>
 			<Paper elevation={2} sx={{ height: '89vh', width: '100%', p: 2, position: 'relative' }}>
 				<Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-					<Typography variant="h6">Documentos de Ingreso No Validados</Typography>
+					<Typography variant="h6">Ingreso almacén</Typography>
 				</Box>
 				<Box sx={{ height: '94%' }}>
 					<DataGrid<WarehouseEntryENTITY>
