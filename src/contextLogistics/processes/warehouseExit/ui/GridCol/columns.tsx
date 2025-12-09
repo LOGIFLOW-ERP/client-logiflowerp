@@ -118,7 +118,6 @@ export const columns = (params: IParams): GridColDef<WarehouseExitENTITY>[] => {
             field: 'state',
             headerName: 'Status',
             renderCell: CustomStatusOrder,
-            type: 'singleSelect',
             valueOptions: getDataState(),
         }
     ]

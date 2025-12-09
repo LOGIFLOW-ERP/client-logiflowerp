@@ -15,6 +15,7 @@ import { PERMISSIONS } from '@shared/application'
 import { Fallback } from '@app/ui/pages'
 import { InputFileUploadBulkExit } from '../components/InputFileUploadBulkExit'
 import { useSalidaAlmacenPDF } from '../hooks/useWarehouseExitPDF'
+import { useExportExcelWarehouseExit } from '../hooks/useExportExcel'
 const AddDialog = lazy(() => import('../components/AddDialog').then(m => ({ default: m.AddDialog })))
 
 export default function LayoutWarehouseExit() {
@@ -30,6 +31,7 @@ export default function LayoutWarehouseExit() {
 		PERMISSIONS.DELETE_WAREHOUSE_EXIT_BY_ID,
 	])
 	const { enqueueSnackbar } = useSnackbar()
+	const { exportExcelWarehouseExit } = useExportExcelWarehouseExit()
 	const { generatePDF } = useSalidaAlmacenPDF()
 	const pipeline = [
 		{ $limit: 200 },
@@ -86,6 +88,15 @@ export default function LayoutWarehouseExit() {
 		}
 	}
 
+	const handleExportExcelClick = () => {
+		try {
+			exportExcelWarehouseExit(apiRef, data ?? [])
+		} catch (error) {
+			console.error(error)
+			enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+		}
+	}
+
 	if (error) return <CustomViewError />
 
 	return (
@@ -109,6 +120,7 @@ export default function LayoutWarehouseExit() {
 									handleAddClick={handleAddClick}
 									AGREGAR_NUEVO_REGISTRO={POST_WAREHOUSE_EXIT}
 									customInputFileUpload1={<InputFileUploadBulkExit />}
+									handleExportExcelClick={handleExportExcelClick}
 								/>
 							)
 						}}

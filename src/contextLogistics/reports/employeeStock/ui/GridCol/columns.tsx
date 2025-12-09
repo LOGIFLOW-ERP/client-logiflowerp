@@ -1,16 +1,17 @@
 import { Box, Tooltip } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { ProducType, EmployeeStockENTITYFlat } from 'logiflowerp-sdk';
+import { ProducType, EmployeeStockENTITYFlat, ProductGroupENTITY } from 'logiflowerp-sdk';
 import DocumentScannerRoundedIcon from '@mui/icons-material/DocumentScannerRounded';
 
 
 
 interface IParams {
     handleScannClick: (row: EmployeeStockENTITYFlat) => void
+    dataProductGroups: ProductGroupENTITY[]
 }
 
 export const columns = (params: IParams): GridColDef<EmployeeStockENTITYFlat>[] => {
-    const { handleScannClick } = params
+    const { handleScannClick, dataProductGroups } = params
     return [
         {
             field: 'stockType',
@@ -19,6 +20,14 @@ export const columns = (params: IParams): GridColDef<EmployeeStockENTITYFlat>[] 
         {
             field: 'store_company_code',
             headerName: 'Empresa',
+        },
+        {
+            field: 'nameGroup',
+            headerName: 'Grupo',
+            renderCell: ({ row }) => {
+                const productGroup = dataProductGroups.find(productGroup => productGroup.itmsGrpCod === row.item_itmsGrpCod)
+                return productGroup?.itmsGrpNam ?? 'N/A'
+            }
         },
         {
             field: 'store_code',

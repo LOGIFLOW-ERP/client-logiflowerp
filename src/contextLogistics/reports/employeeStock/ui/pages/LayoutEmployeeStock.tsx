@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
 import Box from '@mui/material/Box'
 import {
+    useGetProductGroupsQuery,
     useReportEmployeeStockQuery,
     useReportIndividualEmployeeStockQuery,
 } from '@shared/api'
@@ -25,6 +26,12 @@ export default function LayoutEmployeeStock() {
 
     const apiRef = useGridApiRef()
     const { enqueueSnackbar } = useSnackbar()
+    const {
+        data: dataProductGroups,
+        error: errorProductGroups,
+        isError: isErrorProductGroups,
+        isFetching: isFetchingProductGroups
+    } = useGetProductGroupsQuery()
     const { exportExcelEmployeeStock, isLoadingExportExcel, isErrorExportExcel, errorExportExcel } = useExportExcelEmployeeStock()
     const [POST_EMPLOYEE_STOCK_REPORT] = usePermissions([PERMISSIONS.POST_EMPLOYEE_STOCK_REPORT])
 
@@ -42,7 +49,8 @@ export default function LayoutEmployeeStock() {
         data,
         isLoading,
         openEmployeeStockSerialDialog,
-        isLoadingExportExcel
+        isLoadingExportExcel,
+        isFetchingProductGroups
     ])
 
     const handleScannClick = (row: EmployeeStockENTITYFlat) => {
@@ -64,7 +72,9 @@ export default function LayoutEmployeeStock() {
         }
     }
 
-    if (isError || isErrorExportExcel) return <CustomViewError error={error ?? errorExportExcel} />
+    if (isError || isErrorExportExcel || isErrorProductGroups) {
+        return <CustomViewError error={error ?? errorExportExcel ?? errorProductGroups} />
+    }
 
     return (
         <>
@@ -75,11 +85,11 @@ export default function LayoutEmployeeStock() {
                 <Box sx={{ height: '94%' }}>
                     <DataGrid<EmployeeStockENTITYFlat>
                         rows={data}
-                        columns={columns({ handleScannClick })}
+                        columns={columns({ handleScannClick, dataProductGroups: dataProductGroups || [] })}
                         disableRowSelectionOnClick
                         showToolbar
                         getRowId={row => row._id}
-                        loading={isLoading || isLoadingExportExcel}
+                        loading={isLoading || isLoadingExportExcel || isFetchingProductGroups}
                         autoPageSize
                         density='compact'
                         apiRef={apiRef}
