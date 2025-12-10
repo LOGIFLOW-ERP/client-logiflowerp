@@ -31,8 +31,9 @@ export default function LayoutWarehouseEntry() {
 	])
 	const { enqueueSnackbar } = useSnackbar()
 	// const pipeline = [{ $match: { state: { $in: [StateOrder.REGISTRADO, StateOrder.PROCESANDO] } } }]
+	const limit = 200
 	const pipeline = [
-		{ $limit: 200 },
+		{ $limit: limit },
 		{ $sort: { 'workflow.register.date': -1 } }
 	]
 	const { data, error, isFetching } = useGetWarehouseEntryPipelineQuery(pipeline)
@@ -61,6 +62,10 @@ export default function LayoutWarehouseEntry() {
 			}
 		}
 	}, [data, openAdd, isFetching, isLoadingDelete])
+
+	useEffect(() => {
+		enqueueSnackbar({ message: `Se muestran los documentos más recientes (límite: ${limit}).`, variant: 'info' })
+	}, [])
 
 	const handleAddClick = () => {
 		try {

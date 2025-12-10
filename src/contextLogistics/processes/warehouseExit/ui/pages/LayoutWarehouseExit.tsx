@@ -33,12 +33,13 @@ export default function LayoutWarehouseExit() {
 	const { enqueueSnackbar } = useSnackbar()
 	const { exportExcelWarehouseExit } = useExportExcelWarehouseExit()
 	const { generatePDF } = useSalidaAlmacenPDF()
+	const limit = 200
 	const pipeline = [
-		{ $limit: 200 },
+		{ $limit: limit },
 		{ $sort: { 'workflow.register.date': -1 } }
 	]
-	const { data, error, isLoading } = useGetWarehouseExitPipelineQuery(pipeline)
-	const [deleteWarehouseExit, { isLoading: isLoadingDelete }] = useDeleteWarehouseExitMutation()
+	const { data, error, isFetching, isError } = useGetWarehouseExitPipelineQuery(pipeline)
+	const [deleteWarehouseExit, { isLoading: isLoadingDelete, isError: isErrorDelete, error: errorDelete }] = useDeleteWarehouseExitMutation()
 
 	const apiRef = useGridApiRef()
 
@@ -47,7 +48,11 @@ export default function LayoutWarehouseExit() {
 			includeHeaders: true,
 			includeOutliers: true,
 		})
-	}, [data, openAdd])
+	}, [data, openAdd, isFetching, isLoadingDelete])
+
+	useEffect(() => {
+		enqueueSnackbar({ message: `Se muestran los documentos más recientes (límite: ${limit}).`, variant: 'info' })
+	}, [])
 
 	const handleAddClick = () => {
 		try {
@@ -97,7 +102,7 @@ export default function LayoutWarehouseExit() {
 		}
 	}
 
-	if (error) return <CustomViewError />
+	if (isError || isErrorDelete) return <CustomViewError error={error || errorDelete} />
 
 	return (
 		<>
@@ -126,7 +131,7 @@ export default function LayoutWarehouseExit() {
 						}}
 						showToolbar
 						getRowId={row => row._id}
-						loading={isLoading || isLoadingDelete}
+						loading={isFetching || isLoadingDelete}
 						autoPageSize
 						density='compact'
 						apiRef={apiRef}
