@@ -58,7 +58,7 @@ export function AddDialog(props: IProps) {
     const [addInventoryOrder, { isLoading }] = useAddInventoryWINOrderMutation()
     const [deleteInventoryOrder, { isLoading: isLoadingDelete }] = useDeleteInventoryWINOrderMutation()
 
-    const _id_stock = useWatch({ control, name: "_id_stock" })
+    const _id_stock = useWatch({ control, name: '_id_stock' })
     const selectedProduct = dataES?.map(d => d.item).find((opt) => opt._id === _id_stock)
     const isSerie = selectedProduct?.item?.producType === ProducType.SERIE
 
@@ -70,7 +70,7 @@ export function AddDialog(props: IProps) {
             setValue('invsn', undefined as unknown as string)
             setValue('quantity', 1)
         }
-    }, [isSerie, setValue])
+    }, [selectedProduct, setValue, isSerie])
 
     useEffect(() => {
         apiRef.current?.autosizeColumns({

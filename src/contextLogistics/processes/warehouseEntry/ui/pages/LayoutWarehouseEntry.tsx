@@ -64,10 +64,8 @@ export default function LayoutWarehouseEntry() {
 	}, [data, openAdd, isFetching, isLoadingDelete])
 
 	useEffect(() => {
-		if (data?.length) {
-			enqueueSnackbar({ message: `Se han cargado los documentos más recientes (límite: ${limit}).`, variant: 'info' })
-		}
-	}, [data])
+		enqueueSnackbar({ message: `Se muestran los documentos más recientes (límite: ${limit}).`, variant: 'info' })
+	}, [])
 
 	const handleAddClick = () => {
 		try {
