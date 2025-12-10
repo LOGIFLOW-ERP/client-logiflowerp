@@ -6,33 +6,94 @@ import {
 } from "@shared/infrastructure/redux/api"
 import Paper from '@mui/material/Paper'
 import { CustomViewError } from "@shared/ui/ui-library"
+import { CustomToolbar } from "../components/CustomToolbar"
+import { useExportExcel } from "@shared/ui/hooks"
+import { useSnackbar } from "notistack"
 
 export default function LayoutWinReports() {
 
     const año = new Date().getFullYear()
     const mes = new Date().getMonth()
-    const { data: dataProduction, error: errorProduction, isFetching: isFetchingProduction, isError: isErrorProduction } = useProductionWinReportsQuery({ año, mes })
-    const { data: dataZones, error: errorZones, isFetching: isFetchingZones, isError: isErrorZones } = useProductionZonesWinReportsQuery({ año, mes })
+    const {
+        data: dataProduction,
+        error: errorProduction,
+        isFetching: isFetchingProduction,
+        isError: isErrorProduction
+    } = useProductionWinReportsQuery({ año, mes })
+    const {
+        data: dataZones,
+        error: errorZones,
+        isFetching: isFetchingZones,
+        isError: isErrorZones
+    } = useProductionZonesWinReportsQuery({ año, mes })
 
-    if (isErrorProduction || isErrorZones) return <CustomViewError error={errorProduction || errorZones} />
+    const { enqueueSnackbar } = useSnackbar()
+    const { exportExcel } = useExportExcel()
+
+    const datasetZonas = (dataZones ?? []).map(item => ({
+        'Zona Cliente': item.zonaCliente,
+        'Zona Clasificada': item.zonaClasificada,
+        Anulada: item.resumen.Anulada,
+        Cancelada: item.resumen.Cancelada,
+        Finalizada: item.resumen.Finalizada,
+        Garantia: item.resumen.Garantia,
+        Regestion: item.resumen.Regestion,
+        'Total Finalizadas': item.resumen.totalFinalizadas
+    }))
+
+    const datasetTecnicos = (dataProduction ?? []).map(item => ({
+        'Técnico': item.tecnico,
+        Anulada: item.resumenEstado.Anulada,
+        Cancelada: item.resumenEstado.Cancelada,
+        Finalizada: item.resumenEstado.Finalizada,
+        Garantia: item.resumenEstado.Garantia,
+        Regestion: item.resumenEstado.Regestion,
+    }))
+
+    const handleExportExcelZonasClick = () => {
+        try {
+            exportExcel({
+                filenamePrefix: `Prod_Por_Zonas_${año}_${mes}`,
+                data: [
+                    { sheetName: 'Zonas', source: datasetZonas }
+                ]
+            })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
+    const handleExportExcelTecnicosClick = () => {
+        try {
+            exportExcel({
+                filenamePrefix: `Prod_Por_Tecnicos_${año}_${mes}`,
+                data: [
+                    { sheetName: 'Técnicos', source: datasetTecnicos }
+                ]
+            })
+        } catch (error) {
+            console.error(error)
+            enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
+        }
+    }
+
+    if (
+        isErrorProduction ||
+        isErrorZones
+    ) return (
+        <CustomViewError error={errorProduction || errorZones} />
+    )
 
     return (
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Paper elevation={3}>
+                <CustomToolbar title='Producción Mensual Por Zonas' handleExportExcelClick={handleExportExcelZonasClick} />
                 <BarChart
-                    dataset={(dataZones ?? []).map(item => ({
-                        zonaCliente: item.zonaCliente,
-                        zonaClasificada: item.zonaClasificada,
-                        Anulada: item.resumen.Anulada,
-                        Cancelada: item.resumen.Cancelada,
-                        Finalizada: item.resumen.Finalizada,
-                        Garantia: item.resumen.Garantia,
-                        Regetion: item.resumen.Regestion,
-                        totalFinalizadas: item.resumen.totalFinalizadas
-                    }))}
+                    dataset={datasetZonas}
                     xAxis={[
                         {
-                            dataKey: 'zonaCliente',
+                            dataKey: 'Zona Cliente',
                             tickLabelStyle: {
                                 angle: 90,
                             },
@@ -55,25 +116,19 @@ export default function LayoutWinReports() {
                         { dataKey: 'Cancelada', label: 'Cancelada', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` },
                         { dataKey: 'Finalizada', label: 'Finalizada', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` },
                         { dataKey: 'Garantia', label: 'Garantia', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` },
-                        { dataKey: 'Regetion', label: 'Regestión', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` },
-                        { dataKey: 'totalFinalizadas', label: 'Total Finalizadas', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` }
+                        { dataKey: 'Regestion', label: 'Regestión', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` },
+                        { dataKey: 'Total Finalizadas', label: 'Total Finalizadas', barLabel: (v) => v.value === 0 ? undefined : `${v.value}` }
                     ]}
                     loading={isFetchingProduction || isFetchingZones}
                 />
             </Paper>
             <Paper elevation={3}>
+                <CustomToolbar title='Producción Mensual Por Técnicos' handleExportExcelClick={handleExportExcelTecnicosClick} />
                 <BarChart
-                    dataset={(dataProduction ?? []).map(item => ({
-                        tecnico: item.tecnico,
-                        Anulada: item.resumenEstado.Anulada,
-                        Cancelada: item.resumenEstado.Cancelada,
-                        Finalizada: item.resumenEstado.Finalizada,
-                        Garantia: item.resumenEstado.Garantia,
-                        Regestion: item.resumenEstado.Regestion,
-                    }))}
+                    dataset={datasetTecnicos}
                     xAxis={[
                         {
-                            dataKey: 'tecnico',
+                            dataKey: 'Técnico',
                             tickLabelStyle: {
                                 angle: 90,
                             },
