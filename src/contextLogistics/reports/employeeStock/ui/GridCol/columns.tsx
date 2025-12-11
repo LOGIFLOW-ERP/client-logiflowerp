@@ -24,7 +24,7 @@ export const columns = (params: IParams): GridColDef<EmployeeStockENTITYFlat>[] 
         {
             field: 'nameGroup',
             headerName: 'Grupo',
-            renderCell: ({ row }) => {
+            valueGetter: (_value, row) => {
                 const productGroup = dataProductGroups.find(productGroup => productGroup.itmsGrpCod === row.item_itmsGrpCod)
                 return productGroup?.itmsGrpNam ?? 'N/A'
             }
