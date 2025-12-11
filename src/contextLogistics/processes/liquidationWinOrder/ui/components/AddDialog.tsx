@@ -52,7 +52,7 @@ export function AddDialog(props: IProps) {
         data: dataES,
         isError: isErrorES,
         error: errorES,
-        isLoading: isLoadingES
+        isFetching: isFetchingES
     } = useGetDataLiquidationOrderEmployeeStockQuery()
 
     const [addInventoryOrder, { isLoading }] = useAddInventoryWINOrderMutation()
@@ -77,7 +77,7 @@ export function AddDialog(props: IProps) {
             includeHeaders: true,
             includeOutliers: true,
         })
-    }, [isLoadingDelete, isLoading, isFetching, _id_stock])
+    }, [isLoadingDelete, isLoading, isFetching, _id_stock, isFetchingES])
 
 
     const onSubmit = async (data: CreateInventoryDTO) => {
@@ -132,7 +132,7 @@ export function AddDialog(props: IProps) {
                     control={control}
                     render={({ field }) => (
                         <CustomAutocomplete<EmployeeStockENTITY>
-                            loading={isLoadingES}
+                            loading={isFetchingES}
                             options={dataES?.map(d => d.item) ?? []}
                             error={!!errors._id_stock || isErrorES}
                             helperText={errors._id_stock?.message || (errorES as Error)?.message}
@@ -152,7 +152,7 @@ export function AddDialog(props: IProps) {
                             control={control}
                             render={({ field }) => (
                                 <CustomAutocomplete<EmployeeStockSerialENTITY>
-                                    loading={isLoadingES}
+                                    loading={isFetchingES}
                                     options={dataES?.find((opt) => opt.item._id === getValues('_id_stock'))?.serials ?? []}
                                     error={!!errors.invsn}
                                     helperText={errors.invsn?.message}

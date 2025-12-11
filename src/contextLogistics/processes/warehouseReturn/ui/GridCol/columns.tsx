@@ -79,25 +79,32 @@ export const columns = (params: IParams): GridColDef<WarehouseReturnENTITY>[] =>
                 return row.store.code
             }
         },
+        // {
+        //     field: 'storeName',
+        //     headerName: 'Nombre Almacén',
+        //     valueGetter: (_value, row) => {
+        //         return row.store.name
+        //     }
+        // },
         {
-            field: 'storeName',
-            headerName: 'Nombre Almacén',
-            valueGetter: (_value, row) => {
-                return row.store.name
+            field: 'applicant',
+            headerName: 'Solicitante',
+            renderCell: ({ row }) => {
+                return `${row.workflow.register.user.identity} ${row.workflow.register.user.names} ${row.workflow.register.user.surnames}`
             }
         },
-        {
-            field: 'identificación',
-            headerName: 'DNI',
-            valueGetter: (_value, row) => {
-                return row.carrier.identity
-            }
-        },
+        // {
+        //     field: 'identificación',
+        //     headerName: 'DNI',
+        //     valueGetter: (_value, row) => {
+        //         return row.carrier.identity
+        //     }
+        // },
         {
             field: 'carrier',
             headerName: 'Personal',
-            valueGetter: (_value, row) => {
-                return `${row.carrier.names} ${row.carrier.surnames}`
+            renderCell: ({ row }) => {
+                return `${row.carrier.identity} ${row.carrier.names} ${row.carrier.surnames}`
             }
         },
         {
