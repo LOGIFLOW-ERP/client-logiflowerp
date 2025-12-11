@@ -37,7 +37,7 @@ export function InventoryDialog(props: IProps) {
             includeHeaders: true,
             includeOutliers: true,
         })
-    }, [isLoadingDelete])
+    }, [isLoadingDelete, isFetching])
 
     const handleFileChange = async (file: File, selectedItem: TreeViewBaseItem<ExtendedTreeItemProps>) => {
         const formData = new FormData()
