@@ -17,7 +17,7 @@ export function ToolbarButtonSerialTracking() {
 
     return (
         <>
-            <Tooltip title='Seguimiento en serie'>
+            <Tooltip title='Seguimiento de serie'>
                 <ToolbarButton
                     aria-describedby='new-panel-serial-tracking'
                     onClick={() => {
