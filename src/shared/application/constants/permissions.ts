@@ -113,4 +113,6 @@ export const PERMISSIONS = {
     POST_WAREHOUSE_RETURN_CREATE_DRAFT_RECORD: 'post_warehouse_return_create_draft_record',
     PUT_WAREHOUSE_RETURN_REGISTER_BY_ID: 'put_warehouse_return_register_by_id',
     PUT_WIN_ORDER_PENDING_ORDER_BY_ID: 'put_win_order_pending_order_by_id',
+    POST_WIN_REPORTS_PRODUCTION_ZONES: 'post_win_reports_production_zones',
+    PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_SERIAL_BY_ID: 'put_warehouse_exit_add_detail_by_serial_by_id',
 } as const;

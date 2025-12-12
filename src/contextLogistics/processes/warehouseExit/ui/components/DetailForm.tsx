@@ -21,8 +21,10 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { Fallback } from '@app/ui/pages';
 import Person2Icon from '@mui/icons-material/Person2';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 
 const EmployeeStockDialog = lazy(() => import('../components/EmployeeStockDialog').then(m => ({ default: m.EmployeeStockDialog })))
+const AddDetailBySerialDialog = lazy(() => import('./AddDetailBySerialDialog').then(m => ({ default: m.AddDetailBySerialDialog })))
 
 const resolver = classValidatorResolver(CreateWarehouseExitDetailDTO)
 
@@ -31,6 +33,7 @@ export function DetalleForm() {
     const { setState, state: { selectedDocument } } = useStore('warehouseExit')
     const [dataES, setDataES] = useState<EmployeeStockENTITYFlat[]>([])
     const [open, setOpen] = useState<boolean>(false)
+    const [openAddDetailBySerial, setOpenAddDetailBySerial] = useState<boolean>(false)
     const [employeeStock, setEmployeeStock] = useState<number | null>(null)
 
     const {
@@ -47,9 +50,11 @@ export function DetalleForm() {
     const [
         canWarehouseExitAddDetailByID,
         POST_EMPLOYEE_STOCK_REPORT,
+        PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_SERIAL_BY_ID
     ] = usePermissions([
         PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_ID,
-        PERMISSIONS.POST_EMPLOYEE_STOCK_REPORT
+        PERMISSIONS.POST_EMPLOYEE_STOCK_REPORT,
+        PERMISSIONS.PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_SERIAL_BY_ID,
     ])
 
     const pipelineWS = [{
@@ -229,25 +234,46 @@ export function DetalleForm() {
                             disabled={!getValues('warehouseStock.item.itemCode')}
                         />
                     </Grid>
-                    <Grid size={{ md: 1 }} component='div'>
-                        {
-                            canWarehouseExitAddDetailByID && (
-                                <Button
-                                    type='submit'
-                                    variant='contained'
-                                    color='primary'
-                                    fullWidth
-                                    sx={{ marginTop: 1 }}
-                                    loading={isLoadingAddDetail}
-                                    loadingIndicator={<CircularProgress size={24} color='warning' />}
-                                    loadingPosition='center'
-                                    disabled={!getValues('warehouseStock.item.itemCode')}
-                                >
-                                    <AddRoundedIcon />
-                                </Button>
-                            )
-                        }
-                    </Grid>
+                    {
+                        canWarehouseExitAddDetailByID && (
+                            <>
+                                <Grid size={{ md: 1 }} component='div'>
+                                    <Button
+                                        type='submit'
+                                        variant='contained'
+                                        color='primary'
+                                        fullWidth
+                                        sx={{ marginTop: 1 }}
+                                        loading={isLoadingAddDetail}
+                                        loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                        loadingPosition='center'
+                                        disabled={!getValues('warehouseStock.item.itemCode')}
+                                    >
+                                        <AddRoundedIcon />
+                                    </Button>
+
+                                </Grid>
+                                {
+                                    PUT_WAREHOUSE_EXIT_ADD_DETAIL_BY_SERIAL_BY_ID && (
+                                        <Grid size={{ md: 1 }} component='div'>
+                                            <Button
+                                                variant='contained'
+                                                color='primary'
+                                                fullWidth
+                                                sx={{ marginTop: 1 }}
+                                                loading={isLoadingAddDetail}
+                                                loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                                loadingPosition='center'
+                                                onClick={() => setOpenAddDetailBySerial(true)}
+                                            >
+                                                <DocumentScannerIcon />
+                                            </Button>
+                                        </Grid>
+                                    )
+                                }
+                            </>
+                        )
+                    }
                 </Grid>
             </Box>
             <Suspense fallback={<Fallback />}>
@@ -257,6 +283,14 @@ export function DetalleForm() {
                             open={open}
                             setOpen={setOpen}
                             dataES={dataES}
+                        />
+                    )
+                }
+                {
+                    openAddDetailBySerial && (
+                        <AddDetailBySerialDialog
+                            open={openAddDetailBySerial}
+                            setOpen={setOpenAddDetailBySerial}
                         />
                     )
                 }

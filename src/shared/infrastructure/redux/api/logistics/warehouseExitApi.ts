@@ -141,6 +141,20 @@ export const warehouseExitApi = createRepository<WarehouseExitENTITY, string>(pa
                 ],
                 transformErrorResponse
             }),
+            addDetailBySerial: builder.mutation<WarehouseExitENTITY, { _id: string, data: StockSerialDTO }>({
+                query: ({ _id, data }) => ({
+                    url: `${path}/add-detail-by-serial/${_id}`,
+                    method: 'PUT',
+                    body: instanceToPlain(data),
+                }),
+                invalidatesTags: [
+                    { type: path, id: `LIST${path}` },
+                    { type: path, id: `LIST1${path}` },
+                    { type: path, id: `STATIC_PIPELINE${path}` },
+                    { type: path, id: `PIPELINE${path}` },
+                ],
+                transformErrorResponse
+            }),
         })
     })
 
@@ -159,5 +173,6 @@ export const {
     useDeleteSerialMutation: useDeleteSerialWarehouseExitMutation,
     useAutomaticReplenishmentToaMutation: useAutomaticReplenishmentToaWarehouseExitMutation,
     useAutomaticReplenishmentWinMutation: useAutomaticReplenishmentWinWarehouseExitMutation,
+    useAddDetailBySerialMutation: useAddDetailBySerialWarehouseExitMutation,
     useBulkExitWarehouseEntryMutation
 } = warehouseExitApi;
