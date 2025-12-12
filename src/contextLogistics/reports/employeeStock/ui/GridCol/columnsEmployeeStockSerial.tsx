@@ -8,6 +8,10 @@ export const columnsEmployeeStockSerial = (): GridColDef<EmployeeStockSerialENTI
             field: 'serial',
             headerName: 'Serie',
         },
+         {
+            field: 'updatedate',
+            headerName: 'F. Estado',
+        },
         {
             field: 'brand',
             headerName: 'Marca',
