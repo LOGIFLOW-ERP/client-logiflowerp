@@ -1,15 +1,12 @@
 import { DataGrid, useGridApiRef } from "@mui/x-data-grid"
 import { CustomButtonSearch, CustomDialog, CustomViewError } from "@shared/ui/ui-library"
-import { DataSerialTracking, SerialTrackingDTO } from "logiflowerp-sdk"
+import { DataSerialTracking, SerialTrackingDTO, validateCustom } from "logiflowerp-sdk"
 import { columnsOrder } from "../GridCol/columnsWarehouseStockSerial"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useLazySerialTrackingQuery } from "@shared/infrastructure/redux/api"
-import { classValidatorResolver } from "@hookform/resolvers/class-validator"
-import { useForm } from "react-hook-form"
-import { Box, TextField } from "@mui/material"
+import { Box, Tooltip } from "@mui/material"
 import { useSnackbar } from "notistack"
-
-const resolver = classValidatorResolver(SerialTrackingDTO)
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 interface IProps {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -21,12 +18,8 @@ export function SerialTracking(props: IProps) {
 
     const apiRef = useGridApiRef()
     const [triggerSerialTracking, { data, isFetching, isError, error }] = useLazySerialTrackingQuery()
-    const {
-        handleSubmit,
-        formState: { errors },
-        register,
-    } = useForm({ resolver })
     const { enqueueSnackbar } = useSnackbar()
+    const [seriesText, setSeriesText] = useState('')
 
     useEffect(() => {
         apiRef.current?.autosizeColumns({
@@ -35,9 +28,18 @@ export function SerialTracking(props: IProps) {
         })
     }, [isFetching])
 
-    const onSubmit = async (data: SerialTrackingDTO) => {
+    const onSubmit = async () => {
         try {
-            await triggerSerialTracking(data).unwrap()
+            const _series = seriesText
+                .split(/[\n\s]+/)     // separa por línea
+                .map(s => s.trim())   // quita espacios
+                .filter(Boolean)      // elimina líneas vacías
+
+            const series: SerialTrackingDTO[] = []
+            for (const serial of [...new Set(_series)]) {
+                series.push(await validateCustom({ serial }, SerialTrackingDTO, Error))
+            }
+            await triggerSerialTracking(series).unwrap()
             enqueueSnackbar({ message: 'Búsqueda finalizada!', variant: 'info' })
         } catch (error) {
             console.error(error)
@@ -58,26 +60,31 @@ export function SerialTracking(props: IProps) {
                         <CustomViewError error={error} />
                     )
                     : <>
-                        <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', gap: 8 }}>
-                            <Box>
-                                <TextField
-                                    label='Serie'
-                                    variant='outlined'
-                                    fullWidth
-                                    margin='normal'
-                                    size='small'
-                                    {...register('serial')}
-                                    error={!!errors.serial}
-                                    helperText={errors.serial?.message}
+                        <Box
+                            component='form'
+                            onSubmit={(e) => {
+                                e.preventDefault()
+                                onSubmit()
+                            }}
+                            style={{ display: 'flex', gap: 8, alignItems: 'end' }}
+                        >
+                            <Tooltip title='Las series deben estar separadas por espacios o saltos de línea'>
+                                <TextareaAutosize
+                                    value={seriesText}
+                                    onChange={(e) => setSeriesText(e.target.value)}
+                                    minRows={2}
+                                    maxRows={5}
+                                    placeholder='Ingrese las series'
+                                    style={{ width: 180, fontSize: 16 }}
                                 />
-                            </Box>
+                            </Tooltip>
                             <Box>
                                 <CustomButtonSearch
                                     isLoading={isFetching}
                                     size='medium'
                                 />
                             </Box>
-                        </form>
+                        </Box>
                         <DataGrid<DataSerialTracking>
                             rows={data}
                             columns={columnsOrder()}
