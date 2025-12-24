@@ -33,7 +33,14 @@ export default function LayoutWarehouseReturn() {
 	])
 	const { enqueueSnackbar } = useSnackbar()
 	const resetApiState = useResetApiState()
-	const pipeline = [{ $match: { state: POST_WAREHOUSE_RETURN ? StateOrder.REGISTRADO : StateOrder.BORRADOR } }]
+	const limit = 200
+	const pipeline = POST_WAREHOUSE_RETURN
+		? [
+			{ $match: { state: { $ne: StateOrder.BORRADOR } } },
+			{ $limit: limit },
+			{ $sort: { 'workflow.register.date': -1 } }
+		]
+		: [{ $match: { state: StateOrder.BORRADOR } }]
 	const { data, error, isFetching, isError } = POST_WAREHOUSE_RETURN_FIND
 		? useGetWarehouseReturnPipelineQuery(pipeline)
 		: useGetWarehouseReturnPipelineIndividualQuery(pipeline)
@@ -47,6 +54,10 @@ export default function LayoutWarehouseReturn() {
 	] = useRegisterWarehouseReturnMutation()
 
 	const apiRef = useGridApiRef()
+
+	useEffect(() => {
+		enqueueSnackbar({ message: `Se muestran los documentos más recientes (límite: ${limit}).`, variant: 'info' })
+	}, [])
 
 	useEffect(() => {
 		apiRef.current?.autosizeColumns({

@@ -1,13 +1,14 @@
-import { CustomDialog } from '@shared/ui-library'
-import { StockSerialDTO } from 'logiflowerp-sdk'
-import { Box, Button, CircularProgress, Grid, TextField, Tooltip } from '@mui/material'
+import { CustomDialog, CustomViewError } from '@shared/ui-library'
+import { StateStockSerialWarehouse, StockSerialDTO } from 'logiflowerp-sdk'
+import { Autocomplete, Box, Button, CircularProgress, Grid, TextField, Tooltip } from '@mui/material'
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
 import { useSnackbar } from 'notistack'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import {
     useAddSerialWarehouseExitMutation,
     useDeleteSerialWarehouseExitMutation,
+    useGetWarehouseStockSerialPipelineQuery,
 } from '@shared/api'
 import { DataGrid } from '@mui/x-data-grid'
 import { columnsSerial } from '../GridCol/columnsSerial'
@@ -35,13 +36,23 @@ export function SerialsDialog(props: IProps) {
         formState: { errors },
         register,
         reset,
-        setFocus
+        setFocus,
+        control
     } = useForm({ resolver, defaultValues: new StockSerialDTO() })
     const { enqueueSnackbar } = useSnackbar()
+    const [serialInput, setSerialInput] = useState('')
     const [addSerial, { isLoading: isLoadingAddSerial }] = useAddSerialWarehouseExitMutation()
     const [deleteSerial, { isLoading: isLoadingDeleteSerial }] = useDeleteSerialWarehouseExitMutation()
     const [canWarehouseExitDeleteSerialByID] = usePermissions([PERMISSIONS.PUT_WAREHOUSE_EXIT_DELETE_SERIAL_BY_ID])
     const [openWarehouseStockSerialDialog, setOpenWarehouseStockSerialDialog] = useState(false)
+    const pipeline = [{ // Cualquier cambio en este pipeline debe ser reflejado en el componente WarehouseStockSerialDialog
+        $match: {
+            keySearch: selectedDetail?.keySearch,
+            keyDetail: selectedDetail?.keyDetail,
+            state: StateStockSerialWarehouse.DISPONIBLE
+        }
+    }]
+    const { data, error, isLoading, isError } = useGetWarehouseStockSerialPipelineQuery(pipeline)
 
     const onSubmit = async (data: StockSerialDTO) => {
         try {
@@ -57,6 +68,7 @@ export function SerialsDialog(props: IProps) {
                 data
             }).unwrap()
             reset(new StockSerialDTO())
+            setSerialInput('')
             enqueueSnackbar({ message: '¡Agregado correctamente!', variant: 'success' })
             setState({ selectedDocument: document })
         } catch (error) {
@@ -88,6 +100,8 @@ export function SerialsDialog(props: IProps) {
             enqueueSnackbar({ message: (error as Error).message, variant: 'error' })
         }
     }
+
+    if (isError) return <CustomViewError error={error} />
 
     return (
         <>
@@ -126,22 +140,24 @@ export function SerialsDialog(props: IProps) {
                                 </Grid>
                                 <Grid size={{ md: 2 }} component='div'>
                                     <Tooltip title='Ver series disponibles'>
-                                        <Button
-                                            variant='contained'
-                                            color='info'
-                                            fullWidth
-                                            sx={{ marginTop: 1 }}
-                                            loading={isLoadingAddSerial}
-                                            loadingIndicator={<CircularProgress size={24} color='warning' />}
-                                            loadingPosition='center'
-                                            onClick={() => setOpenWarehouseStockSerialDialog(true)}
-                                        >
-                                            <ViewListIcon />
-                                        </Button>
+                                        <span>
+                                            <Button
+                                                variant='contained'
+                                                color='info'
+                                                fullWidth
+                                                sx={{ marginTop: 1 }}
+                                                loading={isLoadingAddSerial || isLoading}
+                                                loadingIndicator={<CircularProgress size={24} color='warning' />}
+                                                loadingPosition='center'
+                                                onClick={() => setOpenWarehouseStockSerialDialog(true)}
+                                            >
+                                                <ViewListIcon />
+                                            </Button>
+                                        </span>
                                     </Tooltip>
                                 </Grid>
                                 <Grid size={{ md: 8 }} component='div'>
-                                    <TextField
+                                    {/* <TextField
                                         label='Serie'
                                         variant='outlined'
                                         fullWidth
@@ -152,6 +168,52 @@ export function SerialsDialog(props: IProps) {
                                         error={!!errors.serial}
                                         helperText={errors.serial?.message}
                                         autoComplete='off'
+                                    /> */}
+                                    <Controller
+                                        name="serial"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Autocomplete
+                                                freeSolo
+                                                loading={isLoading}
+                                                options={data ?? []}
+                                                inputValue={serialInput}
+                                                getOptionLabel={(option) =>
+                                                    typeof option === 'string' ? option : option.serial
+                                                }
+                                                filterOptions={(options, { inputValue }) =>
+                                                    options.filter(o =>
+                                                        o.serial.toLowerCase().includes(inputValue.toLowerCase())
+                                                    )
+                                                }
+                                                onInputChange={(_, value) => {
+                                                    setSerialInput(value)
+                                                    field.onChange(value)
+                                                }}
+                                                onChange={(_, value) => {
+                                                    if (typeof value === 'string') {
+                                                        setSerialInput(value)
+                                                        field.onChange(value)
+                                                    } else if (value) {
+                                                        setSerialInput(value.serial)
+                                                        field.onChange(value.serial)
+                                                    }
+                                                }}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Serie"
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        margin="dense"
+                                                        size="small"
+                                                        autoFocus
+                                                        error={!!errors.serial}
+                                                        helperText={errors.serial?.message}
+                                                    />
+                                                )}
+                                            />
+                                        )}
                                     />
                                 </Grid>
                                 <Grid size={{ md: 4 }} component='div'>
@@ -161,7 +223,7 @@ export function SerialsDialog(props: IProps) {
                                         color='primary'
                                         fullWidth
                                         sx={{ marginTop: 1 }}
-                                        loading={isLoadingAddSerial}
+                                        loading={isLoadingAddSerial || isLoading}
                                         loadingIndicator={<CircularProgress size={24} color='warning' />}
                                         loadingPosition='center'
                                     >

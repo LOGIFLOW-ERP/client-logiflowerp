@@ -12,7 +12,7 @@ const path = `${schema}/${resource}`
 export const warehouseStockSerialApi = createRepository<WarehouseStockSerialENTITY, string>(path, getBaseApiLogistics(path))
     .injectEndpoints({
         endpoints: (builder) => ({
-            serialTracking: builder.query<DataSerialTracking[], SerialTrackingDTO>({
+            serialTracking: builder.query<DataSerialTracking[], SerialTrackingDTO[]>({
                 query: (data) => ({
                     url: `${path}/serial-tracking`,
                     method: 'POST',
