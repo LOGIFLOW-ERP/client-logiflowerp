@@ -15,7 +15,7 @@ export function WarehouseStockSerialDialog(props: IProps) {
 
     const { open, setOpen, selectedRow } = props
     const apiRef = useGridApiRef()
-    const pipeline = [{
+    const pipeline = [{ // Cualquier cambio en este pipeline debe ser reflejado en el componente SerialDialog
         $match: {
             keySearch: selectedRow.keySearch,
             keyDetail: selectedRow.keyDetail,
