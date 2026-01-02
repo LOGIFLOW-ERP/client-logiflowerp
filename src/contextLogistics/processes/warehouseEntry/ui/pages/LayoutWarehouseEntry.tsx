@@ -33,8 +33,8 @@ export default function LayoutWarehouseEntry() {
 	// const pipeline = [{ $match: { state: { $in: [StateOrder.REGISTRADO, StateOrder.PROCESANDO] } } }]
 	const limit = 200
 	const pipeline = [
-		{ $limit: limit },
-		{ $sort: { 'workflow.register.date': -1 } }
+		{ $sort: { 'workflow.register.date': -1 } },
+		{ $limit: limit }
 	]
 	const { data, error, isFetching } = useGetWarehouseEntryPipelineQuery(pipeline)
 	const [deleteWarehouseEntry, { isLoading: isLoadingDelete }] = useDeleteWarehouseEntryMutation()
