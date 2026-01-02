@@ -35,8 +35,8 @@ export default function LayoutWarehouseExit() {
 	const { generatePDF } = useSalidaAlmacenPDF()
 	const limit = 200
 	const pipeline = [
-		{ $limit: limit },
-		{ $sort: { 'workflow.register.date': -1 } }
+		{ $sort: { 'workflow.register.date': -1 } },
+		{ $limit: limit }
 	]
 	const { data, error, isFetching, isError } = useGetWarehouseExitPipelineQuery(pipeline)
 	const [deleteWarehouseExit, { isLoading: isLoadingDelete, isError: isErrorDelete, error: errorDelete }] = useDeleteWarehouseExitMutation()

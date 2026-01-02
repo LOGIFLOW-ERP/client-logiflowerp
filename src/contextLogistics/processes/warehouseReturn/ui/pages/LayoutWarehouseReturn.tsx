@@ -37,8 +37,8 @@ export default function LayoutWarehouseReturn() {
 	const pipeline = POST_WAREHOUSE_RETURN
 		? [
 			{ $match: { state: { $ne: StateOrder.BORRADOR } } },
-			{ $limit: limit },
-			{ $sort: { 'workflow.register.date': -1 } }
+			{ $sort: { 'workflow.register.date': -1 } },
+			{ $limit: limit }
 		]
 		: [{ $match: { state: StateOrder.BORRADOR } }]
 	const { data, error, isFetching, isError } = POST_WAREHOUSE_RETURN_FIND
