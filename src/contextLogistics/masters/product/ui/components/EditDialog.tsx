@@ -1,11 +1,12 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomAutocomplete, CustomButtonSave, CustomDialog } from '@shared/ui-library'
+import { CustomAutocomplete, CustomButtonSave, CustomDialog, CustomMultipleSelectChip } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { UpdateProductDTO, ProductENTITY, ProductGroupENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { TextField } from '@mui/material'
 import { useGetProductGroupsQuery, useUpdateProductMutation } from '@shared/api'
+import { useGetDataScrapingSystem } from '@shared/ui/hooks'
 
 const resolver = classValidatorResolver(UpdateProductDTO)
 
@@ -25,6 +26,7 @@ export function EditDialog(props: IProps) {
         control
     } = useForm({ resolver, defaultValues: row })
     const { enqueueSnackbar } = useSnackbar()
+    const dataScrapingSystem = useGetDataScrapingSystem()
 
     const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup, error: errorGroup } = useGetProductGroupsQuery()
     const [updateStore, { isLoading }] = useUpdateProductMutation()
@@ -107,6 +109,20 @@ export function EditDialog(props: IProps) {
                     })}
                     error={!!errors.maxLevel}
                     helperText={errors.maxLevel?.message}
+                />
+                <Controller
+                    name='systems'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomMultipleSelectChip
+                            label='Sistemas'
+                            options={dataScrapingSystem.map((system) => system.value)}
+                            value={field.value}
+                            onChange={field.onChange}
+                            isError={!!errors.systems}
+                            helperText={errors.systems?.message}
+                        />
+                    )}
                 />
                 <CustomButtonSave isLoading={isLoading} />
             </form>
