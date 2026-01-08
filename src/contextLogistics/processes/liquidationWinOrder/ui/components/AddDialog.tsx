@@ -15,7 +15,7 @@ import { useSnackbar } from 'notistack'
 import {
     useAddInventoryWINOrderMutation,
     useDeleteInventoryWINOrderMutation,
-    useGetDataLiquidationOrderEmployeeStockQuery
+    useGetDataLiquidationWinOrderEmployeeStockQuery
 } from '@shared/api'
 import TextField from '@mui/material/TextField'
 import { DataGrid, useGridApiRef } from '@mui/x-data-grid'
@@ -53,7 +53,7 @@ export function AddDialog(props: IProps) {
         isError: isErrorES,
         error: errorES,
         isFetching: isFetchingES
-    } = useGetDataLiquidationOrderEmployeeStockQuery()
+    } = useGetDataLiquidationWinOrderEmployeeStockQuery()
 
     const [addInventoryOrder, { isLoading }] = useAddInventoryWINOrderMutation()
     const [deleteInventoryOrder, { isLoading: isLoadingDelete }] = useDeleteInventoryWINOrderMutation()

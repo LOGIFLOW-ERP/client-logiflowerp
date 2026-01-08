@@ -4,7 +4,10 @@ import React, { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { CreateInventoryDTO, EmployeeStockENTITY, EmployeeStockSerialENTITY, ProducType, TOAOrderENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
-import { useAddInventoryWINOrderMutation, useGetDataLiquidationOrderEmployeeStockQuery } from '@shared/api'
+import {
+    useAddInventoryWINOrderMutation,
+    useGetDataLiquidationWinOrderEmployeeStockQuery
+} from '@shared/api'
 import TextField from '@mui/material/TextField'
 
 const resolver = classValidatorResolver(CreateInventoryDTO)
@@ -33,7 +36,7 @@ export function AddDialog(props: IProps) {
         isError: isErrorES,
         error: errorES,
         isLoading: isLoadingES
-    } = useGetDataLiquidationOrderEmployeeStockQuery()
+    } = useGetDataLiquidationWinOrderEmployeeStockQuery()
 
     const [_addInventoryTOAOrder, { isLoading }] = useAddInventoryWINOrderMutation()
 

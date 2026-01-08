@@ -1,11 +1,12 @@
 import { classValidatorResolver } from '@hookform/resolvers/class-validator'
-import { CustomAutocomplete, CustomButtonSave, CustomDialog, CustomSelect } from '@shared/ui-library'
+import { CustomAutocomplete, CustomButtonSave, CustomDialog, CustomMultipleSelectChip, CustomSelect } from '@shared/ui-library'
 import React from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateProductDTO, getDataProducType, ProductGroupENTITY, UnitOfMeasureENTITY } from 'logiflowerp-sdk'
 import { useSnackbar } from 'notistack'
 import { TextField } from '@mui/material'
 import { useCreateProductMutation, useGetProductGroupsQuery, useGetUnitOfMeasuresQuery } from '@shared/api'
+import { useGetDataScrapingSystem } from '@shared/ui/hooks'
 
 const resolver = classValidatorResolver(CreateProductDTO)
 
@@ -22,8 +23,9 @@ export function AddDialog(props: IProps) {
         formState: { errors },
         register,
         control
-    } = useForm({ resolver })
+    } = useForm({ resolver, defaultValues: { systems: [] } })
     const { enqueueSnackbar } = useSnackbar()
+    const dataScrapingSystem = useGetDataScrapingSystem()
 
     const { data: dataUM, isError: isErrorUM, isLoading: isLoadingUM, error: errorUM } = useGetUnitOfMeasuresQuery()
     const { data: dataGroup, isError: isErrorGroup, isLoading: isLoadingGroup, error: errorGroup } = useGetProductGroupsQuery()
@@ -150,6 +152,20 @@ export function AddDialog(props: IProps) {
                     })}
                     error={!!errors.maxLevel}
                     helperText={errors.maxLevel?.message}
+                />
+                <Controller
+                    name='systems'
+                    control={control}
+                    render={({ field }) => (
+                        <CustomMultipleSelectChip
+                            label='Sistemas'
+                            options={dataScrapingSystem.map((system) => system.value)}
+                            value={field.value}
+                            onChange={field.onChange}
+                            isError={!!errors.systems}
+                            helperText={errors.systems?.message}
+                        />
+                    )}
                 />
                 <CustomButtonSave isLoading={isLoading} />
             </form>

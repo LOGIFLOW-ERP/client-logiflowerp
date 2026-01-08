@@ -38,8 +38,8 @@ export const employeeStockApi = createRepository<EmployeeStockENTITY, string>(pa
                     result ? [provideTagReportIndividualEmployeeStock] : [],
                 transformErrorResponse
             }),
-            getDataLiquidationOrder: builder.query<{ item: EmployeeStockENTITY, serials: EmployeeStockSerialENTITY[] }[], void>({
-                query: () => `${path}/get-data-liquidation-order`,
+            getDataLiquidationWinOrder: builder.query<{ item: EmployeeStockENTITY, serials: EmployeeStockSerialENTITY[] }[], void>({
+                query: () => `${path}/get-data-liquidation-win-order`,
                 providesTags: (result) =>
                     result ? [provideTagGetDataLiquidationOrderEmployeeStock] : [],
                 transformErrorResponse
@@ -57,6 +57,6 @@ export const {
     useLazyReportQuery: useLazyReportEmployeeStockQuery,
     useReportQuery: useReportEmployeeStockQuery,
     useReportIndividualQuery: useReportIndividualEmployeeStockQuery,
-    useGetDataLiquidationOrderQuery: useGetDataLiquidationOrderEmployeeStockQuery,
+    useGetDataLiquidationWinOrderQuery: useGetDataLiquidationWinOrderEmployeeStockQuery,
     useGetPipelineIndividualQuery: useGetEmployeeStockPipelineIndividualQuery
 } = employeeStockApi;

@@ -27,7 +27,7 @@
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.14.2",
 		"i18next": "^25.4.0",
-		"logiflowerp-sdk": "^1.0.293",
+		"logiflowerp-sdk": "^1.0.296",
 		"notistack": "^3.0.2",
 		"react": "^19.2.1",
 		"react-dom": "^19.2.1",
